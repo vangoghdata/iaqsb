@@ -320,6 +320,29 @@ ok(r3.includes('SIN-HERRAMIENTAS') && r3.includes('no admite herramientas'), 're
 const ultimo = pedidos.filter((p) => p.url === '/v1/chat/completions').at(-1)?.cuerpo;
 ok(ultimo && !ultimo.tools, 'el reintento va sin herramientas');
 
+console.log('· Adjuntar una imagen, un PDF y un modelo');
+await page.locator('aside.chat button[title="Conversación nueva"]').click();
+// PNG de 1×1, un PDF mínimo y un modelo en el lenguaje algebraico
+const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==', 'base64');
+await page.locator('aside.chat input[type="file"]').setInputFiles([
+  { name: 'enunciado.png', mimeType: 'image/png', buffer: png },
+  { name: 'taller.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n%%EOF') },
+  { name: 'wyndor.iaqsb', mimeType: 'text/plain', buffer: Buffer.from('var x1 >= 0; var x2 >= 0; maximize z: 3*x1 + 5*x2; subject to p1: x1 <= 4;') }
+]);
+await page.locator('aside.chat .pie .adjf').nth(2).waitFor({ timeout: 10000 });
+ok((await page.locator('aside.chat .pie .adjf').count()) === 3, 'se ven los tres adjuntos antes de enviar');
+await preguntar('Resuelve el ejercicio');
+await esperarTexto('SIN-HERRAMIENTAS', 15000).catch(() => {});
+ok((await page.locator('aside.chat .usuario .adjf').count()) === 3, 'el mensaje enviado muestra los adjuntos');
+const conAdj = pedidos.filter((p) => p.url === '/v1/chat/completions').at(-1)?.cuerpo;
+const partes = (conAdj?.messages ?? []).filter((m) => m.role === 'user').at(-1)?.content;
+ok(Array.isArray(partes), 'el mensaje del usuario va en partes: ' + JSON.stringify(partes)?.slice(0, 120));
+ok(partes?.some((p) => p.type === 'image_url' && p.image_url.url.startsWith('data:image/png;base64,')), 'la imagen va como image_url');
+ok(partes?.some((p) => p.type === 'file' && p.file.filename === 'taller.pdf' && p.file.file_data.startsWith('data:application/pdf;base64,')), 'el PDF va como file');
+const txt = partes?.find((p) => p.type === 'text')?.text ?? '';
+ok(txt.includes('kind="model" module="lp"') && txt.includes('"format":"iaqsb"') && txt.includes('Resuelve el ejercicio'), 'el modelo llega importado y con la pregunta');
+await page.screenshot({ path: join(OUT, `${modo[0]}_adjuntos.png`) });
+
 console.log('· Detener una respuesta');
 await page.evaluate(() => {
   const a = JSON.parse(localStorage.getItem('iaqsb.ajustes'));
