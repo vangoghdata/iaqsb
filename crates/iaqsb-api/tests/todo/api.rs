@@ -84,3 +84,20 @@ fn cadena_jerarquica_ap_pmp_mrp() {
     assert!(api::solve("mrp", mrp, None).is_ok());
     assert!(api::call("link", json!({"from": "mrp", "to": "ap", "model": {}})).is_err());
 }
+
+#[test]
+fn cadena_mrp_crp() {
+    let mrp = api::examples().into_iter().find(|e| e.0 == "mrp" && e.1 == "producto_a_render").unwrap().2;
+    let rutas = json!([{"item": "A", "center": "Ensamble", "hours": 2.0}, {"item": "B", "center": "Maquinado", "hours": 0.5}, {"item": "C", "center": "Maquinado", "hours": 1.0}]);
+    let r = api::call("link", json!({"from": "mrp", "to": "crp", "model": mrp, "routings": rutas, "centers": [{"name": "Ensamble", "capacity": 100}, {"name": "Maquinado", "capacity": 50}]})).unwrap();
+    // carga = Σ lanzamientos planeados × horas: A lanza 40 en el periodo 7 (80 h de ensamble)
+    let sol = api::solve("mrp", api::examples().into_iter().find(|e| e.0 == "mrp" && e.1 == "producto_a_render").unwrap().2, None).unwrap();
+    let total: f64 = ["A", "B", "C"].iter().zip([2.0, 0.5, 1.0]).map(|(it, h)| {
+        let rec = sol["data"]["records"].as_array().unwrap().iter().find(|x| x["item"] == *it).unwrap();
+        rec["planned_releases"].as_array().unwrap().iter().map(|x| x.as_f64().unwrap()).sum::<f64>() * h
+    }).sum();
+    let cargado: f64 = r["load"].as_array().unwrap().iter().map(|x| x["hours"].as_f64().unwrap()).sum();
+    assert!((total - cargado).abs() < 1e-6, "{total} frente a {cargado}");
+    assert!(r["overloads"].as_array().unwrap().iter().any(|s| s.as_str().unwrap().contains("Maquinado")), "{}", r["overloads"]);
+    assert!(api::call("link", json!({"from": "mrp", "to": "crp", "model": api::examples().into_iter().find(|e| e.0 == "mrp").unwrap().2})).is_err());
+}

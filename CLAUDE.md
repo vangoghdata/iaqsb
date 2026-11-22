@@ -27,7 +27,7 @@ Lee primero `LEEME.md`, que es la fuente de verdad sobre funciones, comandos y e
 
 ## Comandos (Windows, PowerShell, desde la raíz)
 
-- Pruebas de Rust: `cargo test --workspace --release` (son 232; la primera vez compila HiGHS y tarda). Más rápido: `cargo test --workspace --profile pruebas`.
+- Pruebas de Rust: `cargo test --workspace --release` (son 233; la primera vez compila HiGHS y tarda). Más rápido: `cargo test --workspace --profile pruebas`.
 - Pruebas de las peticiones de red de la app: `cd apps/desktop/src-tauri; cargo test`.
 - Interfaz:
   - `cd apps/desktop; npm install; npx svelte-check; npm run build`
@@ -73,7 +73,7 @@ Pendiente:
 - Decidir si se adopta un formato de código.
 - Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
 - Probar los adjuntos del asistente con proveedores reales (imágenes y PDF): se probaron con un servidor simulado compatible con OpenAI.
-- Cadena jerárquica: falta el último eslabón MRP → CRP (carga de capacidad por centro de trabajo) y botones en la interfaz para pasar de un nivel a otro (hoy se hace con `link` desde la IA, la CLI o el MCP).
+- Cadena jerárquica (ap → pmp → mrp → crp) completa en el núcleo; faltan botones en la interfaz para pasar de un nivel a otro (hoy se hace con `link` desde la IA, la CLI o el MCP).
 - Programa Jantero del profesor (`C:\jantero`, Visual FoxPro): pronósticos (promedios móviles, suavización simple y doble, Holt, Winters, correlograma), EOQ, vendedor de periódicos, planeación agregada (nivelación, persecución, óptimo), programa maestro (básico y ATO), MRP y secuenciación. IAQSB ya cubre todo salvo el correlograma. Luis no dio acceso de pantalla a Jantero; se compara con sus Excel.
 
 Hecho el 22 de noviembre de 2026 (segunda parte):

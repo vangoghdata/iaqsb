@@ -174,11 +174,13 @@ fn tools_es() -> Value {
         },
         {
             "name": "link_models",
-            "title": "Cadena jerárquica: plan agregado → programa maestro → MRP",
-            "description": "Pasa el resultado de un nivel de la planificación jerárquica al siguiente y devuelve los modelos listos para resolver. from=ap, to=pmp: resuelve el plan agregado (model de module ap) y desagrega su producción en productos (products: [{name, share, lot_size, on_hand, safety_stock}]) como programas maestros básicos. from=pmp, to=mrp: resuelve el programa maestro (model de module pmp) y pone su PMP como programa maestro del artículo item (por defecto el primero) en el modelo MRP target. Luego resuelve cada modelo devuelto con solve.",
+            "title": "Cadena jerárquica: plan agregado → programa maestro → MRP → capacidad",
+            "description": "Pasa el resultado de un nivel de la planificación jerárquica al siguiente y devuelve los modelos listos para resolver. from=ap, to=pmp: resuelve el plan agregado (model de module ap) y desagrega su producción en productos (products: [{name, share, lot_size, on_hand, safety_stock}]) como programas maestros básicos. from=pmp, to=mrp: resuelve el programa maestro (model de module pmp) y pone su PMP como programa maestro del artículo item (por defecto el primero) en el modelo MRP target. from=mrp, to=crp: resuelve el MRP (model de module mrp) y calcula la carga de cada centro de trabajo por periodo con routings [{item, center, hours}] frente a centers [{name, capacity}] (plan detallado de capacidad). Luego resuelve cada modelo devuelto con solve.",
             "inputSchema": {"type": "object", "properties": {
-                "from": {"type": "string", "enum": ["ap", "pmp"]},
-                "to": {"type": "string", "enum": ["pmp", "mrp"]},
+                "from": {"type": "string", "enum": ["ap", "pmp", "mrp"]},
+                "to": {"type": "string", "enum": ["pmp", "mrp", "crp"]},
+                "routings": {"type": "array", "items": {"type": "object"}, "description": "mrp → crp: horas por unidad de cada artículo en cada centro [{item, center, hours}]"},
+                "centers": {"type": "array", "items": {"type": "object"}, "description": "mrp → crp: centros con sus horas disponibles [{name, capacity}] (capacity: número o lista por periodo)"},
                 "model": {"type": "object", "description": "Modelo del nivel de origen"},
                 "options": {"type": "object"},
                 "products": {"type": "array", "description": "ap → pmp: productos de la familia con su participación (share) y, si se quiere, lot_size, on_hand y safety_stock"},
@@ -523,9 +525,15 @@ fn call_es(name: &str, args: &Value) -> Result<Reply, String> {
                 t += &format!("
 - {} · «{}»", m["module"].as_str().unwrap_or(""), m["model"]["name"].as_str().unwrap_or(""));
             }
-            t += "
+            for c in v["load"].as_array().into_iter().flatten() {
+                t += &format!("
+- {} · {}: {} h de {}", c["center"].as_str().unwrap_or(""), c["period"].as_str().unwrap_or(""), c["hours"], c["capacity"]);
+            }
+            if v["models"].as_array().is_some_and(|m| !m.is_empty()) {
+                t += "
 
 Los modelos completos están en el resultado estructurado (models[].model): resuélvelos con solve.";
+            }
             Ok(Reply { content: vec![md(t)], structured: Some(v) })
         }
         "what_if" => {

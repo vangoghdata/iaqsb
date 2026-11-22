@@ -354,12 +354,14 @@ function definiciones(): Herramienta[] {
     {
       name: 'link_models',
       description:
-        'Hierarchical planning chain: passes the result of one level to the next and returns the models ready to solve. from=ap, to=pmp: solves the aggregate plan (model of module ap) and disaggregates its production into products (products: [{name, share, lot_size, on_hand, safety_stock}]) as basic master schedules. from=pmp, to=mrp: solves the master schedule (model of module pmp) and puts its MPS as the master schedule of item (default: the first) in the MRP model target. Then solve each returned model (or load it into the editor).',
+        'Hierarchical planning chain: passes the result of one level to the next and returns the models ready to solve. from=ap, to=pmp: solves the aggregate plan (model of module ap) and disaggregates its production into products (products: [{name, share, lot_size, on_hand, safety_stock}]) as basic master schedules. from=pmp, to=mrp: solves the master schedule (model of module pmp) and puts its MPS as the master schedule of item (default: the first) in the MRP model target. from=mrp, to=crp: solves the MRP and computes the load of each work center per period (capacity requirements planning) from routings and centers. Then solve each returned model (or load it into the editor).',
       input_schema: {
         type: 'object',
         properties: {
-          from: { type: 'string', enum: ['ap', 'pmp'] },
-          to: { type: 'string', enum: ['pmp', 'mrp'] },
+          from: { type: 'string', enum: ['ap', 'pmp', 'mrp'] },
+          to: { type: 'string', enum: ['pmp', 'mrp', 'crp'] },
+          routings: { type: 'array', items: { type: 'object' }, description: 'mrp → crp: hours per unit of each item at each work center [{item, center, hours}]' },
+          centers: { type: 'array', items: { type: 'object' }, description: 'mrp → crp: work centers with available hours [{name, capacity}] (number or list per period)' },
           model: { type: 'object', description: 'Model of the source level' },
           options: { type: 'object' },
           products: { type: 'array', items: { type: 'object' }, description: 'ap → pmp: products of the family with their share and optional lot_size, on_hand, safety_stock' },
@@ -1065,7 +1067,7 @@ class Chat {
       case 'link_models': {
         if (!a.model || typeof a.model !== 'object') throw new Error('model is required (an object)');
         const r = await call<any>('link', a);
-        return [r.summary ?? '', '', '```json\n' + recortar(json(r.models), TOPE_MODELO) + '\n```'].join('\n');
+        return [r.summary ?? '', '', '```json\n' + recortar(json(r.load ?? r.models), TOPE_MODELO) + '\n```'].join('\n');
       }
       case 'get_current_problem': {
         const f = fuenteActual();
