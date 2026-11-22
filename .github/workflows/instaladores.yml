@@ -46,7 +46,7 @@ jobs:
     name: ${{ matrix.nombre }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Dependencias de Linux (ventana, HiGHS)
         if: runner.os == 'Linux'
@@ -72,7 +72,7 @@ jobs:
             . -> target
             apps/desktop/src-tauri -> ../../../target
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -111,7 +111,7 @@ jobs:
           npx tauri build --target ${{ matrix.triple }} --bundles ${{ matrix.paquetes }}
 
       - name: Subir instaladores (artefactos)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: IAQSB-${{ matrix.triple }}
           if-no-files-found: error
