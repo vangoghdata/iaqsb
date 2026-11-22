@@ -1,0 +1,7 @@
+{
+  "name": "Sondeo sismico",
+  "problem_type": "bayesian",
+  "states": [{"name": "Petroleo", "prior": 0.25}, {"name": "Seco", "prior": 0.75}],
+  "indicators": [{"name": "Favorable"}, {"name": "Desfavorable"}],
+  "likelihoods": [[0.6, 0.2], [0.4, 0.8]]
+}

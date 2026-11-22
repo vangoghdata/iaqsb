@@ -1,0 +1,72 @@
+{
+ "name": "Programa maestro ATO (Arango)",
+ "problem_type": "ato",
+ "on_hand": 56,
+ "lot_size": 60,
+ "safety_stock": 0,
+ "demand_fence": 2,
+ "planning_fence": 0,
+ "periods": [
+  {
+   "name": "1",
+   "forecast": 22,
+   "orders": 24
+  },
+  {
+   "name": "2",
+   "forecast": 25,
+   "orders": 23
+  },
+  {
+   "name": "3",
+   "forecast": 20,
+   "orders": 17
+  },
+  {
+   "name": "4",
+   "forecast": 20,
+   "orders": 22
+  },
+  {
+   "name": "5",
+   "forecast": 18,
+   "orders": 15
+  },
+  {
+   "name": "6",
+   "forecast": 18,
+   "orders": 14
+  },
+  {
+   "name": "7",
+   "forecast": 32,
+   "orders": 17
+  },
+  {
+   "name": "8",
+   "forecast": 30,
+   "orders": 16
+  },
+  {
+   "name": "9",
+   "forecast": 28,
+   "orders": 12
+  },
+  {
+   "name": "10",
+   "forecast": 28,
+   "orders": 16
+  },
+  {
+   "name": "11",
+   "forecast": 29,
+   "orders": 13
+  },
+  {
+   "name": "12",
+   "forecast": 23,
+   "orders": 11
+  }
+ ],
+ "requests": []
+}

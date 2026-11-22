@@ -1,0 +1,55 @@
+{
+ "name": "Demanda trimestral estacional",
+ "problem_type": "series",
+ "time_unit": "trimestre",
+ "data": [
+  {
+   "name": "1-T1",
+   "value": 120
+  },
+  {
+   "name": "1-T2",
+   "value": 80
+  },
+  {
+   "name": "1-T3",
+   "value": 90
+  },
+  {
+   "name": "1-T4",
+   "value": 150
+  },
+  {
+   "name": "2-T1",
+   "value": 130
+  },
+  {
+   "name": "2-T2",
+   "value": 88
+  },
+  {
+   "name": "2-T3",
+   "value": 99
+  },
+  {
+   "name": "2-T4",
+   "value": 165
+  },
+  {
+   "name": "3-T1",
+   "value": 142
+  },
+  {
+   "name": "3-T2",
+   "value": 95
+  },
+  {
+   "name": "3-T3",
+   "value": 108
+  },
+  {
+   "name": "3-T4",
+   "value": 180
+  }
+ ]
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Secuencial de Wald: p1 = 1 %, p2 = 6 %, α = 5 %, β = 10 % (Montgomery)",
+  "problem_type": "sequential",
+  "aql": 1, "rql": 6, "alpha": 5, "beta": 10
+}

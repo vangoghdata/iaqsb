@@ -1,0 +1,4 @@
+# Finales de línea LF en el repositorio para todos los sistemas (los scripts de macOS y Linux los necesitan).
+* text=auto eol=lf
+# PowerShell en Windows
+*.ps1 text eol=crlf

@@ -1,0 +1,88 @@
+{
+ "name": "Agente viajero de 6 nodos (clase)",
+ "problem_type": "tsp",
+ "objective": "min",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "1",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "2",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "3",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "4",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "5",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "6",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   3,
+   4,
+   6,
+   1,
+   2
+  ],
+  [
+   7,
+   null,
+   6,
+   3,
+   2,
+   1
+  ],
+  [
+   8,
+   9,
+   null,
+   10,
+   3,
+   6
+  ],
+  [
+   4,
+   2,
+   7,
+   null,
+   3,
+   7
+  ],
+  [
+   1,
+   2,
+   4,
+   2,
+   null,
+   8
+  ],
+  [
+   9,
+   12,
+   7,
+   3,
+   4,
+   null
+  ]
+ ]
+}

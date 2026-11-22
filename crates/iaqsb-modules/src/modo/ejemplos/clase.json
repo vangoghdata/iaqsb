@@ -1,0 +1,13 @@
+{
+ "name": "Trade-off transporte-inventarios: tren, camión o avión (clase)",
+ "problem_type": "tradeoff",
+ "demand": 700000,
+ "unit_cost": 30,
+ "holding_rate": 30,
+ "days_per_year": 365,
+ "modes": [
+  {"name": "Tren", "rate": 0.1, "transit_days": 21, "shipments": 10, "plant_inventory": 100000, "dc_inventory": 100000},
+  {"name": "Camión", "rate": 0.2, "transit_days": 5, "shipments": 20, "plant_inventory": 50000, "dc_inventory": 50000},
+  {"name": "Avión", "rate": 1.4, "transit_days": 2, "shipments": 40, "plant_inventory": 25000, "dc_inventory": 25000}
+ ]
+}

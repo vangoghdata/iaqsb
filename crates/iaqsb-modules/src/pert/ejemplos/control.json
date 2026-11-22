@@ -1,0 +1,86 @@
+{
+ "name": "General Foundry: control de costos (Render)",
+ "problem_type": "cpm",
+ "time_unit": "semana",
+ "activities": [
+  {
+   "name": "A",
+   "predecessors": [],
+   "normal_time": 2,
+   "normal_cost": 22,
+   "actual_cost": 20,
+   "percent_complete": 100
+  },
+  {
+   "name": "B",
+   "predecessors": [],
+   "normal_time": 3,
+   "normal_cost": 30,
+   "actual_cost": 36,
+   "percent_complete": 100
+  },
+  {
+   "name": "C",
+   "predecessors": [
+    "A"
+   ],
+   "normal_time": 2,
+   "normal_cost": 26,
+   "actual_cost": 26,
+   "percent_complete": 100
+  },
+  {
+   "name": "D",
+   "predecessors": [
+    "A",
+    "B"
+   ],
+   "normal_time": 4,
+   "normal_cost": 48,
+   "actual_cost": 6,
+   "percent_complete": 10
+  },
+  {
+   "name": "E",
+   "predecessors": [
+    "C"
+   ],
+   "normal_time": 4,
+   "normal_cost": 56,
+   "actual_cost": 20,
+   "percent_complete": 20
+  },
+  {
+   "name": "F",
+   "predecessors": [
+    "C"
+   ],
+   "normal_time": 3,
+   "normal_cost": 30,
+   "actual_cost": 4,
+   "percent_complete": 20
+  },
+  {
+   "name": "G",
+   "predecessors": [
+    "D",
+    "E"
+   ],
+   "normal_time": 5,
+   "normal_cost": 80,
+   "actual_cost": 0,
+   "percent_complete": 0
+  },
+  {
+   "name": "H",
+   "predecessors": [
+    "F",
+    "G"
+   ],
+   "normal_time": 2,
+   "normal_cost": 16,
+   "actual_cost": 0,
+   "percent_complete": 0
+  }
+ ]
+}

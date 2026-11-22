@@ -1,0 +1,78 @@
+{
+ "name": "Transbordo con almacén",
+ "problem_type": "network_flow",
+ "objective": "min",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "Fábrica1",
+   "supply": 50,
+   "demand": 0
+  },
+  {
+   "name": "Fábrica2",
+   "supply": 40,
+   "demand": 0
+  },
+  {
+   "name": "Almacén",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "Tienda1",
+   "supply": 0,
+   "demand": 30
+  },
+  {
+   "name": "Tienda2",
+   "supply": 0,
+   "demand": 60
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   null,
+   3,
+   7,
+   null
+  ],
+  [
+   null,
+   null,
+   4,
+   null,
+   9
+  ],
+  [
+   null,
+   null,
+   null,
+   2,
+   3
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   1
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ],
+ "bounds": [
+  {
+   "from": "Almacén",
+   "to": "Tienda2",
+   "lower": 0,
+   "upper": 40
+  }
+ ]
+}

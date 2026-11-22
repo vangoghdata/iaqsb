@@ -1,0 +1,11 @@
+{
+  "name": "Carritos de juguete (Render)",
+  "problem_type": "discount",
+  "time_unit": "año",
+  "demand": 5000,
+  "setup_cost": 49,
+  "holding_cost": 1.0,
+  "unit_cost": 5,
+  "discount_holding": true,
+  "breaks": [{"quantity": 1000, "discount": 4}, {"quantity": 2000, "discount": 5}]
+}

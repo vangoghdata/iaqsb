@@ -1,0 +1,8 @@
+{
+  "name": "Muestreo simple n = 50, c = 1",
+  "problem_type": "single",
+  "stages": [{"n": 50, "c": 1}],
+  "aql": 1, "rql": 8, "alpha": 5, "beta": 10,
+  "lot_size": 2000, "distribution": "binomial",
+  "sampling_cost": 2, "inspection_cost": 1, "producer_cost": 5, "consumer_cost": 40
+}

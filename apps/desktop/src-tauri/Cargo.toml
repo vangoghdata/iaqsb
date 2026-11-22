@@ -1,0 +1,48 @@
+[package]
+name = "iaqsb-desktop"
+description = "IAQSB, aplicación de escritorio"
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+authors = ["IA Nativa"]
+
+[lib]
+name = "iaqsb_desktop_lib"
+# solo escritorio: sin staticlib ni cdylib (son para móviles y triplican el enlace)
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+# peticiones del asistente de IA a cualquier proveedor (OpenRouter, OpenAI, Gemini, Qwen, Ollama…)
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "rustls-tls-native-roots", "stream", "http2", "charset"] }
+futures-util = { version = "0.3", default-features = false }
+iaqsb-api = { path = "../../../crates/iaqsb-api" }
+
+# los mismos perfiles que el resto del proyecto, para reusar lo ya compilado
+[dev-dependencies]
+tokio = { version = "1", features = ["rt", "macros"] }
+
+[profile.dev]
+opt-level = 1
+debug = "line-tables-only"
+incremental = true
+
+[profile.dev.package."*"]
+opt-level = 3
+debug = false
+
+[profile.dev.build-override]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 16
+strip = true

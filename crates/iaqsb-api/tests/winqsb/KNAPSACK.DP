@@ -1,0 +1,7 @@
+DP	QSB P.112	KS	4
+Stage	Item	Available	Capacity Required	Return Function
+1	A	5	10	8a
+2	B	3	6	10b
+3	C	4	3	4c
+4	D	2	5	7d
+Knapsack	Capacity =	20	 	

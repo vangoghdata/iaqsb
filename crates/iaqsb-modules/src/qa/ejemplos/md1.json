@@ -1,0 +1,8 @@
+{
+  "name": "Reciclaje Garcia-Golding, servicio constante (Render)",
+  "problem_type": "general",
+  "time_unit": "hora",
+  "servers": 1,
+  "interarrival": {"distribution": "exponential", "p1": 0, "p2": 0.125},
+  "service": {"distribution": "constant", "p1": 0.0833333333333333}
+}

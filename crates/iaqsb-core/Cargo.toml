@@ -1,0 +1,18 @@
+[package]
+name = "iaqsb-core"
+description = "Piezas comunes de IAQSB: informes, especificación de entradas, expresiones y optimización lineal"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+thiserror.workspace = true
+# HiGHS (C++, MIT) por su interfaz en C: el motor de optimización de IAQSB.
+highs-sys = "1.15"
+# .docx y .xlsx (ZIP con XML)
+flate2 = "1"
+crc32fast = "1"
+roxmltree = "0.20"

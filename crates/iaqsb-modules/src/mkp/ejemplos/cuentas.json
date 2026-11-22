@@ -1,0 +1,47 @@
+{
+ "name": "Cuentas por cobrar (Render)",
+ "states": [
+  {
+   "name": "Pagada",
+   "initial": 0
+  },
+  {
+   "name": "Incobrable",
+   "initial": 0
+  },
+  {
+   "name": "Menos de 1 mes",
+   "initial": 0.2857142857
+  },
+  {
+   "name": "1 a 3 meses",
+   "initial": 0.7142857143
+  }
+ ],
+ "transitions": [
+  [
+   1,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   1,
+   0,
+   0
+  ],
+  [
+   0.6,
+   0,
+   0.2,
+   0.2
+  ],
+  [
+   0.4,
+   0.1,
+   0.3,
+   0.2
+  ]
+ ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Dos maquinas: regla de Johnson (Render)",
+  "problem_type": "flow_shop",
+  "time_unit": "hora",
+  "jobs": [{"name": "A"}, {"name": "B"}, {"name": "C"}, {"name": "D"}, {"name": "E"}],
+  "machines": [{"name": "Taladro"}, {"name": "Torno"}],
+  "times": [[5, 2], [3, 6], [8, 4], [10, 7], [7, 12]]
+}

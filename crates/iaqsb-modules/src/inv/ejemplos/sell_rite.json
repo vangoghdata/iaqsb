@@ -1,0 +1,9 @@
+{
+ "name": "Sell-Rite Discount Stores: inventario de seguridad",
+ "problem_type": "reorden",
+ "review": "continuo",
+ "mean_demand": 1250,
+ "std_demand": 375,
+ "lead_time": 10,
+ "service_level": 90
+}

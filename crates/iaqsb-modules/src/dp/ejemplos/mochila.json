@@ -1,0 +1,25 @@
+{
+ "name": "Carga de un avión",
+ "problem_type": "knapsack",
+ "capacity": 4,
+ "items": [
+  {
+   "name": "Artículo 1",
+   "available": null,
+   "capacity": 2,
+   "function": "31X"
+  },
+  {
+   "name": "Artículo 2",
+   "available": null,
+   "capacity": 3,
+   "function": "47X"
+  },
+  {
+   "name": "Artículo 3",
+   "available": null,
+   "capacity": 1,
+   "function": "14X"
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "Si usas IAQSB en un trabajo académico, cítalo así. / If you use IAQSB in academic work, please cite it as below. / Se você usar o IAQSB em um trabalho acadêmico, cite-o assim."
+type: software
+title: "IAQSB: investigación de operaciones nativa para IA"
+abstract: >-
+  Software libre de investigación de operaciones (reimplementación de los 19
+  módulos de WinQSB, con módulos de logística, un motor de optimización moderno,
+  programa maestro, MRP II por matrices, series de tiempo con ARIMA, ETS y TBATS,
+  un lenguaje de modelado algebraico y un servidor MCP para asistentes de IA).
+  En español, inglés y portugués.
+authors:
+  - name: "IA Nativa"
+version: "0.2.0"
+date-released: "2026-10-21"
+license: MIT
+repository-code: "https://github.com/vangoghdata/iaqsb"
+url: "https://github.com/vangoghdata/iaqsb"
+keywords:
+  - operations research
+  - investigación de operaciones
+  - pesquisa operacional
+  - linear programming
+  - optimization
+  - WinQSB
+  - education
+  - MCP

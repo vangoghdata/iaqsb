@@ -1,0 +1,13 @@
+{
+  "name": "Sala de emergencias (Hillier)",
+  "problem_type": "simple",
+  "time_unit": "hora",
+  "arrival_rate": 2,
+  "service_rate": 3,
+  "servers": 1,
+  "queue_capacity": "M",
+  "population": "M",
+  "busy_server_cost": 40,
+  "idle_server_cost": 40,
+  "waiting_cost": 100
+}

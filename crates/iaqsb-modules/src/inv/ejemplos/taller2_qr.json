@@ -1,0 +1,115 @@
+{
+ "name": "Taller 2: política Q-R, Grupo 8",
+ "problem_type": "qr_sim",
+ "mean_demand": 240.35,
+ "std_demand": 94.2186,
+ "initial_inventory": 1200,
+ "unit_holding_cost": 4.6,
+ "shortage_cost": 6,
+ "backorders": false,
+ "backorder_cost": 0,
+ "scenarios": [
+  {
+   "name": "A",
+   "service_level": 75,
+   "lead_time": 5,
+   "q_factor": 6
+  },
+  {
+   "name": "B",
+   "service_level": 98,
+   "lead_time": 5,
+   "q_factor": 6
+  },
+  {
+   "name": "C",
+   "service_level": 75,
+   "lead_time": 5,
+   "q_factor": 10
+  },
+  {
+   "name": "D",
+   "service_level": 75,
+   "lead_time": 3,
+   "q_factor": 6
+  },
+  {
+   "name": "E1",
+   "service_level": 99.9,
+   "lead_time": 2,
+   "quantity": 1150
+  },
+  {
+   "name": "E2",
+   "service_level": 99.9,
+   "lead_time": 3,
+   "quantity": 500
+  },
+  {
+   "name": "E3",
+   "service_level": 99.9,
+   "lead_time": 2,
+   "quantity": 850
+  },
+  {
+   "name": "E4",
+   "service_level": 99.9,
+   "lead_time": 2,
+   "q_factor": 6
+  },
+  {
+   "name": "Ej. 2 (back orders)",
+   "service_level": 75,
+   "lead_time": 5,
+   "q_factor": 6,
+   "backorders": true
+  }
+ ],
+ "forecast": [
+  {
+   "value": 430
+  },
+  {
+   "value": 385
+  },
+  {
+   "value": 410
+  },
+  {
+   "value": 280
+  },
+  {
+   "value": 415
+  },
+  {
+   "value": 440
+  },
+  {
+   "value": 430
+  },
+  {
+   "value": 480
+  },
+  {
+   "value": 395
+  },
+  {
+   "value": 450
+  },
+  {
+   "value": 500
+  },
+  {
+   "value": 260
+  },
+  {
+   "value": 205
+  },
+  {
+   "value": 200
+  },
+  {
+   "value": 180
+  }
+ ]
+}

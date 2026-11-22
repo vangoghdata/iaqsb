@@ -1,0 +1,108 @@
+{
+ "name": "Transbordo caso 1: sin costo en los nodos (clase)",
+ "problem_type": "network_flow",
+ "objective": "min",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "1",
+   "supply": 1000,
+   "demand": 0
+  },
+  {
+   "name": "2",
+   "supply": 1200,
+   "demand": 0
+  },
+  {
+   "name": "3",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "4",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "5",
+   "supply": 0,
+   "demand": 800
+  },
+  {
+   "name": "6",
+   "supply": 0,
+   "demand": 900
+  },
+  {
+   "name": "7",
+   "supply": 0,
+   "demand": 500
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   null,
+   3,
+   4,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   2,
+   5,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   7,
+   8,
+   6,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   4,
+   9
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   5,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   3
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Producción continua CSP-1: f = 2 %, i = 38",
+  "problem_type": "continuous",
+  "fraction": 2, "clearance": 38,
+  "aql": 1, "rql": 5, "alpha": 5, "beta": 10
+}

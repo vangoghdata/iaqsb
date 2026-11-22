@@ -1,0 +1,14 @@
+{
+  "name": "Reparacion de 5 maquinas (poblacion finita)",
+  "problem_type": "simple",
+  "time_unit": "hora",
+  "arrival_rate": 0.1,
+  "service_rate": 0.5,
+  "servers": 1,
+  "queue_capacity": "M",
+  "population": 5,
+  "busy_server_cost": 20,
+  "idle_server_cost": 15,
+  "waiting_cost": 50,
+  "service_cost": 50
+}

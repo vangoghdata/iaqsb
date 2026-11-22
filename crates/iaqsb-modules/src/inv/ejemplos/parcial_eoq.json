@@ -1,0 +1,10 @@
+{
+  "name": "Parcial: EOQ a partir de la gráfica",
+  "problem_type": "despejes",
+  "model_kind": "eoq",
+  "days_per_year": 360,
+  "cycle_days": 45,
+  "setup_cost": 25,
+  "holding_cost": 8,
+  "is_optimal": true
+}

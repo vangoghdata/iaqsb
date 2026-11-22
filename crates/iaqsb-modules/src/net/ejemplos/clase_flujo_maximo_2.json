@@ -1,0 +1,182 @@
+{
+ "name": "Flujo máximo de A a J: ejercicio (clase)",
+ "problem_type": "max_flow",
+ "objective": "min",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "A",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "B",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "C",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "D",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "E",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "F",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "G",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "H",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "I",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "J",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   null,
+   null,
+   25,
+   30,
+   20,
+   10,
+   50,
+   30,
+   null
+  ],
+  [
+   null,
+   null,
+   10,
+   15,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   30,
+   null,
+   null
+  ],
+  [
+   null,
+   15,
+   null,
+   null,
+   10,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   15,
+   10,
+   null,
+   30,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   30,
+   null,
+   null,
+   null,
+   null,
+   30
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   15,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   30,
+   null,
+   null,
+   20,
+   15,
+   null,
+   40,
+   70
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   40,
+   null,
+   70
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ],
+ "start": "A",
+ "end": "J"
+}

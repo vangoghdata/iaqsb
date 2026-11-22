@@ -1,0 +1,14 @@
+{
+  "name": "Llegadas en lotes (M^X/M/2, lotes de 1 a 3)",
+  "problem_type": "general",
+  "time_unit": "hora",
+  "servers": 2,
+  "service": {"distribution": "exponential", "p1": 0, "p2": 0.25},
+  "interarrival": {"distribution": "exponential", "p1": 0, "p2": 0.5},
+  "batch": {"distribution": "discrete", "values": "1/0.5, 2/0.3, 3/0.2"},
+  "queue_capacity": 6,
+  "busy_server_cost": 30,
+  "idle_server_cost": 20,
+  "waiting_cost": 25,
+  "balking_cost": 15
+}

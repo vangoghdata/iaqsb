@@ -1,0 +1,15 @@
+{
+  "name": "Inventario de camaras (Hillier)",
+  "states": [
+    {"name": "0 camaras", "initial": 0, "cost": 0},
+    {"name": "1 camara", "initial": 0, "cost": 2},
+    {"name": "2 camaras", "initial": 0, "cost": 8},
+    {"name": "3 camaras", "initial": 1, "cost": 18}
+  ],
+  "transitions": [
+    [0.080, 0.184, 0.368, 0.368],
+    [0.632, 0.368, 0, 0],
+    [0.264, 0.368, 0.368, 0],
+    [0.080, 0.184, 0.368, 0.368]
+  ]
+}

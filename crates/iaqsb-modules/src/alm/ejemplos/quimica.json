@@ -1,0 +1,86 @@
+{
+ "name": "Dimensionado del almacén: compañía química (clase)",
+ "problem_type": "dimensionado",
+ "demand_unit": "lb",
+ "turnover": 3,
+ "space_mode": "area",
+ "area_per_unit": 0.03125,
+ "aisle_share": 50,
+ "usable_share": 70,
+ "area_unit": "ft²",
+ "investment_per_area": 30,
+ "amortization_years": 20,
+ "fixed_cost_year": 3,
+ "fixed_cost_period": 0,
+ "variable_cost": 0.05,
+ "rent_storage": 0.1,
+ "rent_handling": 0.07,
+ "periods_per_year": 12,
+ "periods": [
+  {
+   "name": "1",
+   "demand": 66500
+  },
+  {
+   "name": "2",
+   "demand": 328000
+  },
+  {
+   "name": "3",
+   "demand": 1048500
+  },
+  {
+   "name": "4",
+   "demand": 2141000
+  },
+  {
+   "name": "5",
+   "demand": 2820000
+  },
+  {
+   "name": "6",
+   "demand": 2395000
+  },
+  {
+   "name": "7",
+   "demand": 1303000
+  },
+  {
+   "name": "8",
+   "demand": 460000
+  },
+  {
+   "name": "9",
+   "demand": 99900
+  },
+  {
+   "name": "10",
+   "demand": 15300
+  },
+  {
+   "name": "11",
+   "demand": 302200
+  },
+  {
+   "name": "12",
+   "demand": 556700
+  }
+ ],
+ "alternatives": [
+  {
+   "area": 40000
+  },
+  {
+   "area": 50000
+  },
+  {
+   "area": 60000
+  },
+  {
+   "area": 70000
+  },
+  {
+   "area": 80000
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "name": "Ejemplo del método de Wolfe (Hillier)",
+ "problem_type": "quadratic",
+ "objective": "max",
+ "variables": [
+  {
+   "name": "X1",
+   "c": 15
+  },
+  {
+   "name": "X2",
+   "c": 30
+  }
+ ],
+ "quad": [
+  [
+   -2,
+   4
+  ],
+  [
+   0,
+   -4
+  ]
+ ],
+ "constraints": [
+  {
+   "name": "C1",
+   "direction": "<=",
+   "rhs": 30
+  }
+ ],
+ "coefs": [
+  [
+   1,
+   2
+  ]
+ ]
+}

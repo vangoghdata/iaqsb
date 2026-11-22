@@ -1,0 +1,110 @@
+{
+ "name": "Parque Seervada: viajes de tranvía",
+ "problem_type": "max_flow",
+ "objective": "max",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "O",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "A",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "B",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "C",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "D",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "E",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "T",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   5,
+   7,
+   4,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   1,
+   null,
+   3,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   2,
+   4,
+   5,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   4,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   9
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   1,
+   null,
+   6
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ],
+ "start": "O",
+ "end": "T"
+}

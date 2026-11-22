@@ -1,0 +1,23 @@
+AP	Aggregate Planning Problem	0
+6	Worker	Hour	5
+0	-1	-1	-1	-1	0
+          DATA ITEM	Period 1	Period 2	Period 3	Period 4	Period 5	Period 6
+Forecast Demand	1800	1500	1100	900	1100	1600
+Initial Number of Worker	38					
+Regular Time Capacity in Hour per Worker	176	152	168	168	176	160
+Regular Time Cost per Hour	4	4	4	4	4	4
+Undertime Cost per Hour	4	4	4	4	4	4
+Overtime Capacity in Hour per Worker	150	150	150	150	150	150
+Overtime Cost per Hour	6	6	6	6	6	6
+Hiring Cost per Worker	200	200	200	200	200	200
+Dismissal Cost per Worker	250	250	250	250	250	250
+Initial Inventory (+) or Backorder (-)	400					
+Maximum Inventory Allowed	M	M	M	M	M	M
+Minimum Ending Inventory (Safety Stock)	450	375	275	225	275	400
+Unit Inventory Holding Cost	1.5	1.5	1.5	1.5	1.5	1.5
+Maximum Subcontracting Allowed (Capacity)	m	m	m	m	m	m
+Unit Subcontracting Cost	20	20	20	20	20	20
+Maximum Backorder Allowed	m	m	m	m	m	m
+Unit Backorder Cost	5	5	5	5	5	300
+Other Unit Production Cost						
+Capacity Requirement in Hour per Unit	5					

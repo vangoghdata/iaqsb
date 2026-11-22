@@ -1,0 +1,13 @@
+{
+  "name": "Dieta mínima",
+  "objective": "min",
+  "variables": [
+    {"name": "Pickle", "cost": 2.15},
+    {"name": "Burger", "cost": 3.2}
+  ],
+  "constraints": [
+    {"name": "Proteina", "coefs": [1, 3], "direction": ">=", "rhs": 6},
+    {"name": "Energia", "coefs": [2, 1], "direction": ">=", "rhs": 5},
+    {"name": "Grasa", "coefs": [1, 2], "direction": "<=", "rhs": 12}
+  ]
+}

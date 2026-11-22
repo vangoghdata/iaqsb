@@ -1,0 +1,326 @@
+{
+ "name": "Taller 1: indicadores logísticos, distribuidor mayorista",
+ "problem_type": "pedidos",
+ "orders": [
+  {
+   "id": "P-001",
+   "created": "01/11",
+   "promised": "04/11",
+   "delivered": "04/11",
+   "ordered_qty": 500,
+   "delivered_qty": 500,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-002",
+   "created": "01/11",
+   "promised": "03/11",
+   "delivered": "03/11",
+   "ordered_qty": 200,
+   "delivered_qty": 200,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-003",
+   "created": "02/11",
+   "promised": "05/11",
+   "delivered": "06/11",
+   "ordered_qty": 1000,
+   "delivered_qty": 1000,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-004",
+   "created": "02/11",
+   "promised": "04/11",
+   "delivered": "04/11",
+   "ordered_qty": 150,
+   "delivered_qty": 120,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-005",
+   "created": "03/11",
+   "promised": "07/11",
+   "delivered": "07/11",
+   "ordered_qty": 800,
+   "delivered_qty": 800,
+   "doc_ok": false,
+   "urgent": false
+  },
+  {
+   "id": "P-006",
+   "created": "03/11",
+   "promised": "05/11",
+   "delivered": "05/11",
+   "ordered_qty": 300,
+   "delivered_qty": 300,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-007",
+   "created": "04/11",
+   "promised": "08/11",
+   "delivered": "08/11",
+   "ordered_qty": 600,
+   "delivered_qty": 600,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-008",
+   "created": "04/11",
+   "promised": "06/11",
+   "delivered": "07/11",
+   "ordered_qty": 400,
+   "delivered_qty": 400,
+   "doc_ok": false,
+   "urgent": true
+  },
+  {
+   "id": "P-009",
+   "created": "05/11",
+   "promised": "09/11",
+   "delivered": "09/11",
+   "ordered_qty": 1200,
+   "delivered_qty": 1200,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-010",
+   "created": "05/11",
+   "promised": "08/11",
+   "delivered": "08/11",
+   "ordered_qty": 250,
+   "delivered_qty": 250,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-011",
+   "created": "06/11",
+   "promised": "10/11",
+   "delivered": "10/11",
+   "ordered_qty": 900,
+   "delivered_qty": 850,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-012",
+   "created": "06/11",
+   "promised": "08/11",
+   "delivered": "08/11",
+   "ordered_qty": 100,
+   "delivered_qty": 100,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-013",
+   "created": "07/11",
+   "promised": "11/11",
+   "delivered": "12/11",
+   "ordered_qty": 750,
+   "delivered_qty": 750,
+   "doc_ok": false,
+   "urgent": false
+  },
+  {
+   "id": "P-014",
+   "created": "07/11",
+   "promised": "09/11",
+   "delivered": "09/11",
+   "ordered_qty": 500,
+   "delivered_qty": 500,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-015",
+   "created": "08/11",
+   "promised": "12/11",
+   "delivered": "12/11",
+   "ordered_qty": 1500,
+   "delivered_qty": 1500,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-016",
+   "created": "08/11",
+   "promised": "10/11",
+   "delivered": "11/11",
+   "ordered_qty": 350,
+   "delivered_qty": 300,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-017",
+   "created": "09/11",
+   "promised": "13/11",
+   "delivered": "13/11",
+   "ordered_qty": 450,
+   "delivered_qty": 450,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-018",
+   "created": "09/11",
+   "promised": "12/11",
+   "delivered": "12/11",
+   "ordered_qty": 800,
+   "delivered_qty": 800,
+   "doc_ok": false,
+   "urgent": false
+  },
+  {
+   "id": "P-019",
+   "created": "10/11",
+   "promised": "14/11",
+   "delivered": "14/11",
+   "ordered_qty": 650,
+   "delivered_qty": 650,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-020",
+   "created": "10/11",
+   "promised": "12/11",
+   "delivered": "12/11",
+   "ordered_qty": 200,
+   "delivered_qty": 200,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-021",
+   "created": "11/11",
+   "promised": "15/11",
+   "delivered": "16/11",
+   "ordered_qty": 1100,
+   "delivered_qty": 1100,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-022",
+   "created": "11/11",
+   "promised": "13/11",
+   "delivered": "13/11",
+   "ordered_qty": 150,
+   "delivered_qty": 150,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-023",
+   "created": "12/11",
+   "promised": "16/11",
+   "delivered": "16/11",
+   "ordered_qty": 950,
+   "delivered_qty": 900,
+   "doc_ok": false,
+   "urgent": false
+  },
+  {
+   "id": "P-024",
+   "created": "12/11",
+   "promised": "15/11",
+   "delivered": "15/11",
+   "ordered_qty": 400,
+   "delivered_qty": 400,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-025",
+   "created": "13/11",
+   "promised": "17/11",
+   "delivered": "17/11",
+   "ordered_qty": 700,
+   "delivered_qty": 700,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-026",
+   "created": "13/11",
+   "promised": "15/11",
+   "delivered": "16/11",
+   "ordered_qty": 300,
+   "delivered_qty": 250,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-027",
+   "created": "14/11",
+   "promised": "18/11",
+   "delivered": "18/11",
+   "ordered_qty": 1300,
+   "delivered_qty": 1300,
+   "doc_ok": true,
+   "urgent": false
+  },
+  {
+   "id": "P-028",
+   "created": "14/11",
+   "promised": "16/11",
+   "delivered": "16/11",
+   "ordered_qty": 500,
+   "delivered_qty": 500,
+   "doc_ok": true,
+   "urgent": true
+  },
+  {
+   "id": "P-029",
+   "created": "15/11",
+   "promised": "19/11",
+   "delivered": "19/11",
+   "ordered_qty": 850,
+   "delivered_qty": 850,
+   "doc_ok": false,
+   "urgent": false
+  },
+  {
+   "id": "P-030",
+   "created": "15/11",
+   "promised": "17/11",
+   "delivered": "17/11",
+   "ordered_qty": 250,
+   "delivered_qty": 250,
+   "doc_ok": true,
+   "urgent": true
+  }
+ ],
+ "sales": 1250000,
+ "benchmark": 8,
+ "costs": [
+  {
+   "name": "Almacenamiento y gestión de inventario",
+   "amount": 38500
+  },
+  {
+   "name": "Transporte y distribución",
+   "amount": 45000
+  },
+  {
+   "name": "Procesamiento de pedidos y personal",
+   "amount": 22500
+  },
+  {
+   "name": "Devoluciones y logística inversa",
+   "amount": 9000
+  }
+ ]
+}

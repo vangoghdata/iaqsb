@@ -1,0 +1,26 @@
+{
+ "name": "Producción Cobb-Douglas",
+ "problem_type": "nonlinear",
+ "objective": "max",
+ "function": "10*K^0.5*L^0.5",
+ "constraints": [
+  {
+   "name": "Presupuesto",
+   "expression": "4K + 2L <= 120"
+  }
+ ],
+ "variables": [
+  {
+   "name": "K",
+   "lower": 0,
+   "upper": "M",
+   "initial": 1
+  },
+  {
+   "name": "L",
+   "lower": 0,
+   "upper": "M",
+   "initial": 1
+  }
+ ]
+}

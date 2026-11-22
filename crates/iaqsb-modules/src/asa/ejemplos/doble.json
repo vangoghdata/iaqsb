@@ -1,0 +1,7 @@
+{
+  "name": "Muestreo doble n1 = 50, c1 = 1, n2 = 100, c2 = 3 (Montgomery)",
+  "problem_type": "double",
+  "stages": [{"n": 50, "c": 1, "r": 4}, {"n": 100, "c": 3}],
+  "aql": 1, "rql": 6, "alpha": 5, "beta": 10,
+  "lot_size": 5000, "distribution": "binomial"
+}

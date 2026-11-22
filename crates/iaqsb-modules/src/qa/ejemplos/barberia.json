@@ -1,0 +1,11 @@
+{
+  "name": "Barberia con 3 sillas de espera",
+  "problem_type": "simple",
+  "time_unit": "hora",
+  "arrival_rate": 3,
+  "service_rate": 4,
+  "servers": 1,
+  "queue_capacity": 3,
+  "population": "M",
+  "balking_cost": 10
+}

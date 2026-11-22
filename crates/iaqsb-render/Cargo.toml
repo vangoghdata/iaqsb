@@ -1,0 +1,20 @@
+[package]
+name = "iaqsb-render"
+description = "Dibuja las gráficas de los informes de IAQSB como SVG y PNG (para el servidor MCP y la línea de comandos)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+resvg = { version = "0.45", default-features = false, features = ["text"] }
+png = "0.17"
+color_quant = "1.1"
+iaqsb-core.workspace = true
+# informes en PDF: cada página se dibuja en SVG y se convierte (texto seleccionable, letra incrustada)
+svg2pdf = { version = "0.13", default-features = false, features = ["text"] }
+pdf-writer = "0.12"
+ttf-parser = "0.25"
+
+[dev-dependencies]
+iaqsb-api.workspace = true

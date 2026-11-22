@@ -1,0 +1,16 @@
+{
+  "name": "Ferretería Nacional: POQ (clase)",
+  "problem_type": "eoq",
+  "time_unit": "año",
+  "demand": 10000,
+  "setup_cost": 5.5,
+  "holding_cost": 0.4,
+  "shortage_cost": "M",
+  "shortage_cost_fixed": 0,
+  "production_rate": "M",
+  "production_per_day": 120,
+  "lead_time": 0,
+  "days_per_year": 250,
+  "unit_cost": 0,
+  "known_quantity": 1200
+}

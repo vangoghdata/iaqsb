@@ -1,0 +1,55 @@
+{
+ "name": "Ventas mensuales",
+ "problem_type": "series",
+ "time_unit": "mes",
+ "data": [
+  {
+   "name": "1",
+   "value": 37
+  },
+  {
+   "name": "2",
+   "value": 40
+  },
+  {
+   "name": "3",
+   "value": 41
+  },
+  {
+   "name": "4",
+   "value": 37
+  },
+  {
+   "name": "5",
+   "value": 45
+  },
+  {
+   "name": "6",
+   "value": 50
+  },
+  {
+   "name": "7",
+   "value": 43
+  },
+  {
+   "name": "8",
+   "value": 47
+  },
+  {
+   "name": "9",
+   "value": 56
+  },
+  {
+   "name": "10",
+   "value": 52
+  },
+  {
+   "name": "11",
+   "value": 55
+  },
+  {
+   "name": "12",
+   "value": 54
+  }
+ ]
+}

@@ -1,0 +1,335 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "IAQSB",
+  "version": "0.2.0",
+  "identifier": "com.ianativa.iaqsb",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "IAQSB",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 620,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://api.anthropic.com"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "publisher": "IA Nativa",
+    "copyright": "IA Nativa",
+    "category": "Education",
+    "shortDescription": "Investigación de operaciones nativa para IA · AI-native operations research",
+    "longDescription": "IAQSB reimplementa los módulos de WinQSB con un motor en Rust, abre sus archivos y se conecta con Claude mediante MCP. Hecho por IA Nativa.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "externalBin": [
+      "binaries/iaqsb-mcp",
+      "binaries/iaqsb"
+    ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "iaqsb"
+        ],
+        "name": "Modelo algebraico de IAQSB",
+        "description": "Modelo de optimización en el lenguaje algebraico de IAQSB",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "lpp",
+          "LPP"
+        ],
+        "name": "Problema de LP-ILP",
+        "description": "Problema de programación lineal y entera (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "net",
+          "NET"
+        ],
+        "name": "Problema de NET",
+        "description": "Problema de modelos de redes (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "cpm",
+          "CPM"
+        ],
+        "name": "Problema de PERT-CPM",
+        "description": "Problema de PERT y ruta crítica (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "gpp",
+          "GPP"
+        ],
+        "name": "Problema de GP-IGP",
+        "description": "Problema de programación por metas (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "qpp",
+          "QPP"
+        ],
+        "name": "Problema de QP-IQP",
+        "description": "Problema de programación cuadrática (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "nlp",
+          "NLP"
+        ],
+        "name": "Problema de NLP",
+        "description": "Problema de programación no lineal (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "dpp",
+          "DPP"
+        ],
+        "name": "Problema de DP",
+        "description": "Problema de programación dinámica (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "app",
+          "APP"
+        ],
+        "name": "Problema de AP",
+        "description": "Problema de planificación agregada (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "daa",
+          "DAA"
+        ],
+        "name": "Problema de DA",
+        "description": "Problema de análisis de decisiones (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "mkp",
+          "MKP"
+        ],
+        "name": "Problema de MKP",
+        "description": "Problema de procesos de Markov (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "its",
+          "ITS"
+        ],
+        "name": "Problema de ITS",
+        "description": "Problema de inventarios (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "fcc",
+          "FCC"
+        ],
+        "name": "Problema de FC",
+        "description": "Problema de pronósticos (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "qaa",
+          "QAA"
+        ],
+        "name": "Problema de QA",
+        "description": "Problema de teoría de colas (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "qss",
+          "QSS"
+        ],
+        "name": "Problema de QSS",
+        "description": "Problema de simulación de colas (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "job",
+          "JOB"
+        ],
+        "name": "Problema de JOB",
+        "description": "Problema de programación de trabajos (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "mrp",
+          "MRP"
+        ],
+        "name": "Problema de MRP",
+        "description": "Problema de planificación de requerimientos de materiales (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "fll",
+          "FLL"
+        ],
+        "name": "Problema de FLL",
+        "description": "Problema de localización y distribución de instalaciones (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "qcc",
+          "QCC"
+        ],
+        "name": "Problema de QCC",
+        "description": "Problema de gráficos de control de calidad (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "asa",
+          "ASA"
+        ],
+        "name": "Problema de ASA",
+        "description": "Problema de muestreo de aceptación (WinQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "vrp",
+          "VRP"
+        ],
+        "name": "Ruteo de vehículos",
+        "description": "Problema de ruteo de vehículos (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "mod",
+          "MOD"
+        ],
+        "name": "Selección del modo de transporte",
+        "description": "Selección del modo de transporte (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "inv",
+          "INV"
+        ],
+        "name": "Gestión de inventarios",
+        "description": "Gestión de inventarios (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "fin",
+          "FIN"
+        ],
+        "name": "Finanzas del inventario",
+        "description": "Finanzas del inventario (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "alm",
+          "ALM"
+        ],
+        "name": "Almacenes",
+        "description": "Almacenes (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "kpi",
+          "KPI"
+        ],
+        "name": "Indicadores logísticos",
+        "description": "Indicadores logísticos (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "pmp",
+          "PMP"
+        ],
+        "name": "Programa maestro",
+        "description": "Programa maestro de producción (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "mr2",
+          "MR2"
+        ],
+        "name": "MRP II (Gozinto)",
+        "description": "MRP II por matrices (IAQSB)",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "sts",
+          "STS"
+        ],
+        "name": "Serie de tiempo",
+        "description": "Series de tiempo y pronósticos (IAQSB)",
+        "role": "Editor"
+      }
+    ],
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "signingIdentity": "-"
+    },
+    "linux": {
+      "deb": {
+        "section": "science"
+      }
+    },
+    "windows": {
+      "nsis": {
+        "languages": [
+          "Spanish",
+          "English",
+          "PortugueseBR"
+        ],
+        "displayLanguageSelector": true,
+        "installMode": "currentUser",
+        "installerIcon": "icons/icon.ico",
+        "headerImage": "installer/header.bmp",
+        "sidebarImage": "installer/sidebar.bmp"
+      }
+    }
+  }
+}

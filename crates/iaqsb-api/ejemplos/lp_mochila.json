@@ -1,0 +1,13 @@
+{
+  "name": "Mochila binaria",
+  "objective": "max",
+  "variables": [
+    {"name": "Item1", "cost": 10, "type": "binary"},
+    {"name": "Item2", "cost": 40, "type": "binary"},
+    {"name": "Item3", "cost": 30, "type": "binary"},
+    {"name": "Item4", "cost": 50, "type": "binary"}
+  ],
+  "constraints": [
+    {"name": "Peso", "coefs": [5, 4, 6, 3], "direction": "<=", "rhs": 10}
+  ]
+}

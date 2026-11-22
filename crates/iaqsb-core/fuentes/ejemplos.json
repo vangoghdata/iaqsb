@@ -1,0 +1,1342 @@
+{
+  "_nota": "De dónde salen los datos de cada ejemplo. Clave: 'módulo/ejemplo'. origen: 'libro' (tomado de un libro o artículo), 'clase' (diapositivas del curso), 'adaptado' (de una fuente, con cambios), 'winqsb' (ejemplo que trae WinQSB) u 'original' (creado para IAQSB). 'donde' indica capítulo, sección o diapositiva; si algo no está confirmado, el ejemplo queda 'por_verificar'.",
+  "ejemplos": {
+    "net/transporte": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "winston2004",
+          "donde": "secc. 7.1, ejemplo Powerco"
+        }
+      ],
+      "resultado": "Costo mínimo 1020",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar número de página en la 4.ª ed. (el ejemplo y sus datos coinciden con las notas de curso que siguen el capítulo 7 de Winston)."
+    },
+    "net/asignacion": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Costo mínimo 13",
+      "nota": "Matriz didáctica de 4 × 4 escrita para IAQSB; la misma matriz circula en tutoriales del método húngaro sin autor identificable.",
+      "estado": "verificada"
+    },
+    "net/ruta_mas_corta": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 10, ejemplo prototipo del Parque Seervada (ruta más corta)"
+        }
+      ],
+      "resultado": "Distancia mínima de O a T = 13",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número de sección (10.3 en la 10.ª ed.)."
+    },
+    "net/flujo_maximo": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 10, Parque Seervada (flujo máximo de tranvías)"
+        }
+      ],
+      "resultado": "Flujo máximo de O a T = 14",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número de sección (10.5 en la 10.ª ed.)."
+    },
+    "net/arbol_minimo": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 10, Parque Seervada (líneas telefónicas)"
+        }
+      ],
+      "resultado": "Longitud total mínima = 14",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número de sección (10.4 en la 10.ª ed.)."
+    },
+    "net/agente_viajero": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Recorrido mínimo 4390",
+      "nota": "Cinco ciudades del Perú con distancias por carretera aproximadas (km), redondeadas para el ejemplo; no son datos oficiales.",
+      "estado": "verificada"
+    },
+    "net/transbordo": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Costo mínimo 550",
+      "nota": "Red pequeña con dos fábricas, un almacén con un arco acotado y dos tiendas, escrita para IAQSB.",
+      "estado": "verificada"
+    },
+    "net/clase_transbordo_caso1": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositivas 16–19 (caso 1: sin costo ni capacidad en los nodos)"
+        }
+      ],
+      "resultado": "Costo mínimo 20700",
+      "estado": "verificada"
+    },
+    "net/clase_transbordo_caso2": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositivas 20–24 (caso 2: con costo en los nodos de transbordo)"
+        }
+      ],
+      "resultado": "Costo 4920; faltan 90 unidades",
+      "estado": "verificada"
+    },
+    "net/clase_transbordo_caso3": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositivas 25–27 (caso 3: capacidad en los nodos)"
+        }
+      ],
+      "resultado": "Costo 5600; faltan 400 unidades",
+      "estado": "verificada"
+    },
+    "net/clase_problema1": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositiva 28 (problema 1)"
+        }
+      ],
+      "estado": "verificada"
+    },
+    "net/clase_ruta_ejercicio1": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositiva 32 (ejercicio 1)"
+        },
+        {
+          "id": "bronson1983",
+          "donde": "cap. 15 (algoritmo de la diapositiva 31)"
+        }
+      ],
+      "resultado": "Distancia mínima de R a W = 47",
+      "estado": "verificada"
+    },
+    "net/clase_ruta_binaria": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositivas 34–37 (ruta más corta con programación entera binaria, A → H = 14 km)"
+        }
+      ],
+      "resultado": "Ruta A-C-E-G-H = 14",
+      "estado": "verificada"
+    },
+    "net/clase_arbol_ejercicio3": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositivas 39–40 (ejercicio 3: interconexión eléctrica)"
+        }
+      ],
+      "resultado": "Longitud mínima = 51",
+      "estado": "verificada"
+    },
+    "net/clase_arbol_ejercicio4": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositiva 41 (ejercicio 4)"
+        }
+      ],
+      "resultado": "Longitud mínima = 28",
+      "estado": "verificada"
+    },
+    "net/clase_flujo_maximo": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositivas 44–50 (de A a D)"
+        },
+        {
+          "id": "bronson1983",
+          "donde": "cap. 15 (reglas y algoritmo de las diapositivas 42–43)"
+        }
+      ],
+      "resultado": "Flujo máximo 25",
+      "estado": "verificada"
+    },
+    "net/clase_flujo_maximo_2": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026redes",
+          "donde": "diapositiva 51 (ejercicio de A a J)"
+        }
+      ],
+      "estado": "verificada"
+    },
+    "net/clase_tsp_4": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026ruteo",
+          "donde": "diapositivas 11–29 (red de 4 nodos: sin relajación, 32 restricciones; con relajación, 14)"
+        }
+      ],
+      "resultado": "Recorrido de costo 11 (1-2-3-4-1)",
+      "estado": "verificada"
+    },
+    "net/clase_tsp_6": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026ruteo",
+          "donde": "diapositivas 30–49 (red de 6 nodos: sin relajación, 132 restricciones; con relajación, 32)"
+        }
+      ],
+      "resultado": "Recorrido de costo 17",
+      "nota": "En clase el recorrido es 1-3-5-2-6-4-1; IAQSB puede dar otro de igual costo (17): hay óptimos alternos.",
+      "estado": "verificada"
+    },
+    "net/clase_tsp_bebidas": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026ruteo",
+          "donde": "diapositiva 4 (red de bebidas: heurísticas NNH y CIH)"
+        }
+      ],
+      "nota": "En clase: vecino más cercano = 16.",
+      "estado": "verificada"
+    },
+    "vrp/barrido_clase": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026ruteo",
+          "donde": "diapositiva 5 (método del barrido: almacén de alimentos frescos, 15 tiendas, capacidad 3000)"
+        }
+      ],
+      "nota": "Las coordenadas se leyeron de la figura de la diapositiva y son aproximadas; las distancias de la red de calles son las de la tabla.",
+      "estado": "verificada"
+    },
+    "vrp/reparto_ciudad": {
+      "origen": "original",
+      "refs": [],
+      "nota": "Clientes y demandas inventados para mostrar el ruteo por coordenadas.",
+      "estado": "verificada"
+    },
+    "vrp/reparto_bogota": {
+      "origen": "original",
+      "refs": [],
+      "nota": "Datos originales de IAQSB: un centro de distribución en Puente Aranda y ocho tiendas en localidades de Bogotá, con latitud y longitud aproximadas de cada sector (no son direcciones de negocios reales); demandas en cajas, capacidad y costos inventados para mostrar el ruteo con coordenadas geográficas y distancias en km.",
+      "estado": "verificada"
+    },
+    "modo/tren_camion_avion": {
+      "origen": "adaptado",
+      "refs": [
+        {
+          "id": "sarache2026transporte",
+          "donde": "diapositivas 38–40 (trade-off transporte-inventarios)"
+        },
+        {
+          "id": "ballou2004",
+          "donde": "cap. 7 «Decisiones sobre el transporte», ejemplo de Carry-All Luggage Company"
+        }
+      ],
+      "resultado": "Conviene Camión",
+      "nota": "La clase usa tren, camión y avión con D = 700 000, C = 30 e i = 30 %; Ballou presenta el mismo caso con cuatro medios (ferrocarril, piggyback, camión y avión). Ojo: los totales de la diapositiva 39 (Tren 2 235 466; Camión 1 339 301; Avión 1 615 020) usan en la fila de transporte fletes de 0,5 y 1,6 para camión y avión, mientras que el almacenaje en el CD usa los de la diapositiva 38 (0,2 y 1,4). Con los datos de la diapositiva 38 en todo el cálculo, IAQSB da Tren 2 235 466, Camión 1 129 301 y Avión 1 475 020. En los dos casos conviene el camión.",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en el texto que el ejemplo de Carry-All está en el capítulo 7 de Ballou (2004); el índice ubica allí la selección del servicio de transporte."
+    },
+    "its/clase_ferreteria_eoq": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 27 (ejercicio 1, EOQ simple)"
+        }
+      ],
+      "resultado": "Q* = 524.40; costo 209.76; R = 120",
+      "nota": "Ahorro frente al lote actual de 1200: 285.83 − 209.76 = 76.07 al año; 19.07 pedidos al año, cada 13.11 días.",
+      "estado": "verificada"
+    },
+    "its/clase_ferreteria_poq": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 31 (ejercicio 1, POQ)"
+        }
+      ],
+      "resultado": "Q* = 642.26; costo 171.27",
+      "nota": "Imax = 428.17; conviene producir: ahorra 38.49 frente al EOQ y 114.56 frente al sistema actual.",
+      "estado": "verificada"
+    },
+    "its/clase_te_always_fresh": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 28 (ejercicio 2, EOQ simple)"
+        },
+        {
+          "id": "schroeder2018",
+          "donde": "cap. 14, problema 1 (Always Fresh Grocery Store)"
+        }
+      ],
+      "resultado": "Q* = 22.80; costo 364.86",
+      "nota": "D = 8 cajas/semana × 52 = 416 al año y H = 20 % × 80 = 16. Con 364 días al año, se pide cada 19.95 días (2.85 semanas).",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar que es el problema 1 del capítulo 14 de Schroeder y Goldstein (2018); la diapositiva solo cita el libro."
+    },
+    "its/clase_descuento_limpieza": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 35 (ejercicio 1, descuento por cantidad)"
+        },
+        {
+          "id": "schroeder2018",
+          "donde": "cap. 14, problema 2 (solución de limpieza)"
+        }
+      ],
+      "resultado": "Q = 30 a $20; costo total 1078.33",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número del problema en Schroeder y Goldstein (2018)."
+    },
+    "its/clase_descuento_tres_rangos": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 36 (ejercicio 2, descuento por cantidad)"
+        }
+      ],
+      "resultado": "Q = 700 a $1.8; costo total 18204.57",
+      "estado": "verificada"
+    },
+    "inv/parcial_poq_entregas": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache_parcial",
+          "donde": "problema 1 (lote con entregas parciales)"
+        }
+      ],
+      "resultado": "Q = 1950; Imax = 1181.82; CT = 2543.64",
+      "nota": "«El inventario crece 100 por día» se lee como p − d = 100 (con p = 100 daría Imax = 682.5 y CT = 1545). El lote óptimo sería 538.12 con CT = 1304.54.",
+      "estado": "por_verificar",
+      "pendiente": "Enunciado tomado del documento de ejercicios resueltos, no del parcial original."
+    },
+    "inv/parcial_eoq_grafica": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache_parcial",
+          "donde": "problema 3 (EOQ a partir de la gráfica)"
+        }
+      ],
+      "resultado": "Q = 50; CT = 400",
+      "nota": "Con pedidos cada 45 días en un año de 360: N = 8 y, en el óptimo, S·N = H·Q/2 → Q = 2SN/H.",
+      "estado": "por_verificar",
+      "pendiente": "Enunciado tomado del documento de ejercicios resueltos, no del parcial original."
+    },
+    "inv/poq_tarea": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 32 (ejercicio 2, POQ: tarea)"
+        }
+      ],
+      "resultado": "Q = 750; Imax = 600; CT = 1395",
+      "nota": "Supuestos: «tres entregas parciales» = 3 días de entregas, y año de 360 días (con 365 días CT = 1405; con 250, 1175).",
+      "estado": "verificada"
+    },
+    "inv/abc_15_articulos": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositivas 40–42 (ejemplo ABC de 15 artículos)"
+        }
+      ],
+      "resultado": "A = 4, 14, 3 (60.6 %)",
+      "nota": "La diapositiva acumula los porcentajes ya redondeados (67.58, 94.34…); con los valores exactos son 67.59 y 94.33. Los grupos no cambian.",
+      "estado": "verificada"
+    },
+    "inv/sell_rite": {
+      "origen": "adaptado",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 45 (Sell-Rite Discount Stores)"
+        },
+        {
+          "id": "gaither2000",
+          "donde": "libro candidato"
+        }
+      ],
+      "resultado": "R = 14019.73 con Z exacto (14017.89 con Z = 1.28 de la tabla)",
+      "estado": "por_verificar",
+      "pendiente": "La diapositiva no dice de qué libro es el ejemplo; Gaither y Frazier (2000) es solo el candidato más probable."
+    },
+    "inv/taller2_qr": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026taller2",
+          "donde": "ejercicio 1, escenarios A a E, y ejercicio 2 (back orders)"
+        }
+      ],
+      "resultado": "A: Q = 1442, R = 1344, costo 14855.91",
+      "nota": "d̄ = 240.35 y σ = 94.2186 son los del histórico del Grupo 8 (los 60 datos no vienen en el documento). Todos los escenarios reproducen las tablas del grupo; la búsqueda encuentra una política más barata que E1 (Q = 384 con NS 99.9 % y L = 2).",
+      "estado": "verificada"
+    },
+    "fin/roi_escenarios": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 7 (efecto de los inventarios en el ROI)"
+        }
+      ],
+      "resultado": "ROI A = 11.50 %; ROI B = 15.24 %",
+      "nota": "La diapositiva escribe 15.23 % por truncar.",
+      "estado": "verificada"
+    },
+    "fin/roi_manufacturera": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 8 (ejercicio: cálculo del ROI)"
+        }
+      ],
+      "resultado": "ROI 4.98 % → 8.97 %",
+      "nota": "Supuesto: «reducción proporcional en los gastos» = los gastos bajan el mismo 75 % que el inventario.",
+      "estado": "verificada"
+    },
+    "fin/liquidez_almacen": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositiva 10 (ejercicio: efecto en el flujo de efectivo)"
+        }
+      ],
+      "resultado": "Razón corriente 1.4; prueba ácida 0.5667; con el obsoleto 1.275",
+      "estado": "verificada"
+    },
+    "fin/capital_de_trabajo": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026inventarios",
+          "donde": "diapositivas 13–16 (capital de trabajo y efecto de su reducción)"
+        }
+      ],
+      "resultado": "Capital de trabajo 150 → 65.625; se liberan 84.375",
+      "estado": "verificada"
+    },
+    "fin/parcial_capital": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache_parcial",
+          "donde": "problema 2 (capital de trabajo)"
+        }
+      ],
+      "resultado": "Capital de trabajo 4500 → 3650",
+      "estado": "por_verificar",
+      "pendiente": "Enunciado tomado del documento de ejercicios resueltos, no del parcial original."
+    },
+    "alm/envasadora": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026almacenes",
+          "donde": "diapositiva 25 (dimensionamiento desde el paletizado)"
+        }
+      ],
+      "resultado": "80 cajas por estiba; 13 estibas por lote; 475.15 m²",
+      "nota": "Supuestos: 8 espacios (7 lotes en reposo + el que entra), pasillo = 1.9 m + 0.6 m y 2 filas por lote para que toda estiba dé a un pasillo. Otras distribuciones válidas dan entre 498 y 563 m².",
+      "estado": "verificada"
+    },
+    "alm/taller3_estiba": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026taller3",
+          "donde": "punto 1"
+        }
+      ],
+      "resultado": "132 cajas por estiba",
+      "estado": "por_verificar",
+      "pendiente": "Datos tomados del documento de ejercicios resueltos del Grupo 8."
+    },
+    "alm/compania_quimica": {
+      "origen": "adaptado",
+      "refs": [
+        {
+          "id": "sarache2026almacenes",
+          "donde": "diapositivas 60–71 (dimensionado del almacén: compañía química)"
+        },
+        {
+          "id": "ballou2004",
+          "donde": "cap. 12 «Decisiones sobre almacenamiento y manejo»"
+        }
+      ],
+      "resultado": "Óptimo 63720.24 ft², costo 913306.07",
+      "nota": "La diapositiva reporta 913351 y tiene erratas en el mes 8 (460900 lb y 13717 o 30717 ft²); con 460000 lb el requerimiento es 13690.48. El óptimo es el mismo.",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar que el ejemplo está en el capítulo 12 de Ballou (2004); la diapositiva pide leer los capítulos 11 y 12."
+    },
+    "alm/taller3_dimensionado": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026taller3",
+          "donde": "puntos 2 y 3"
+        }
+      ],
+      "resultado": "Óptimo 3030.86 m² (el pico), costo 6187081.7",
+      "nota": "El documento del grupo da 6187082.93 porque redondea F a 15.0417; en su fórmula escrita (1.12)^50 aparece como 1.1250, pero vale 289.0022 (el resultado 0.120417 sí está bien).",
+      "estado": "por_verificar",
+      "pendiente": "Datos tomados del documento de ejercicios resueltos del Grupo 8."
+    },
+    "kpi/taller1_distribuidor": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "sarache2026taller1",
+          "donde": "30 pedidos y costos del período"
+        }
+      ],
+      "resultado": "Pedido perfecto 60 %",
+      "nota": "A tiempo 80 %, completos 83.3 %, ciclo 3.23 días (3.89 los estándar), documentación 80 %, urgentes 40 %, costo logístico 9.2 % de las ventas; t de Welch = −8.65.",
+      "estado": "por_verificar",
+      "pendiente": "Datos tomados del documento de ejercicios resueltos (no se tuvo el enunciado del taller)."
+    },
+    "lp/wyndor": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 3, secc. 3.1, ejemplo prototipo de Wyndor Glass Co."
+        }
+      ],
+      "resultado": "Máximo Z = 36 en Puertas = 2, Ventanas = 6",
+      "estado": "verificada",
+      "nota": "Un problema de la 10.ª ed. remite al «Wyndor Glass Co. problem discussed in Sec. 3.1»; los datos y el óptimo (2, 6) con Z = 36 coinciden."
+    },
+    "pert/proyecto_cpm": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 22 (en línea), secc. 22.1, proyecto de Reliable Construction Co."
+        }
+      ],
+      "resultado": "44 semanas; ruta crítica A → B → C → E → F → J → L → N",
+      "estado": "verificada",
+      "nota": "Actividades, precedencias, duraciones y tabla de compresión coinciden con el libro. El cap. 22 de la 10.ª ed. es complementario y está en el sitio web del libro."
+    },
+    "pert/proyecto_pert": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 22 (en línea), Reliable Construction Co. con tres estimaciones (secc. 22.4 en ediciones anteriores)"
+        }
+      ],
+      "resultado": "Duración esperada 44 semanas (σ = 3)",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en el texto de la 10.ª ed. que las tres estimaciones están en la secc. 22.4.",
+      "nota": "El libro da media 44 y varianza 9 en la ruta crítica."
+    },
+    "qp/wolfe": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 13, secc. 13.7 (programación cuadrática), ejemplo resuelto con el «símplex modificado» de Wolfe"
+        }
+      ],
+      "resultado": "Máximo Z = 270 en X1 = 12, X2 = 9",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "El libro llama al método «símplex modificado»; la solución (12, 9) coincide."
+    },
+    "nlp/hillier_nlp": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 13, secc. 13.2, problema de Wyndor con función objetivo no lineal"
+        }
+      ],
+      "resultado": "Máximo f = 857 en X1 = 2.6667, X2 = 5",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición)."
+    },
+    "dp/diligencia": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 11, secc. 11.1, ejemplo 1: problema de la diligencia"
+        }
+      ],
+      "resultado": "Distancia más corta de A a J: 11",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "Los costos de los arcos y las tres rutas óptimas coinciden con el libro."
+    },
+    "da/goferbroke": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 16, secc. 16.1–16.2, ejemplo prototipo de Goferbroke Co."
+        }
+      ],
+      "resultado": "Perforar (100); VEIP = 142.5",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "Pagos (700, −100, 90) y probabilidades a priori (0.25, 0.75) coinciden; el 100 y el 142.5 se calcularon con ellos."
+    },
+    "da/bayes_sismico": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 16, secc. 16.3, Goferbroke con sondeo sísmico (fig. 16.2)"
+        }
+      ],
+      "resultado": "Petroleo o Seco (0.5); Seco (0.8571)",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en la 10.ª ed. las verosimilitudes 0.6 y 0.2 y las probabilidades a posteriori."
+    },
+    "da/arbol_decision": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 16, secc. 16.4, árbol de decisión de Goferbroke con sondeo"
+        }
+      ],
+      "resultado": "Valor esperado 123; conviene Sondeo",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en la 10.ª ed. el costo del sondeo (30) y el valor 123."
+    },
+    "da/juego_campana": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 15, campaña política, variante 3 (secc. 15.2, 15.4 y 15.5)"
+        }
+      ],
+      "resultado": "Valor del juego 0.1818; 0.6364 y 0.3636",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "La tabla de pagos coincide; el libro da v = 2/11 con x = (7/11, 4/11)."
+    },
+    "mkp/inventario_camaras": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 29 (en línea), inventario de cámaras de la tienda de Dave (secc. 29.1, 29.2 y 29.5)"
+        }
+      ],
+      "resultado": "0.2857, 0.2848, 0.2632, 0.1663",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "Matriz y costos coinciden. El libro da 0.286, 0.285, 0.263, 0.166 y un costo de 5.662 por semana; IAQSB da 5.6691 porque no redondea las probabilidades antes de multiplicar."
+    },
+    "its/eoq_altavoces": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 18, secc. 18.1 y 18.3, ejemplo 1: fabricante de bocinas para televisores"
+        }
+      ],
+      "resultado": "Pedir 25298.2213 unidades cada 3.1623 mes",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "El libro da Q* = 25 298 y t* = 3.2 meses (redondeado)."
+    },
+    "its/eoq_faltantes": {
+      "origen": "adaptado",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 18, secc. 18.3, el mismo ejemplo con faltantes planeados"
+        }
+      ],
+      "resultado": "Pedir 28540.2427 unidades cada 3.5675 mes",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en la 10.ª ed. el costo por faltante p = 1.10.",
+      "nota": "IAQSB agrega un tiempo de entrega de 0.25 meses y compara con un pedido de 25 000 unidades, que no están en el libro."
+    },
+    "its/periodicos": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "Freddie el vendedor de periódicos"
+        }
+      ],
+      "resultado": "Pedir 45 unidades",
+      "estado": "por_verificar",
+      "pendiente": "No se ubicó la sección en la 10.ª ed. (posiblemente la 18.7, modelo de un período para productos perecederos) ni se confirmaron los datos."
+    },
+    "qa/sala_de_emergencias": {
+      "origen": "adaptado",
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "donde": "cap. 17, secc. 17.1 y 17.6, sala de emergencias del County Hospital"
+        }
+      ],
+      "resultado": "L = 2, Lq = 1.3333, W = 1 y Wq = 0.6667",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la sección y la página en un ejemplar impreso de la 10.ª ed. (las secciones salen del índice de la 10.ª ed.; el contenido se vio en otra edición).",
+      "nota": "λ = 2 y μ = 3 por hora y los resultados L = 2, Lq = 4/3, W = 1 h y Wq = 2/3 h son los del libro; los costos (40 por médico-hora y 100 por hora de espera) los agrega IAQSB."
+    },
+    "pert/control_costos": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 11, secc. 11.1–11.2, General Foundry, Inc. (PERT/costo)"
+        }
+      ],
+      "resultado": "15 semanas; ruta crítica A → C → E → G → H",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en el libro el presupuesto por actividad y la tabla de seguimiento de costos."
+    },
+    "gp/harrison": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 10, secc. 10.3, Harrison Electric Company (programación por metas)"
+        }
+      ],
+      "resultado": "Candelabros = 0, Ventiladores = 6",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar los números de tabla y la página en el libro.",
+      "nota": "Metas, prioridades y restricciones coinciden; la solución del libro es 0 candelabros y 6 ventiladores, con las metas 1 a 3 cumplidas y un ventilador por debajo de la meta 4."
+    },
+    "fc/regresion_ventas": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 4, secc. 4.2–4.5, Triple A Construction (tablas 4.1 a 4.4 en la 10.ª ed.)"
+        }
+      ],
+      "resultado": "Ventas = 2 + 1.25·Nomina; R² = 0.6944",
+      "estado": "verificada",
+      "nota": "Los datos reproducen las sumas de cuadrados del libro y la recta ŷ = 2 + 1.25x con r² = 0.69."
+    },
+    "qa/reciclaje_md1": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 12, secc. 12.5, Garcia-Golding Recycling, Inc. (tiempo de servicio constante, M/D/1)"
+        }
+      ],
+      "resultado": "Lq = 0.6667, Wq = 0.0833",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en el libro λ = 8 y μ = 12 por hora."
+    },
+    "its/descuentos": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 6, secc. 6.6, Brass Department Store (descuentos por cantidad)"
+        }
+      ],
+      "resultado": "Pedir 1000 unidades; costo total 24725",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en el libro la tabla de descuentos y el costo total."
+    },
+    "mkp/cambio_de_marca": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 14, secc. 14.1–14.3, tres tiendas de abarrotes (American Food Store, Food Mart, Atlas Foods)"
+        }
+      ],
+      "resultado": "0.4211, 0.3158, 0.2632",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar si el libro calcula el estado estable de este ejemplo (el estado inicial y la matriz coinciden; el libro muestra las participaciones del período siguiente: 0.41, 0.31, 0.28)."
+    },
+    "mkp/cuentas_por_cobrar": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "render2018",
+          "donde": "cap. 14, secc. 14.6, estados absorbentes: cuentas por cobrar"
+        }
+      ],
+      "resultado": "",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en el libro impreso los redondeos de F y FA.",
+      "nota": "En el libro hay 2 000 dólares con menos de 1 mes y 5 000 con 1 a 3 meses; aquí van como proporciones 2/7 y 5/7. El libro obtiene que se cobran 6 240 y se pierden 760 de los 7 000 (0.8914 y 0.1086)."
+    },
+    "ap/planificacion_transporte": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "heizerrender2014",
+          "donde": "cap. 13, ejemplo 5: método de transporte de programación lineal (Farnsworth Tire Company)"
+        }
+      ],
+      "resultado": "Costo mínimo del plan: 105700",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la edición en español de la copia consultada y el número de tabla.",
+      "nota": "Los datos coinciden; el libro da 105 900 para la solución inicial y 105 700 para la óptima. Antes IAQSB lo llamaba «Harper Company», nombre que no aparece en ninguna edición consultada."
+    },
+    "mrp/producto_a_render": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "heizerrender2014",
+          "donde": "cap. 14, planeación de requerimientos de materiales, estructura del producto A"
+        }
+      ],
+      "resultado": "7 órdenes planeadas para 6 artículos",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar si el ejemplo es de Heizer y Render (cap. 14) o de Render, Stair, Hanna y Hale (secc. 6.10), y sus datos."
+    },
+    "fll/balanceo_linea": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "heizerrender2014",
+          "donde": "cap. 9, balanceo de líneas de ensamble: componente del ala"
+        }
+      ],
+      "resultado": "6 estaciones con ciclo 12; eficiencia 91.6667",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número de ejemplo en la 9.ª ed.: los datos (66 minutos, ciclo de 12) coinciden con la 7.ª ed. en español (p. 367); otra edición usa 65 minutos y ciclo de 11."
+    },
+    "job/flujo_johnson": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "heizerrender2014",
+          "donde": "cap. 15, regla de Johnson: cinco trabajos en dos centros de trabajo"
+        }
+      ],
+      "resultado": "CMAX = 35",
+      "estado": "por_verificar",
+      "pendiente": "Los tiempos y la secuencia B-E-D-C-A se hallaron en fuentes secundarias que no citan el libro; confirmar en Heizer y Render el ejemplo y el total de 35 horas."
+    },
+    "qcc/anillos_de_piston": {
+      "origen": "winqsb",
+      "refs": [
+        {
+          "id": "chang2003",
+          "donde": "archivo de ejemplo VARIABLE.QC («Piston-ring Production»)"
+        },
+        {
+          "id": "montgomery2020",
+          "donde": "cap. 6, anillos de pistón (tabla 6.3)"
+        }
+      ],
+      "resultado": "6 de 50 puntos fuera de control",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar la numeración en la 8.ª ed.",
+      "nota": "Es el archivo de ejemplo de WinQSB, tal cual. Sus 25 primeras muestras son las de Montgomery (la muestra 21 como en la 2.ª ed.: 73.988, 74.001, 74.009, 74.005, 73.996; en la 7.ª ed. es 73.982, 74.001, 74.015, 74.005, 73.996). Las muestras 26 a 50 las agrega el archivo de WinQSB y no son del libro."
+    },
+    "qcc/latas_de_jugo_p": {
+      "origen": "winqsb",
+      "refs": [
+        {
+          "id": "chang2003",
+          "donde": "archivo de ejemplo P_CHART.QC"
+        },
+        {
+          "id": "montgomery2020",
+          "donde": "cap. 7, latas de jugo de naranja concentrado, gráfico p con n = 50"
+        }
+      ],
+      "resultado": "5 de 30 puntos",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número de ejemplo y de tabla en la 8.ª ed.",
+      "nota": "Los 30 conteos son los del libro. Con límites de 3σ, el libro y IAQSB señalan las muestras 15 y 23; IAQSB marca 3 más porque aplica también las reglas de corridas de la Western Electric."
+    },
+    "qcc/tarjetas_de_circuito_c": {
+      "origen": "winqsb",
+      "refs": [
+        {
+          "id": "chang2003",
+          "donde": "archivo de ejemplo C_CHART.QC"
+        },
+        {
+          "id": "montgomery2020",
+          "donde": "cap. 7, disconformidades en tarjetas de circuito impreso, gráfico c"
+        }
+      ],
+      "resultado": "4 de 26 puntos",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar el número de ejemplo y de tabla en la 8.ª ed.",
+      "nota": "Los 26 conteos son los del libro (total 516). Con límites de 3σ, el libro y IAQSB señalan las muestras 6 y 20; IAQSB marca otras por las reglas de corridas."
+    },
+    "qcc/defectos_pareto": {
+      "origen": "winqsb",
+      "refs": [
+        {
+          "id": "chang2003",
+          "donde": "archivo de ejemplo PARETO.QC («QCC Pareto Sample Problem»)"
+        }
+      ],
+      "resultado": "1 de 10 puntos",
+      "estado": "verificada",
+      "nota": "Es el archivo de ejemplo de WinQSB, tal cual."
+    },
+    "asa/muestreo_doble": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "montgomery2020",
+          "donde": "cap. 15, secc. 15.3.1, planes de muestreo doble (6.ª ed.)"
+        }
+      ],
+      "resultado": "",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar que el libro usa el plan n1 = 50, c1 = 1, n2 = 100, c2 = 3."
+    },
+    "asa/secuencial_atributos": {
+      "origen": "libro",
+      "refs": [
+        {
+          "id": "montgomery2020",
+          "donde": "cap. 15, secc. 15.3.3, planes de muestreo secuencial (6.ª ed.)"
+        }
+      ],
+      "resultado": "",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar que el libro usa p1 = 0.01, α = 0.05, p2 = 0.06, β = 0.10 (un ejercicio publicado usa p2 = 0.10)."
+    },
+    "lp/dieta": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Mínimo Z = 8.35 en Pickle = 1.8, Burger = 1.4",
+      "estado": "verificada",
+      "nota": "Dieta de dos alimentos escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "lp/produccion_entera": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Máximo Z = 40 en Sillas = 5",
+      "estado": "verificada",
+      "nota": "Producción de mesas y sillas en lotes enteros, escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "lp/mochila": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Máximo Z = 90 en Item2 = 1, Item4 = 1",
+      "estado": "verificada",
+      "nota": "Mochila binaria de cuatro artículos, escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "qp/cartera": {
+      "origen": "original",
+      "refs": [
+        {
+          "id": "markowitz1952",
+          "donde": "modelo de media y varianza"
+        }
+      ],
+      "resultado": "Mínimo Z = 0.0076 en Acciones = 0.1143, Bonos = 0.5543, Inmuebles = 0.3314",
+      "estado": "verificada",
+      "nota": "Cartera de tres activos al estilo de Markowitz (1952); rentabilidades y covarianzas escritas para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "nlp/cobb_douglas": {
+      "origen": "original",
+      "refs": [
+        {
+          "id": "cobbdouglas1928",
+          "donde": "forma de la función de producción"
+        }
+      ],
+      "resultado": "Máximo f = 212.132 en K = 15, L = 30",
+      "estado": "verificada",
+      "nota": "Producción con una función Cobb-Douglas y un presupuesto, escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "nlp/rosenbrock": {
+      "origen": "adaptado",
+      "refs": [
+        {
+          "id": "rosenbrock1960",
+          "donde": "función de prueba de Rosenbrock"
+        }
+      ],
+      "resultado": "Mínimo f = 0 en X1 = 1, X2 = 1",
+      "estado": "verificada",
+      "nota": "Función de prueba clásica sin restricciones; el mínimo en (1, 1) es conocido."
+    },
+    "dp/carga_avion": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Rendimiento máximo 62",
+      "estado": "verificada",
+      "nota": "Carga de tres artículos con capacidad 4, escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "dp/produccion": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Costo mínimo 21",
+      "estado": "verificada",
+      "nota": "Plan de producción de cuatro meses con costo de preparación y de almacenamiento, escrito para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "ap/planificacion_simple": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "costo total 347380",
+      "estado": "verificada",
+      "nota": "Plan de seis meses escrito para IAQSB."
+    },
+    "ap/planificacion_pl": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Costo mínimo del plan: 346760",
+      "estado": "verificada",
+      "nota": "Plan de seis meses escrito para IAQSB."
+    },
+    "its/tamano_lote": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Wagner-Whitin (óptimo): costo total 610",
+      "estado": "verificada",
+      "nota": "Plan de producción de 8 semanas escrito para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "its/sistema_sq": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Pedir Q = 212.9599 cuando el inventario llegue a s = 226.3716",
+      "estado": "verificada",
+      "nota": "Revisión continua con demanda normal, escrita para IAQSB."
+    },
+    "its/sistema_rs": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Cada R = 2.1242 semana, pedir hasta S = 450.3474",
+      "estado": "verificada",
+      "nota": "Revisión periódica con demanda normal, escrita para IAQSB."
+    },
+    "its/sistema_rss": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Cada R = 2.1242 semana, s = 450.3474, S = 450.3474",
+      "estado": "verificada",
+      "nota": "Revisión periódica (R, s, S), escrita para IAQSB."
+    },
+    "fc/ventas_mensuales": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "MAD 4.8533, MSE 34.1529",
+      "estado": "verificada",
+      "nota": "Doce meses de ventas escritos para IAQSB."
+    },
+    "fc/estacional_trimestral": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "MAD 31.6874, MSE 1329.8323",
+      "estado": "verificada",
+      "nota": "Demanda trimestral con estacionalidad, escrita para IAQSB."
+    },
+    "qa/reparacion_maquinas": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "L = 1.4243, Lq = 0.7092, W = 3.9834 y Wq = 1.9834",
+      "estado": "verificada",
+      "nota": "Reparación de 5 máquinas (población finita), escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "qa/barberia_capacidad": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "L = 1.4443, Lq = 0.7721, W = 0.5371 y Wq = 0.2871",
+      "estado": "verificada",
+      "nota": "Barbería M/M/1 con 3 sillas de espera (capacidad 4), escrita para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "qa/llegadas_en_lotes": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "L = 1.249, Lq = 0.4092",
+      "estado": "verificada",
+      "nota": "Llegadas en lotes de 1 a 3 con dos servidores, escrita para IAQSB."
+    },
+    "qa/presion_y_desaliento": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "L = 0.9317, Lq = 0.283",
+      "estado": "verificada",
+      "nota": "Ventanilla con servicio presionado y clientes que se desalientan, escrita para IAQSB."
+    },
+    "qss/banco_dos_cajeros": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "Banco con dos cajeros y una fila (M/M/2), escrito para IAQSB; el resultado depende de la semilla de la simulación."
+    },
+    "qss/taller_en_serie": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "Taller en serie con reproceso y bloqueo, escrito para IAQSB."
+    },
+    "qss/mm1_comprobacion": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "M/M/1 cuyo tiempo medio teórico en el sistema es W = 20, para comparar la simulación con la fórmula; escrito para IAQSB."
+    },
+    "qss/ensamble_dos_lineas": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "Ensamble de dos líneas con prioridad, escrito para IAQSB."
+    },
+    "job/taller_cuatro_trabajos": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "CMAX = 14",
+      "estado": "verificada",
+      "nota": "Taller de cuatro trabajos y tres máquinas, escrito para IAQSB."
+    },
+    "job/flujo_cinco_maquinas": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "CMAX = 68",
+      "estado": "verificada",
+      "nota": "Flujo de seis trabajos en cinco máquinas, escrito para IAQSB."
+    },
+    "mrp/bicicletas_lotes": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "14 órdenes planeadas para 5 artículos",
+      "estado": "verificada",
+      "nota": "Bicicletas con reglas de lote y capacidad, escrito para IAQSB."
+    },
+    "fll/almacen_nuevo": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Almacen en (2, 2); costo total 67",
+      "estado": "verificada",
+      "nota": "Un almacén para cuatro clientes con distancia rectilínea, escrito para IAQSB. Resultado comprobado con un cálculo independiente en Python."
+    },
+    "fll/dos_plantas_nuevas": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "costo total 141",
+      "estado": "verificada",
+      "nota": "Dos plantas nuevas, escrito para IAQSB."
+    },
+    "fll/distribucion_oficinas": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "Costo 237.5 → 201.5",
+      "estado": "verificada",
+      "nota": "Distribución de 16 departamentos en una cuadrícula de 4 × 4, escrita para IAQSB."
+    },
+    "asa/muestreo_simple": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "AOQL 1.628",
+      "estado": "verificada",
+      "nota": "Plan simple n = 50, c = 1, escrito para IAQSB."
+    },
+    "asa/continuo_csp1": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "AOQL 5.3916",
+      "estado": "verificada",
+      "nota": "Plan CSP-1 con f = 2 % e i = 38, escrito para IAQSB."
+    },
+    "asa/media_variables": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "AOQL 0.8843",
+      "estado": "verificada",
+      "nota": "Muestreo por variables de la resistencia mínima, escrito para IAQSB."
+    },
+    "asa/metodo_k": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "AOQL 1.5253",
+      "estado": "verificada",
+      "nota": "Muestreo por variables por el método k, escrito para IAQSB."
+    },
+    "pmp/basico_arango": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2020maestro",
+          "donde": "diapositivas 8 a 12 (ejemplo programa maestro básico) y su hoja de Excel"
+        }
+      ],
+      "resultado": "PMP con lotes de 80 en los periodos 2, 4, 5, 7, 9 y 10",
+      "estado": "verificada",
+      "nota": "La diapositiva 12 da los periodos 2, 4, 5, 7, 9 y 10."
+    },
+    "pmp/ato_arango": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2020maestro",
+          "donde": "diapositivas 13 a 18 (programa maestro para ATO) y la hoja «Ejemplo p mae ato resuelto»"
+        }
+      ],
+      "resultado": "PMP con lotes de 60 en los periodos 3, 6, 8 y 10. DPP del periodo 1 = 9",
+      "estado": "verificada",
+      "nota": "La hoja resuelta da proyectado disponible 32, 9, 49, 27, 9, 51, 19, 49, 21, 53, 24 y 1, y DPP 9, 6, 29, 32 y 20."
+    },
+    "pmp/ato_solicitudes": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2020maestro",
+          "donde": "diapositivas 19 y 20 (ejemplo del producto A con solicitudes de 20, 40 y 120 unidades)"
+        }
+      ],
+      "resultado": "PMP con lotes de 150 en los periodos 2, 4, 6, 8, 10 y 12. DPP del periodo 1 = 27",
+      "estado": "por_verificar",
+      "pendiente": "La solución se comparó con la hoja «ejemplo 2 pmp ato» hecha por un estudiante (DPP 27, 7, 40, 65, 122, 143 y 150); falta la solución del profesor para las tres solicitudes."
+    },
+    "pmp/ato_capacidad": {
+      "origen": "original",
+      "refs": [],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "Ensamble bajo pedido con stock de seguridad, costos y capacidad del recurso clave, escrito para IAQSB para mostrar el plan aproximado de capacidad y el PMP óptimo."
+    },
+    "mrp2/estantes_arango": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2021gozinto",
+          "donde": "diapositivas 4 a 14 (ejemplo de los estantes) y la hoja «Ejemplo MRP II»"
+        }
+      ],
+      "resultado": "",
+      "estado": "por_verificar",
+      "pendiente": "Los datos son los de la hoja del curso; falta la solución del profesor para comparar las necesidades a programar y los tiempos residuales (en particular, cómo «se reparten» los negativos)."
+    },
+    "mrp/siete_articulos_arango": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2021mrp",
+          "donde": "hojas «ejemplo programacion mrp» y «solución ejemplo programacion mrp»"
+        }
+      ],
+      "resultado": "23 órdenes planeadas para 7 artículos; 1 con liberación vencida",
+      "estado": "verificada",
+      "nota": "La hoja resuelta lanza órdenes de A en las semanas 0 (5 unidades), 3, 5, 6, 7, 9 y 11; de B en 5, 7 y 9; de C en 3, 4, 5, 7 y 9; de D en 6 y 8; de E en 2, 3, 5 y 7, y de G en 6 y 8. IAQSB da las mismas órdenes y el mismo inventario disponible."
+    },
+    "st/utilidades_arango": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2021series",
+          "donde": "hoja «eje_autocorr» y el script de R de la clase (ggseasonplot, ggAcf)"
+        }
+      ],
+      "resultado": "fuerza de la tendencia 0.9717 y de la estacionalidad 0.7847; λ de Box-Cox sugerido −0.2625",
+      "estado": "verificada",
+      "nota": "ACF, PACF, Ljung-Box (Q = 101.7476 con 8 retardos), índices de decompose() y BoxCox.lambda() comprobados contra R 4.6.1 con forecast 9.0.2."
+    },
+    "st/usnetelec_arima": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2024arima",
+          "donde": "diapositivas 3 a 5 (auto.arima(usnetelec))"
+        },
+        {
+          "id": "hyndman2018fpp",
+          "donde": "datos usnetelec del paquete fpp2"
+        }
+      ],
+      "resultado": "ARIMA(2,1,2)",
+      "estado": "verificada",
+      "nota": "Con R el modelo es ARIMA(2,1,2) con deriva; el motor nativo da el mismo ARIMA(2,1,2) con los mismos coeficientes AR y MA, sin la deriva."
+    },
+    "st/h02_arima_log": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2024arima",
+          "donde": "diapositivas 13 y 14 (auto.arima(h02, lambda = 0))"
+        },
+        {
+          "id": "hyndman2018fpp",
+          "donde": "datos h02 del paquete fpp2"
+        }
+      ],
+      "resultado": "ARIMA(2,1,1)(0,1,2)[12]",
+      "estado": "verificada",
+      "nota": "Mismo modelo y coeficientes con R y con el motor nativo."
+    },
+    "st/qcement_comparar": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2024arima",
+          "donde": "diapositivas 15 y 16 (ETS frente a ARIMA en la producción de cemento, entrenamiento 1988 a 2007 y prueba de 25 trimestres)"
+        },
+        {
+          "id": "hyndman2018fpp",
+          "donde": "datos qcement del paquete fpp2"
+        }
+      ],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "En la comparación salen los dos modelos de la clase: ARIMA(1,0,1)(2,1,1)[4] y ETS(M,N,M)."
+    },
+    "st/gas_tbats": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2024arima",
+          "donde": "diapositiva 5 de «Modelos TBATS» (tbats(gas)); aquí desde 1980 para que sea rápido"
+        },
+        {
+          "id": "hyndman2018fpp",
+          "donde": "datos gas del paquete fpp2"
+        }
+      ],
+      "resultado": "",
+      "estado": "verificada",
+      "nota": "Con R: TBATS(0.001, {0,0}, 0.97, {<12,5>})."
+    }
+  }
+}

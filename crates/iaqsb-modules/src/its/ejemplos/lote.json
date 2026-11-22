@@ -1,0 +1,15 @@
+{
+  "name": "Plan de produccion de 8 semanas",
+  "problem_type": "lot_sizing",
+  "time_unit": "semana",
+  "periods": [
+    {"name": "1", "demand": 50, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "2", "demand": 60, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "3", "demand": 90, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "4", "demand": 70, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "5", "demand": 30, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "6", "demand": 100, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "7", "demand": 20, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"},
+    {"name": "8", "demand": 80, "setup_cost": 100, "unit_cost": 0, "holding_cost": 1, "backorder_cost": "M"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Taller con cuatro trabajos",
+  "problem_type": "job_shop",
+  "time_unit": "hora",
+  "jobs": [
+    {"name": "J1", "operations": "4/Torno, 3/Fresa, 2/Taladro", "due": 12, "weight": 1},
+    {"name": "J2", "operations": "1/Fresa, 4/Torno, 4/Taladro", "due": 10, "weight": 2},
+    {"name": "J3", "operations": "3/Taladro, 2/Fresa, 3/Torno", "due": 15, "weight": 1},
+    {"name": "J4", "operations": "3/Fresa, 3/Taladro, 1/Torno", "due": 9, "weight": 1}
+  ],
+  "machines": [
+    {"name": "Torno"},
+    {"name": "Fresa"},
+    {"name": "Taladro"}
+  ]
+}

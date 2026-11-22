@@ -1,0 +1,17 @@
+ITS	Inventory Problem	year	1	1
+          DATA  ITEM	ENTRY
+Demand per year	600
+Order or setup cost per order	50
+Unit holding cost per year	60
+Unit shortage cost per year	M
+Unit shortage cost independent of time	
+Replenishment or production rate per year	M
+Lead time for a new order in year	
+Unit acquisition cost without discount	300
+Number of discount breaks (quantities)	2
+Order quantity if you known	
+0	0	0	0
+2
+1	50	2
+2	80	5
+

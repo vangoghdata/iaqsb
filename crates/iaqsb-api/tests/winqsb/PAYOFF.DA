@@ -1,0 +1,9 @@
+DA	QSB P.277	PT	3	3	3
+Indicator-Decision \ State	High	Medium	Low
+Prior Probability	0.20	0.50	0.30
+Favorable	0.60	0.30	0.20
+Unfavorable	0.20	0.30	0.55
+Neutral	0.20	0.40	0.25
+Advertise	100000	52000	30000
+Do Nothing	35000	-10000	-30000
+Pricing	84000	55000	40000

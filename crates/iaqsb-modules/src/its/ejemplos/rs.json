@@ -1,0 +1,14 @@
+{
+  "name": "Revision periodica (R, S)",
+  "problem_type": "rs",
+  "time_unit": "semana",
+  "demand_dist": {"distribution": "normal", "p1": 100, "p2": 20},
+  "setup_cost": 100,
+  "unit_cost": 10,
+  "holding_cost": 0.5,
+  "backorder_pct": 100,
+  "backorder_cost": 5,
+  "lost_sale_cost": "M",
+  "fixed_shortage_cost": 0,
+  "lead_dist": {"distribution": "constant", "p1": 2}, "review_cost": 10
+}

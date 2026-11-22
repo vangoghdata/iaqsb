@@ -1,0 +1,318 @@
+{
+ "name": "Estantes (Arango, MRP II)",
+ "problem_type": "gozinto",
+ "items": [
+  {
+   "name": "Estante 1",
+   "final_inventory": 300,
+   "on_hand": 250,
+   "reorder_point": null,
+   "quality_factor": 1.04
+  },
+  {
+   "name": "Estante 2",
+   "final_inventory": 300,
+   "on_hand": 100,
+   "reorder_point": null,
+   "quality_factor": 1.04
+  },
+  {
+   "name": "Anaquel",
+   "final_inventory": 1000,
+   "on_hand": 8000,
+   "reorder_point": null,
+   "quality_factor": 1.05
+  },
+  {
+   "name": "Pata",
+   "final_inventory": 1500,
+   "on_hand": 1200,
+   "reorder_point": null,
+   "quality_factor": 1.05
+  },
+  {
+   "name": "Inserto",
+   "final_inventory": 2000,
+   "on_hand": 2500,
+   "reorder_point": 8000,
+   "quality_factor": 1.11
+  },
+  {
+   "name": "Tornillo",
+   "final_inventory": 10000,
+   "on_hand": 20000,
+   "reorder_point": 20000,
+   "quality_factor": 1.02
+  },
+  {
+   "name": "Conector",
+   "final_inventory": 1200,
+   "on_hand": 1000,
+   "reorder_point": 2000,
+   "quality_factor": 1.11
+  },
+  {
+   "name": "Lámina",
+   "final_inventory": 3000,
+   "on_hand": 42000,
+   "reorder_point": 20000,
+   "quality_factor": 1.03
+  }
+ ],
+ "periods": [
+  {
+   "name": "Enero"
+  },
+  {
+   "name": "Febrero"
+  },
+  {
+   "name": "Marzo"
+  }
+ ],
+ "bom": [
+  [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   3,
+   6,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   4,
+   8,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   8,
+   8,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0
+  ],
+  [
+   12,
+   24,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0
+  ],
+  [
+   0,
+   4,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0
+  ],
+  [
+   17,
+   34,
+   3,
+   2,
+   0,
+   0,
+   0,
+   1
+  ]
+ ],
+ "bom_kind": "total",
+ "demand": [
+  [
+   500,
+   500,
+   500
+  ],
+  [
+   400,
+   450,
+   500
+  ],
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0
+  ]
+ ],
+ "receipts": [
+  [
+   250,
+   100,
+   0
+  ],
+  [
+   100,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   400,
+   0,
+   0
+  ],
+  [
+   1000,
+   500,
+   0
+  ],
+  [
+   10000,
+   10000,
+   0
+  ],
+  [
+   2000,
+   0,
+   0
+  ],
+  [
+   8000,
+   4000,
+   0
+  ]
+ ],
+ "departments": [
+  {
+   "name": "Dpto. 1"
+  },
+  {
+   "name": "Dpto. 2"
+  },
+  {
+   "name": "Dpto. 3"
+  }
+ ],
+ "rates": [
+  [
+   0,
+   0,
+   0.67,
+   0.5,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0.75,
+   1,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   1,
+   1.5,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "capacity": [
+  [
+   240,
+   240,
+   240
+  ],
+  [
+   240,
+   240,
+   240
+  ],
+  [
+   240,
+   240,
+   240
+  ]
+ ],
+ "workload": [
+  [
+   100,
+   140,
+   80
+  ],
+  [
+   160,
+   120,
+   100
+  ],
+  [
+   80,
+   80,
+   80
+  ]
+ ],
+ "rate_unit": "minutos"
+}

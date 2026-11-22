@@ -1,0 +1,20 @@
+name: "Propuesta / Feature request / Sugestão"
+description: "Un método, un módulo, un ejemplo o una mejora · A method, module, example or improvement · Um método, módulo, exemplo ou melhoria"
+labels: ["mejora"]
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: "Qué propones / What do you propose / O que você propõe"
+    validations:
+      required: true
+  - type: textarea
+    id: fuente
+    attributes:
+      label: "Fuente / Source / Fonte"
+      description: "Libro o artículo donde está el método o el ejemplo (APA 7), para poder verificarlo."
+  - type: dropdown
+    id: nivel
+    attributes:
+      label: "Nivel / Level / Nível"
+      options: ["Pregrado / Undergraduate / Graduação", "Maestría / Master's / Mestrado", "Doctorado / PhD / Doutorado", "Industria / Industry / Indústria"]

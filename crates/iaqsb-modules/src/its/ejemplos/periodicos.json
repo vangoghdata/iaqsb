@@ -1,0 +1,10 @@
+{
+  "name": "Freddie el vendedor de periodicos (Hillier)",
+  "problem_type": "newsboy",
+  "time_unit": "dia",
+  "demand_dist": {"distribution": "discrete", "values": "40/0.0909, 41/0.0909, 42/0.0909, 43/0.0909, 44/0.0909, 45/0.0909, 46/0.0909, 47/0.0909, 48/0.0909, 49/0.0909, 50/0.091"},
+  "unit_cost": 1.5,
+  "selling_price": 2.5,
+  "salvage_value": 0.5,
+  "known_quantity": 40
+}

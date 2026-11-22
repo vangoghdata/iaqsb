@@ -1,0 +1,7 @@
+{
+  "name": "Resistencia mínima: media de la muestra",
+  "problem_type": "mean",
+  "side": "lower", "sigma": 5, "sigma_known": true,
+  "n": 9, "xla": 195.5, "x1": 200, "x2l": 192, "lsl": 185,
+  "alpha": 5, "beta": 10, "lot_size": 1000
+}

@@ -1,0 +1,72 @@
+{
+ "name": "Almacen nuevo para cuatro clientes",
+ "problem_type": "location",
+ "dims": 2,
+ "facilities": [
+  {
+   "name": "Cliente1",
+   "kind": "existing",
+   "x": 1,
+   "y": 1
+  },
+  {
+   "name": "Cliente2",
+   "kind": "existing",
+   "x": 5,
+   "y": 2
+  },
+  {
+   "name": "Cliente3",
+   "kind": "existing",
+   "x": 2,
+   "y": 6
+  },
+  {
+   "name": "Cliente4",
+   "kind": "existing",
+   "x": 7,
+   "y": 7
+  },
+  {
+   "name": "Almacen",
+   "kind": "new"
+  }
+ ],
+ "flows": [
+  [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   5,
+   3,
+   2,
+   4,
+   0
+  ]
+ ]
+}

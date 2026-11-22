@@ -1,0 +1,11 @@
+[package]
+name = "iaqsb-formats"
+description = "Lectura y escritura de archivos de WinQSB (.LPP y demás) para IAQSB"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+iaqsb-lp.workspace = true
+iaqsb-core.workspace = true
+thiserror.workspace = true

@@ -1,0 +1,64 @@
+{
+ "name": "Reparto en Bogotá (latitud y longitud)",
+ "problem_type": "coordinates",
+ "points": [
+  {
+   "name": "Centro de distribución Puente Aranda",
+   "x": -74.114,
+   "y": 4.6187,
+   "demand": 0
+  },
+  {
+   "name": "Tienda Chapinero",
+   "x": -74.064,
+   "y": 4.6458,
+   "demand": 35
+  },
+  {
+   "name": "Tienda Usaquén",
+   "x": -74.031,
+   "y": 4.695,
+   "demand": 28
+  },
+  {
+   "name": "Tienda Suba",
+   "x": -74.084,
+   "y": 4.741,
+   "demand": 40
+  },
+  {
+   "name": "Tienda Engativá",
+   "x": -74.111,
+   "y": 4.707,
+   "demand": 22
+  },
+  {
+   "name": "Tienda Fontibón",
+   "x": -74.145,
+   "y": 4.678,
+   "demand": 30
+  },
+  {
+   "name": "Tienda Kennedy",
+   "x": -74.136,
+   "y": 4.618,
+   "demand": 45
+  },
+  {
+   "name": "Tienda Bosa",
+   "x": -74.188,
+   "y": 4.619,
+   "demand": 25
+  },
+  {
+   "name": "Tienda La Candelaria",
+   "x": -74.072,
+   "y": 4.597,
+   "demand": 18
+  }
+ ],
+ "capacity": 100,
+ "metric": "haversine",
+ "cost_per_distance": 1800,
+ "cost_per_vehicle": 150000
+}

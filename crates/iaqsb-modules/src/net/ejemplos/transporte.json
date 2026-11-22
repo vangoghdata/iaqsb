@@ -1,0 +1,58 @@
+{
+ "name": "Powerco: distribución de energía (Winston)",
+ "problem_type": "transportation",
+ "objective": "min",
+ "symmetric": false,
+ "sources": [
+  {
+   "name": "Planta1",
+   "supply": 35
+  },
+  {
+   "name": "Planta2",
+   "supply": 50
+  },
+  {
+   "name": "Planta3",
+   "supply": 40
+  }
+ ],
+ "destinations": [
+  {
+   "name": "Ciudad1",
+   "demand": 45
+  },
+  {
+   "name": "Ciudad2",
+   "demand": 20
+  },
+  {
+   "name": "Ciudad3",
+   "demand": 30
+  },
+  {
+   "name": "Ciudad4",
+   "demand": 30
+  }
+ ],
+ "costs": [
+  [
+   8,
+   6,
+   10,
+   9
+  ],
+  [
+   9,
+   12,
+   13,
+   7
+  ],
+  [
+   14,
+   9,
+   16,
+   5
+  ]
+ ]
+}

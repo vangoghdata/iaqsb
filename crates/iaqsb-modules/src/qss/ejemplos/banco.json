@@ -1,0 +1,10 @@
+{
+  "name": "Banco con dos cajeros y una fila (M/M/2)",
+  "time_unit": "minuto",
+  "components": [
+    {"name": "Clientes", "kind": "customer", "followers": "Fila", "interarrival": "Exp/0/2"},
+    {"name": "Fila", "kind": "queue", "followers": "Cajero 1, Cajero 2", "discipline": "fifo", "capacity": "M"},
+    {"name": "Cajero 1", "kind": "server", "service": "Exp/0/3"},
+    {"name": "Cajero 2", "kind": "server", "service": "Exp/0/3"}
+  ]
+}

@@ -1,0 +1,30 @@
+{
+ "name": "Efecto de los inventarios en el ROI: escenarios A y B (clase)",
+ "problem_type": "roi",
+ "cases": [
+  {
+   "name": "A",
+   "sales": 205,
+   "cost_of_sales": 105,
+   "fixed_expenses": 35,
+   "variable_expenses": 40,
+   "taxes": 12,
+   "fixed_assets": 60,
+   "banks": 3,
+   "receivables": 22,
+   "inventories": 28
+  },
+  {
+   "name": "B",
+   "sales": 205,
+   "cost_of_sales": 105,
+   "fixed_expenses": 32,
+   "variable_expenses": 40,
+   "taxes": 12,
+   "fixed_assets": 60,
+   "banks": 3,
+   "receivables": 22,
+   "inventories": 20
+  }
+ ]
+}

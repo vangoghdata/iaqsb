@@ -1,0 +1,15 @@
+{
+  "name": "Plan de descuentos de tres rangos (clase)",
+  "problem_type": "discount",
+  "time_unit": "año",
+  "demand": 10000,
+  "setup_cost": 5.5,
+  "holding_cost": 0.44,
+  "holding_rate": 20,
+  "shortage_cost": "M",
+  "shortage_cost_fixed": 0,
+  "production_rate": "M",
+  "lead_time": 0,
+  "unit_cost": 2.2,
+  "breaks": [{ "quantity": 400, "price": 2.0 }, { "quantity": 700, "price": 1.8 }]
+}

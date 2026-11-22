@@ -1,0 +1,58 @@
+{
+ "name": "Constructora Triple A (Render)",
+ "problem_type": "regression",
+ "variables": [
+  {
+   "name": "Nomina"
+  },
+  {
+   "name": "Ventas"
+  }
+ ],
+ "observations": [
+  {
+   "name": "1"
+  },
+  {
+   "name": "2"
+  },
+  {
+   "name": "3"
+  },
+  {
+   "name": "4"
+  },
+  {
+   "name": "5"
+  },
+  {
+   "name": "6"
+  }
+ ],
+ "values": [
+  [
+   3,
+   6
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   6,
+   9
+  ],
+  [
+   4,
+   5
+  ],
+  [
+   2,
+   4.5
+  ],
+  [
+   5,
+   9.5
+  ]
+ ]
+}

@@ -1,0 +1,24 @@
+//! Todas las pruebas de integración de iaqsb-modules en un solo binario (enlaza una vez).
+mod ap;
+mod asa;
+mod da;
+mod dp;
+mod fc;
+mod fll;
+mod gp;
+mod its;
+mod job;
+mod mkp;
+mod modo;
+mod mrp;
+mod mrp2;
+mod net;
+mod nlp;
+mod pert;
+mod pmp;
+mod qa;
+mod qcc;
+mod qp;
+mod qss;
+mod st;
+mod vrp;

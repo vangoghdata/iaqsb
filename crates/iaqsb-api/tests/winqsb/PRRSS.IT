@@ -1,0 +1,20 @@
+ITS	Inventory Problem	year	7	0
+          DATA  ITEM	ENTRY
+Demand distribution (in year)	Normal
+Mean (u)	1000
+Standard deviation (s>0)	100
+(Not used)	
+Order or setup cost	100
+Unit acquisition cost	50
+Unit holding cost per year	10
+Estimated % of shortage will be backordered	100
+Unit backorder cost	20
+Estimated % of shortage will be lost	
+Unit lost-sales cost	M
+Fixed cost if shortage occurs	
+Lead time distribution (in year)	Constant
+Constant value	0.083333
+(Not used)	
+(Not used)	
+Review cost per review	50
+

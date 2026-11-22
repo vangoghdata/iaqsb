@@ -1,0 +1,9 @@
+{
+  "name": "Cambio de tienda (Render)",
+  "states": [
+    {"name": "American Food", "initial": 0.4},
+    {"name": "Food Mart", "initial": 0.3},
+    {"name": "Atlas Foods", "initial": 0.3}
+  ],
+  "transitions": [[0.8, 0.1, 0.1], [0.1, 0.7, 0.2], [0.2, 0.2, 0.6]]
+}

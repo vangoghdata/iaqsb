@@ -1,0 +1,7 @@
+{
+  "name": "Fracción defectuosa por el método k (límite superior)",
+  "problem_type": "k_method",
+  "side": "upper", "sigma": 2, "sigma_known": true,
+  "n": 22, "k": 1.9, "usl": 100,
+  "aql": 1, "rql": 6, "alpha": 5, "beta": 10, "lot_size": 2000
+}

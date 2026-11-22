@@ -1,0 +1,54 @@
+{
+ "name": "Ensamble de alas (Heizer y Render)",
+ "problem_type": "line_balancing",
+ "time_unit": "minuto",
+ "time_available": 480,
+ "production": 40,
+ "tasks": [
+  {
+   "name": "A",
+   "time": 10,
+   "successors": "B, E"
+  },
+  {
+   "name": "B",
+   "time": 11,
+   "successors": "C, D"
+  },
+  {
+   "name": "C",
+   "time": 5,
+   "successors": "F"
+  },
+  {
+   "name": "D",
+   "time": 4,
+   "successors": "F"
+  },
+  {
+   "name": "E",
+   "time": 12,
+   "successors": "H"
+  },
+  {
+   "name": "F",
+   "time": 3,
+   "successors": "G"
+  },
+  {
+   "name": "G",
+   "time": 7,
+   "successors": "I"
+  },
+  {
+   "name": "H",
+   "time": 11,
+   "successors": "I"
+  },
+  {
+   "name": "I",
+   "time": 3,
+   "successors": ""
+  }
+ ]
+}

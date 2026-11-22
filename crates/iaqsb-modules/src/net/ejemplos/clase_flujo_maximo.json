@@ -1,0 +1,56 @@
+{
+ "name": "Flujo máximo de A a D (clase)",
+ "problem_type": "max_flow",
+ "objective": "min",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "A",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "B",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "C",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "D",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   14,
+   5,
+   10
+  ],
+  [
+   null,
+   null,
+   6,
+   5
+  ],
+  [
+   null,
+   6,
+   null,
+   10
+  ],
+  [
+   null,
+   null,
+   null,
+   null
+  ]
+ ],
+ "start": "A",
+ "end": "D"
+}

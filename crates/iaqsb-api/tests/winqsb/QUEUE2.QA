@@ -1,0 +1,26 @@
+QA	Queuing Sample Problem 2	hour	1
+Data Description	ENTRY
+Number of servers	2
+Service time distribution (in hour)	Normal
+Mean (u)	.66666667
+Standard deviation (s>0)	.2
+(Not used)	
+Service pressure coefficient	
+Interarrival time distribution (in hour)	Exponential
+Location parameter (a)	
+Scale parameter (b>0) (b=mean if a=0)	.5
+(Not used)	
+Arrival discourage coefficient	
+Batch (bulk) size distribution	Constant
+Constant value	1
+(Not used)	
+(Not used)	
+Queue capacity (maximum waiting space)	3
+Customer population	
+Busy server cost per hour	100
+Idle server cost per hour	100
+Customer waiting cost per hour	50
+Customer being served cost per hour	50
+Cost of customer being balked	60
+Unit queue capacity cost	15
+

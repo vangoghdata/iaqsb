@@ -1,0 +1,12 @@
+{
+  "name": "POQ: tarea (problema inverso)",
+  "problem_type": "despejes",
+  "model_kind": "poq",
+  "days_per_year": 360,
+  "max_inventory": 600,
+  "depletion_days": 12,
+  "delivery_days": 3,
+  "setup_cost": 30,
+  "holding_rate": 15,
+  "unit_cost": 15
+}

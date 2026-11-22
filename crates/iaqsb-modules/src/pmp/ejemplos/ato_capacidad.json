@@ -1,0 +1,68 @@
+{
+ "name": "Ensamble con capacidad y costos",
+ "problem_type": "ato",
+ "on_hand": 50,
+ "lot_size": 60,
+ "safety_stock": 10,
+ "demand_fence": 2,
+ "planning_fence": 0,
+ "hours_per_unit": 1.2,
+ "setup_cost": 300,
+ "holding_cost": 2,
+ "periods": [
+  {
+   "name": "1",
+   "forecast": 30,
+   "orders": 32,
+   "capacity": 150
+  },
+  {
+   "name": "2",
+   "forecast": 30,
+   "orders": 25,
+   "capacity": 150
+  },
+  {
+   "name": "3",
+   "forecast": 40,
+   "orders": 20,
+   "capacity": 150
+  },
+  {
+   "name": "4",
+   "forecast": 40,
+   "orders": 15,
+   "capacity": 60
+  },
+  {
+   "name": "5",
+   "forecast": 60,
+   "orders": 10,
+   "capacity": 150
+  },
+  {
+   "name": "6",
+   "forecast": 60,
+   "orders": 5,
+   "capacity": 150
+  },
+  {
+   "name": "7",
+   "forecast": 50,
+   "orders": 0,
+   "capacity": 60
+  },
+  {
+   "name": "8",
+   "forecast": 40,
+   "orders": 0,
+   "capacity": 150
+  }
+ ],
+ "requests": [
+  {
+   "period": "3",
+   "quantity": 30
+  }
+ ]
+}

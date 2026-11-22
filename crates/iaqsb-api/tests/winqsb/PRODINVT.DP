@@ -1,0 +1,6 @@
+DP	QSB P.116	PIS	4
+Stage	Period	Demand	Production Capacity	Storage Capacity	Production Setup Cost	Cost Function
+1	January	4	6	4	500	300P+100H
+2	February	5	4	3	450	320P+100H
+3	March	3	7	2	500	250P+120H
+4	April	4	5	4	600	350P+140H

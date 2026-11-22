@@ -1,0 +1,28 @@
+{
+ "name": "Wyndor no lineal (Hillier)",
+ "problem_type": "nonlinear",
+ "objective": "max",
+ "function": "126X1 - 9X1^2 + 182X2 - 13X2^2",
+ "constraints": [
+  {
+   "name": "Planta 1",
+   "expression": "X1 <= 4"
+  },
+  {
+   "name": "Planta 2",
+   "expression": "2X2 <= 12"
+  },
+  {
+   "name": "Planta 3",
+   "expression": "3X1 + 2X2 <= 18"
+  }
+ ],
+ "variables": [
+  {
+   "name": "X1"
+  },
+  {
+   "name": "X2"
+  }
+ ]
+}

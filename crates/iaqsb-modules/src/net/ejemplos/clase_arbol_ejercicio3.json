@@ -1,0 +1,88 @@
+{
+ "name": "Árbol de expansión mínima: ejercicio 3 (clase)",
+ "problem_type": "min_spanning_tree",
+ "objective": "min",
+ "symmetric": true,
+ "nodes": [
+  {
+   "name": "1",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "2",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "3",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "4",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "5",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "6",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   15,
+   22,
+   21,
+   59,
+   null
+  ],
+  [
+   null,
+   null,
+   9,
+   10,
+   8,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   7,
+   47,
+   28
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   39,
+   15
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   12
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ]
+}

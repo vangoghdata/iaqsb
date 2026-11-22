@@ -1,0 +1,11 @@
+{
+ "name": "Efecto en el flujo de efectivo: almacén comercial (clase)",
+ "problem_type": "liquidez",
+ "banks": 20,
+ "receivables": 150,
+ "securities": 0,
+ "inventories": 250,
+ "current_liabilities": 300,
+ "obsolete_pct": 30,
+ "recovery_pct": 50
+}

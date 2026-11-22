@@ -1,0 +1,25 @@
+{
+ "name": "Capital de trabajo: situación actual y reducción (clase)",
+ "problem_type": "capital",
+ "annual_expenses": 1125,
+ "annual_sales": 1500,
+ "days_per_year": 360,
+ "cycles": [
+  {
+   "name": "Actual",
+   "days_raw": 12,
+   "days_wip": 4,
+   "days_finished": 25,
+   "days_receivable": 39,
+   "days_payable": 32
+  },
+  {
+   "name": "Con la reducción",
+   "days_raw": 7,
+   "days_wip": 3,
+   "days_finished": 16,
+   "days_receivable": 31,
+   "days_payable": 36
+  }
+ ]
+}

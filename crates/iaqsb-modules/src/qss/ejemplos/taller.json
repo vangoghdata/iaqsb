@@ -1,0 +1,14 @@
+{
+  "name": "Taller en serie con reproceso y bloqueo",
+  "time_unit": "minuto",
+  "components": [
+    {"name": "Piezas", "kind": "customer", "followers": "Cola torno", "interarrival": "Exp/0/10"},
+    {"name": "Cola torno", "kind": "queue", "followers": "Torno", "capacity": "M"},
+    {"name": "Torno", "kind": "server", "followers": "Cola fresa/1/0.5", "service": "Uniform/5/9"},
+    {"name": "Cola fresa", "kind": "queue", "followers": "Fresa", "capacity": 2},
+    {"name": "Fresa", "kind": "server", "followers": "Cola despacho/0.85, Cola torno/0.1, Desechos/0.05", "service": "Triangular/4/6/9"},
+    {"name": "Cola despacho", "kind": "queue", "followers": "Despacho", "capacity": "M"},
+    {"name": "Despacho", "kind": "server", "service": "Constant/0"},
+    {"name": "Desechos", "kind": "garbage"}
+  ]
+}

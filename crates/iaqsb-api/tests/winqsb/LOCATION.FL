@@ -1,0 +1,8 @@
+FLL	Location Example 1	LOCATION	5	1	2	MIN
+Facility Number	Facility Name	To Existing 1 Flow/Unit Cost	To Existing 2 Flow/Unit Cost	To Existing 3 Flow/Unit Cost	To Existing 4 Flow/Unit Cost	To Existing 5 Flow/Unit Cost	To New 1 Flow/Unit Cost	Location X Axis	Location Y Axis
+Existing 1	F1	 	5	18	2	25	 	0	12
+Existing 2	F2	5	11	2	3	3	 	3	2
+Existing 3	F3	17	 	13	12	19	 	10	4
+Existing 4	F4	4	5	 	 	20	 	3	10
+Existing 5	F5	9	8	10	17	 	 	20	10
+New 1	NF1	8	6	15	20	3	 	 	

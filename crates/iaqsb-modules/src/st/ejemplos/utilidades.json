@@ -1,0 +1,182 @@
+{
+ "name": "Utilidades trimestrales (Arango, eje_autocorr)",
+ "problem_type": "exploracion",
+ "time_unit": "trimestre",
+ "frequency": 4,
+ "start_season": 1,
+ "data": [
+  {
+   "name": "2002-T1",
+   "value": 138.7
+  },
+  {
+   "name": "2002-T2",
+   "value": 127.2
+  },
+  {
+   "name": "2002-T3",
+   "value": 149.8
+  },
+  {
+   "name": "2002-T4",
+   "value": 151.7
+  },
+  {
+   "name": "2003-T1",
+   "value": 132.9
+  },
+  {
+   "name": "2003-T2",
+   "value": 103
+  },
+  {
+   "name": "2003-T3",
+   "value": 136.8
+  },
+  {
+   "name": "2003-T4",
+   "value": 141.3
+  },
+  {
+   "name": "2004-T1",
+   "value": 123.5
+  },
+  {
+   "name": "2004-T2",
+   "value": 107.3
+  },
+  {
+   "name": "2004-T3",
+   "value": 136.1
+  },
+  {
+   "name": "2004-T4",
+   "value": 138.6
+  },
+  {
+   "name": "2005-T1",
+   "value": 123.7
+  },
+  {
+   "name": "2005-T2",
+   "value": 106.1
+  },
+  {
+   "name": "2005-T3",
+   "value": 144.4
+  },
+  {
+   "name": "2005-T4",
+   "value": 156.1
+  },
+  {
+   "name": "2006-T1",
+   "value": 138.2
+  },
+  {
+   "name": "2006-T2",
+   "value": 111.8
+  },
+  {
+   "name": "2006-T3",
+   "value": 149.8
+  },
+  {
+   "name": "2006-T4",
+   "value": 158.5
+  },
+  {
+   "name": "2007-T1",
+   "value": 141.8
+  },
+  {
+   "name": "2007-T2",
+   "value": 119.1
+  },
+  {
+   "name": "2007-T3",
+   "value": 158
+  },
+  {
+   "name": "2007-T4",
+   "value": 170.4
+  },
+  {
+   "name": "2008-T1",
+   "value": 151.8
+  },
+  {
+   "name": "2008-T2",
+   "value": 127.4
+  },
+  {
+   "name": "2008-T3",
+   "value": 178.2
+  },
+  {
+   "name": "2008-T4",
+   "value": 189.3
+  },
+  {
+   "name": "2009-T1",
+   "value": 169.5
+  },
+  {
+   "name": "2009-T2",
+   "value": 151.4
+  },
+  {
+   "name": "2009-T3",
+   "value": 187.2
+  },
+  {
+   "name": "2009-T4",
+   "value": 199.2
+  },
+  {
+   "name": "2010-T1",
+   "value": 181.4
+  },
+  {
+   "name": "2010-T2",
+   "value": 224.9
+  },
+  {
+   "name": "2010-T3",
+   "value": 317.7
+  },
+  {
+   "name": "2010-T4",
+   "value": 341.4
+  },
+  {
+   "name": "2011-T1",
+   "value": 300.7
+  },
+  {
+   "name": "2011-T2",
+   "value": 244.9
+  },
+  {
+   "name": "2011-T3",
+   "value": 333.4
+  },
+  {
+   "name": "2011-T4",
+   "value": 370
+  },
+  {
+   "name": "2012-T1",
+   "value": 326.7
+  }
+ ],
+ "model": "auto",
+ "arima_order": "",
+ "drift": false,
+ "ets_model": "",
+ "seasonal_periods": "",
+ "lambda": "",
+ "horizon": 0,
+ "test_size": 0,
+ "level": 95
+}

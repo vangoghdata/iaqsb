@@ -1,0 +1,14 @@
+AP	Aggregate Planning Problem	1
+4	Employee	Unit	1
+0	-1	0	-1	0	0
+          DATA ITEM	Period 1	Period 2	Period 3	Period 4
+Forecast Demand	300	850	1500	350
+Regular Time Capacity in Unit	450	450	750	450
+Regular Time Cost per Unit	1	1	1	1
+Overtime Capacity in Unit	90	90	150	90
+Overtime Cost per Unit	1.5	1.5	1.5	1.5
+Initial Inventory (+) or Backorder (-)	250			
+Minimum Ending Inventory (Safety Stock)				300
+Unit Inventory Holding Cost	.3	.3	.3	.3
+Subcontracting Capacity in Unit	200	200	200	200
+Unit Subcontracting Cost	1.9	1.9	1.9	1.9

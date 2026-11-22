@@ -1,0 +1,88 @@
+{
+ "name": "Reparto en la ciudad",
+ "problem_type": "coordinates",
+ "points": [
+  {
+   "name": "Centro de distribución",
+   "x": 0,
+   "y": 0,
+   "demand": 0
+  },
+  {
+   "name": "Supermercado Norte",
+   "x": 2,
+   "y": 9,
+   "demand": 420
+  },
+  {
+   "name": "Tienda La 14",
+   "x": 6,
+   "y": 7,
+   "demand": 180
+  },
+  {
+   "name": "Minimercado El Sol",
+   "x": 9,
+   "y": 3,
+   "demand": 260
+  },
+  {
+   "name": "Droguería Central",
+   "x": 7,
+   "y": -2,
+   "demand": 140
+  },
+  {
+   "name": "Panadería Santa Fe",
+   "x": 4,
+   "y": -6,
+   "demand": 300
+  },
+  {
+   "name": "Tienda San Juan",
+   "x": -1,
+   "y": -8,
+   "demand": 220
+  },
+  {
+   "name": "Autoservicio Sur",
+   "x": -6,
+   "y": -7,
+   "demand": 380
+  },
+  {
+   "name": "Tienda El Lago",
+   "x": -9,
+   "y": -2,
+   "demand": 160
+  },
+  {
+   "name": "Supermercado Oeste",
+   "x": -8,
+   "y": 4,
+   "demand": 450
+  },
+  {
+   "name": "Tienda La Loma",
+   "x": -4,
+   "y": 8,
+   "demand": 200
+  },
+  {
+   "name": "Cafetería Plaza",
+   "x": 1,
+   "y": 4,
+   "demand": 90
+  },
+  {
+   "name": "Tienda Esquina",
+   "x": -3,
+   "y": 2,
+   "demand": 120
+  }
+ ],
+ "capacity": 1000,
+ "metric": "euclidean",
+ "cost_per_distance": 2500,
+ "cost_per_vehicle": 80000
+}

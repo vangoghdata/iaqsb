@@ -1,0 +1,13 @@
+{
+  "name": "Wyndor Glass (Hillier y Lieberman)",
+  "objective": "max",
+  "variables": [
+    {"name": "Puertas", "cost": 3},
+    {"name": "Ventanas", "cost": 5}
+  ],
+  "constraints": [
+    {"name": "Planta1", "coefs": [1, 0], "direction": "<=", "rhs": 4},
+    {"name": "Planta2", "coefs": [0, 2], "direction": "<=", "rhs": 12},
+    {"name": "Planta3", "coefs": [3, 2], "direction": "<=", "rhs": 18}
+  ]
+}

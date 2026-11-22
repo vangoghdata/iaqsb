@@ -1,0 +1,268 @@
+{
+ "name": "Producto A (Heizer y Render)",
+ "time_unit": "semana",
+ "periods_per_year": 52,
+ "periods": [
+  {
+   "name": "1"
+  },
+  {
+   "name": "2"
+  },
+  {
+   "name": "3"
+  },
+  {
+   "name": "4"
+  },
+  {
+   "name": "5"
+  },
+  {
+   "name": "6"
+  },
+  {
+   "name": "7"
+  },
+  {
+   "name": "8"
+  }
+ ],
+ "items": [
+  {
+   "id": "A",
+   "lead_time": 1,
+   "on_hand": 10,
+   "components": "B/2, C/3",
+   "lot_size": "LFL",
+   "unit": "EACH",
+   "description": "Producto final"
+  },
+  {
+   "id": "B",
+   "lead_time": 2,
+   "on_hand": 15,
+   "components": "D/2, E/2",
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "C",
+   "lead_time": 1,
+   "on_hand": 20,
+   "components": "E, F/2",
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "D",
+   "lead_time": 1,
+   "on_hand": 10,
+   "components": "",
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "E",
+   "lead_time": 2,
+   "on_hand": 10,
+   "components": "",
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "F",
+   "lead_time": 3,
+   "on_hand": 5,
+   "components": "",
+   "lot_size": "LFL",
+   "unit": "EACH"
+  }
+ ],
+ "mps": [
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   50
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "receipts": [
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "capacity": [
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ]
+}

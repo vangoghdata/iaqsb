@@ -1,0 +1,89 @@
+{
+ "name": "Dos plantas nuevas",
+ "problem_type": "location",
+ "dims": 2,
+ "facilities": [
+  {
+   "name": "Puerto",
+   "kind": "existing",
+   "x": 0,
+   "y": 0
+  },
+  {
+   "name": "Ciudad A",
+   "kind": "existing",
+   "x": 10,
+   "y": 2
+  },
+  {
+   "name": "Ciudad B",
+   "kind": "existing",
+   "x": 4,
+   "y": 9
+  },
+  {
+   "name": "Ciudad C",
+   "kind": "existing",
+   "x": 12,
+   "y": 10
+  },
+  {
+   "name": "Planta1",
+   "kind": "new"
+  },
+  {
+   "name": "Planta2",
+   "kind": "new"
+  }
+ ],
+ "flows": [
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   8,
+   4,
+   0,
+   0,
+   0,
+   3
+  ],
+  [
+   0,
+   0,
+   5,
+   6,
+   0,
+   0
+  ]
+ ]
+}

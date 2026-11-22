@@ -1,0 +1,42 @@
+DA	QSB P.283	DT	40
+Node/Event Number	Node Name or Description	Node Type (enter D or C)	Immediate Following Node (numbers separated by ',')	Node Payoff (+ profit, - cost)	Probability (if available)
+1	Survey	Chance	2, 3, 4	 	
+2	Favorable	Decision	5, 6, 7	 	0.33
+3	Unfavorable	Decision	8, 9, 10	 	0.35
+4	Neutral	Decision	11, 12, 13	 	0.31
+5	Advertise	Chance	14, 15, 16	 	
+6	Do Nothing	Chance	17, 18, 19	 	
+7	Pricing	Chance	20, 21, 22	 	
+8	Advertise	Chance	23, 24, 25	 	
+9	Do Nothing	Chance	26, 27, 28	 	
+10	Pricing	Chance	29, 30, 31	 	
+11	Advertise	Chance	32, 33, 34	 	
+12	Do Nothing	Chance	35, 36, 37	 	
+13	Pricing	Chance	38, 39, 40	 	
+14	High	 	 	100000	0.36
+15	Medium	 	 	52000	0.45
+16	Low	 	 	30000	0.18
+17	High	 	 	35000	0.36
+18	Medium	 	 	-10000	0.45
+19	Low	 	 	-30000	0.18
+20	High	 	 	84000	0.36
+21	Medium	 	 	55000	0.45
+22	Low	 	 	40000	0.18
+23	High	 	 	100000	0.11
+24	Medium	 	 	52000	0.42
+25	Low	 	 	30000	0.46
+26	High	 	 	35000	0.11
+27	Medium	 	 	-10000	0.42
+28	Low	 	 	-30000	0.46
+29	High	 	 	84000	0.11
+30	Medium	 	 	55000	0.42
+31	Low	 	 	40000	0.46
+32	High	 	 	100000	0.13
+33	Medium	 	 	52000	0.63
+34	Low	 	 	30000	0.24
+35	High	 	 	35000	0.13
+36	Medium	 	 	-10000	0.63
+37	Low	 	 	-30000	0.24
+38	High	 	 	84000	0.13
+39	Medium	 	 	55000	0.63
+40	Low	 	 	40000	0.24

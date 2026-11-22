@@ -1,0 +1,17 @@
+[package]
+name = "iaqsb-api"
+description = "Fachada común de IAQSB: catálogo de módulos, esquemas y llamadas JSON"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+iaqsb-lp.workspace = true
+iaqsb-formats.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+thiserror.workspace = true
+iaqsb-core.workspace = true
+iaqsb-modules.workspace = true
+iaqsb-render.workspace = true

@@ -1,0 +1,7 @@
+{
+  "name": "Campana politica (Hillier, variante 3)",
+  "problem_type": "zero_sum",
+  "player1": [{"name": "Estrategia1"}, {"name": "Estrategia2"}, {"name": "Estrategia3"}],
+  "player2": [{"name": "Estrategia1"}, {"name": "Estrategia2"}, {"name": "Estrategia3"}],
+  "game": [[0, -2, 2], [5, 4, -3], [2, 3, -4]]
+}

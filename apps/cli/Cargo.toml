@@ -1,0 +1,16 @@
+[package]
+name = "iaqsb"
+description = "IAQSB en la línea de comandos"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "iaqsb"
+path = "src/main.rs"
+
+[dependencies]
+iaqsb-api.workspace = true
+iaqsb-render.workspace = true
+serde_json.workspace = true
+clap = { version = "4", features = ["derive"] }

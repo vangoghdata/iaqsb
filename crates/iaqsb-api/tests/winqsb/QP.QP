@@ -1,0 +1,11 @@
+QP	MatrixFormat	QP Sample Problem	 3	 2
+Variable -->	Gid1	Gid2	Gid3	Direction	R. H. S.
+Maximize	3.2	5	5		
+Gid1 *	-1				
+Gid2 *		-2			
+Gid3 *			-5		
+C1	4	2.5	3	>=	50
+C2	3.6	7	-2.5	=	86.9
+LowerBound	0	0	0		
+UpperBound	M	M	M		
+VariableType	Continuous	Continuous	Continuous		

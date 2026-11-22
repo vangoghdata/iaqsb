@@ -1,0 +1,65 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/iaqsb-core",
+    "crates/iaqsb-modules",
+    "crates/iaqsb-lp",
+    "crates/iaqsb-formats",
+    "crates/iaqsb-api",
+    "crates/iaqsb-render",
+    "apps/cli",
+    "apps/mcp",
+]
+# apps/desktop/src-tauri se añade al compilar la app de escritorio (ver LEEME.md)
+exclude = ["apps/desktop/src-tauri"]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+authors = ["IA Nativa"]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+schemars = "0.8"
+thiserror = "1"
+iaqsb-core = { path = "crates/iaqsb-core" }
+iaqsb-modules = { path = "crates/iaqsb-modules" }
+iaqsb-lp = { path = "crates/iaqsb-lp" }
+iaqsb-formats = { path = "crates/iaqsb-formats" }
+iaqsb-api = { path = "crates/iaqsb-api" }
+iaqsb-render = { path = "crates/iaqsb-render" }
+
+# Desarrollo y pruebas (`cargo test`, sin --release): el código propio se compila
+# rápido y por partes (incremental); las dependencias (HiGHS, Clarabel,
+# nalgebra...) van optimizadas porque se compilan una sola vez y dejan las
+# pruebas numéricas casi tan rápidas como en release.
+[profile.dev]
+opt-level = 1
+debug = "line-tables-only"
+incremental = true
+
+[profile.dev.package."*"]
+opt-level = 3
+debug = false
+
+[profile.dev.build-override]
+opt-level = 0
+
+# Lo que se instala: optimizado, con LTO «thin» (casi la misma velocidad que
+# «fat» y mucho menos tiempo de enlace) y en paralelo.
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 16
+strip = true
+
+# Pruebas rápidas con optimización completa del código propio, sin LTO:
+# `cargo test --profile pruebas`
+[profile.pruebas]
+inherits = "release"
+lto = false
+incremental = true
+codegen-units = 64
+strip = false

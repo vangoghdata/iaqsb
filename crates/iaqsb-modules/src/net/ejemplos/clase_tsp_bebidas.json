@@ -1,0 +1,88 @@
+{
+ "name": "Red de bebidas: NNH y CIH (clase)",
+ "problem_type": "tsp",
+ "objective": "min",
+ "symmetric": true,
+ "nodes": [
+  {
+   "name": "1",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "2",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "3",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "4",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "5",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "6",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   4,
+   3,
+   2,
+   1,
+   2
+  ],
+  [
+   4,
+   null,
+   3,
+   7,
+   6,
+   4
+  ],
+  [
+   3,
+   3,
+   null,
+   4,
+   8,
+   9
+  ],
+  [
+   2,
+   7,
+   4,
+   null,
+   2,
+   5
+  ],
+  [
+   1,
+   6,
+   8,
+   2,
+   null,
+   7
+  ],
+  [
+   2,
+   4,
+   9,
+   5,
+   7,
+   null
+  ]
+ ]
+}

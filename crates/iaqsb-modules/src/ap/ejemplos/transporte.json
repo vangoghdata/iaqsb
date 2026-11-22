@@ -1,0 +1,42 @@
+{
+ "name": "Farnsworth Tire Company (Heizer y Render)",
+ "problem_type": "transportation",
+ "initial_inventory": 100,
+ "overtime": true,
+ "subcontracting": true,
+ "periods": [
+  {
+   "name": "Marzo",
+   "demand": 800,
+   "regular_capacity": 700,
+   "regular_cost": 40,
+   "overtime_capacity": 50,
+   "overtime_cost": 50,
+   "max_subcontract": 150,
+   "subcontract_cost": 70,
+   "holding_cost": 2
+  },
+  {
+   "name": "Abril",
+   "demand": 1000,
+   "regular_capacity": 700,
+   "regular_cost": 40,
+   "overtime_capacity": 50,
+   "overtime_cost": 50,
+   "max_subcontract": 150,
+   "subcontract_cost": 70,
+   "holding_cost": 2
+  },
+  {
+   "name": "Mayo",
+   "demand": 750,
+   "regular_capacity": 700,
+   "regular_cost": 40,
+   "overtime_capacity": 50,
+   "overtime_cost": 50,
+   "max_subcontract": 130,
+   "subcontract_cost": 70,
+   "holding_cost": 2
+  }
+ ]
+}

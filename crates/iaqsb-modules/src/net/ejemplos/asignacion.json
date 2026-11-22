@@ -1,0 +1,68 @@
+{
+ "name": "Asignación de máquinas",
+ "problem_type": "assignment",
+ "objective": "min",
+ "symmetric": false,
+ "sources": [
+  {
+   "name": "Operario1",
+   "supply": 1
+  },
+  {
+   "name": "Operario2",
+   "supply": 1
+  },
+  {
+   "name": "Operario3",
+   "supply": 1
+  },
+  {
+   "name": "Operario4",
+   "supply": 1
+  }
+ ],
+ "destinations": [
+  {
+   "name": "MáquinaA",
+   "demand": 1
+  },
+  {
+   "name": "MáquinaB",
+   "demand": 1
+  },
+  {
+   "name": "MáquinaC",
+   "demand": 1
+  },
+  {
+   "name": "MáquinaD",
+   "demand": 1
+  }
+ ],
+ "costs": [
+  [
+   9,
+   2,
+   7,
+   8
+  ],
+  [
+   6,
+   4,
+   3,
+   7
+  ],
+  [
+   5,
+   8,
+   1,
+   8
+  ],
+  [
+   7,
+   6,
+   9,
+   4
+  ]
+ ]
+}

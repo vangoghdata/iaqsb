@@ -1,0 +1,12 @@
+{
+  "name": "Ventanilla con servicio presionado y clientes desalentados",
+  "problem_type": "general",
+  "time_unit": "minuto",
+  "servers": 1,
+  "service": {"distribution": "exponential", "p1": 0, "p2": 1.2},
+  "interarrival": {"distribution": "exponential", "p1": 0, "p2": 1},
+  "pressure": 0.5,
+  "discourage": 1,
+  "waiting_cost": 2,
+  "balking_cost": 5
+}

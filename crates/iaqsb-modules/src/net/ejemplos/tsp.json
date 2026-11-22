@@ -1,0 +1,70 @@
+{
+ "name": "Ruta de ventas",
+ "problem_type": "tsp",
+ "objective": "min",
+ "symmetric": true,
+ "nodes": [
+  {
+   "name": "Lima",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "Arequipa",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "Cusco",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "Trujillo",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "Piura",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   1009,
+   1105,
+   561,
+   973
+  ],
+  [
+   1009,
+   null,
+   510,
+   1570,
+   1982
+  ],
+  [
+   1105,
+   510,
+   null,
+   1480,
+   1890
+  ],
+  [
+   561,
+   1570,
+   1480,
+   null,
+   420
+  ],
+  [
+   973,
+   1982,
+   1890,
+   420,
+   null
+  ]
+ ]
+}

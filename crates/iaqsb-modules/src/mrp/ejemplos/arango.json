@@ -1,0 +1,407 @@
+{
+ "name": "Programación MRP de 7 artículos (Arango)",
+ "time_unit": "semana",
+ "periods_per_year": 52,
+ "periods": [
+  {
+   "name": "1"
+  },
+  {
+   "name": "2"
+  },
+  {
+   "name": "3"
+  },
+  {
+   "name": "4"
+  },
+  {
+   "name": "5"
+  },
+  {
+   "name": "6"
+  },
+  {
+   "name": "7"
+  },
+  {
+   "name": "8"
+  },
+  {
+   "name": "9"
+  },
+  {
+   "name": "10"
+  },
+  {
+   "name": "11"
+  },
+  {
+   "name": "12"
+  }
+ ],
+ "items": [
+  {
+   "id": "A",
+   "components": "B/2, C/3",
+   "lead_time": 1,
+   "on_hand": 25,
+   "safety_stock": 30,
+   "lot_size": "LFL",
+   "unit": "EACH",
+   "description": "Producto final"
+  },
+  {
+   "id": "B",
+   "components": "D/1, G/2",
+   "lead_time": 2,
+   "on_hand": 120,
+   "safety_stock": 10,
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "C",
+   "components": "D/2, E/3",
+   "lead_time": 2,
+   "on_hand": 80,
+   "safety_stock": 20,
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "D",
+   "components": "F/2",
+   "lead_time": 1,
+   "on_hand": 300,
+   "safety_stock": 20,
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "E",
+   "components": "G/1",
+   "lead_time": 2,
+   "on_hand": 200,
+   "safety_stock": 10,
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "F",
+   "lead_time": 1,
+   "on_hand": 300,
+   "safety_stock": 40,
+   "lot_size": "LFL",
+   "unit": "EACH"
+  },
+  {
+   "id": "G",
+   "lead_time": 1,
+   "on_hand": 500,
+   "safety_stock": 30,
+   "lot_size": "LFL",
+   "unit": "EACH"
+  }
+ ],
+ "mps": [
+  [
+   0,
+   30,
+   30,
+   30,
+   0,
+   30,
+   30,
+   30,
+   0,
+   30,
+   0,
+   30
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "receipts": [
+  [
+   0,
+   60,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   90,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   60,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   390,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   300,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   480,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   480,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "capacity": [
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ]
+}

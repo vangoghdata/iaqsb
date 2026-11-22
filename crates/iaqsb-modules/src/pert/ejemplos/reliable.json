@@ -1,0 +1,148 @@
+{
+ "name": "Reliable Construction (Hillier)",
+ "problem_type": "cpm",
+ "time_unit": "semana",
+ "activities": [
+  {
+   "name": "A",
+   "predecessors": [],
+   "normal_time": 2,
+   "crash_time": 1,
+   "normal_cost": 180,
+   "crash_cost": 280
+  },
+  {
+   "name": "B",
+   "predecessors": [
+    "A"
+   ],
+   "normal_time": 4,
+   "crash_time": 2,
+   "normal_cost": 320,
+   "crash_cost": 420
+  },
+  {
+   "name": "C",
+   "predecessors": [
+    "B"
+   ],
+   "normal_time": 10,
+   "crash_time": 7,
+   "normal_cost": 620,
+   "crash_cost": 860
+  },
+  {
+   "name": "D",
+   "predecessors": [
+    "C"
+   ],
+   "normal_time": 6,
+   "crash_time": 4,
+   "normal_cost": 260,
+   "crash_cost": 340
+  },
+  {
+   "name": "E",
+   "predecessors": [
+    "C"
+   ],
+   "normal_time": 4,
+   "crash_time": 3,
+   "normal_cost": 410,
+   "crash_cost": 570
+  },
+  {
+   "name": "F",
+   "predecessors": [
+    "E"
+   ],
+   "normal_time": 5,
+   "crash_time": 3,
+   "normal_cost": 180,
+   "crash_cost": 260
+  },
+  {
+   "name": "G",
+   "predecessors": [
+    "D"
+   ],
+   "normal_time": 7,
+   "crash_time": 4,
+   "normal_cost": 900,
+   "crash_cost": 1020
+  },
+  {
+   "name": "H",
+   "predecessors": [
+    "E",
+    "G"
+   ],
+   "normal_time": 9,
+   "crash_time": 6,
+   "normal_cost": 200,
+   "crash_cost": 380
+  },
+  {
+   "name": "I",
+   "predecessors": [
+    "C"
+   ],
+   "normal_time": 7,
+   "crash_time": 5,
+   "normal_cost": 210,
+   "crash_cost": 270
+  },
+  {
+   "name": "J",
+   "predecessors": [
+    "F",
+    "I"
+   ],
+   "normal_time": 8,
+   "crash_time": 6,
+   "normal_cost": 430,
+   "crash_cost": 490
+  },
+  {
+   "name": "K",
+   "predecessors": [
+    "J"
+   ],
+   "normal_time": 4,
+   "crash_time": 3,
+   "normal_cost": 160,
+   "crash_cost": 200
+  },
+  {
+   "name": "L",
+   "predecessors": [
+    "J"
+   ],
+   "normal_time": 5,
+   "crash_time": 3,
+   "normal_cost": 250,
+   "crash_cost": 350
+  },
+  {
+   "name": "M",
+   "predecessors": [
+    "H"
+   ],
+   "normal_time": 2,
+   "crash_time": 1,
+   "normal_cost": 100,
+   "crash_cost": 200
+  },
+  {
+   "name": "N",
+   "predecessors": [
+    "K",
+    "L"
+   ],
+   "normal_time": 6,
+   "crash_time": 3,
+   "normal_cost": 330,
+   "crash_cost": 510
+  }
+ ]
+}

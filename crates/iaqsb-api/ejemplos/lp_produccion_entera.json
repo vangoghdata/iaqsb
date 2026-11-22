@@ -1,0 +1,12 @@
+{
+  "name": "Producción con lotes enteros",
+  "objective": "max",
+  "variables": [
+    {"name": "Mesas", "cost": 5, "type": "integer"},
+    {"name": "Sillas", "cost": 8, "type": "integer"}
+  ],
+  "constraints": [
+    {"name": "Horas", "coefs": [1, 1], "direction": "<=", "rhs": 6},
+    {"name": "Madera", "coefs": [5, 9], "direction": "<=", "rhs": 45}
+  ]
+}

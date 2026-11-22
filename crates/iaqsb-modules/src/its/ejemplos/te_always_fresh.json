@@ -1,0 +1,15 @@
+{
+  "name": "Always Fresh Grocery: té (Schroeder)",
+  "problem_type": "eoq",
+  "time_unit": "año",
+  "demand": 416,
+  "setup_cost": 10,
+  "holding_cost": 16,
+  "holding_rate": 20,
+  "shortage_cost": "M",
+  "shortage_cost_fixed": 0,
+  "production_rate": "M",
+  "lead_time": 0,
+  "days_per_year": 364,
+  "unit_cost": 80
+}

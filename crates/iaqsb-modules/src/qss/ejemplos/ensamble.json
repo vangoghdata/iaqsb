@@ -1,0 +1,15 @@
+{
+  "name": "Ensamble de dos líneas con prioridad",
+  "time_unit": "hora",
+  "components": [
+    {"name": "Chasis", "kind": "customer", "followers": "Cola A", "interarrival": "Exp/0/2"},
+    {"name": "Motor", "kind": "customer", "followers": "Cola B", "interarrival": "Normal/2/0.5", "attribute": 1},
+    {"name": "Cola A", "kind": "queue", "followers": "Soldadura", "capacity": 50},
+    {"name": "Cola B", "kind": "queue", "followers": "Pruebas", "capacity": 50},
+    {"name": "Soldadura", "kind": "server", "followers": "Buffer A//0.2", "service": "Chasis/Exp/0/1.6"},
+    {"name": "Pruebas", "kind": "server", "followers": "Buffer B//0.1", "service": "Motor/Uniform/1.2/1.8"},
+    {"name": "Buffer A", "kind": "queue", "followers": "Montaje", "capacity": 50},
+    {"name": "Buffer B", "kind": "queue", "followers": "Montaje", "capacity": 50},
+    {"name": "Montaje", "kind": "server", "input_rule": "assembly", "service": "Chasis/Triangular/1/1.5/1.8, Motor/Triangular/1/1.5/1.8"}
+  ]
+}

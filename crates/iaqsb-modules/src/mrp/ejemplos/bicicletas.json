@@ -1,0 +1,287 @@
+{
+ "name": "Bicicletas con lotes y capacidad",
+ "time_unit": "semana",
+ "periods_per_year": 52,
+ "periods": [
+  {
+   "name": "1"
+  },
+  {
+   "name": "2"
+  },
+  {
+   "name": "3"
+  },
+  {
+   "name": "4"
+  },
+  {
+   "name": "5"
+  },
+  {
+   "name": "6"
+  },
+  {
+   "name": "7"
+  },
+  {
+   "name": "8"
+  },
+  {
+   "name": "9"
+  },
+  {
+   "name": "10"
+  }
+ ],
+ "items": [
+  {
+   "id": "Bici",
+   "lead_time": 1,
+   "on_hand": 20,
+   "components": "Cuadro, Rueda/2",
+   "lot_size": "LFL",
+   "unit": "EACH",
+   "description": "Bicicleta",
+   "setup_cost": 200,
+   "holding_cost": 26,
+   "unit_cost": 150,
+   "annual_demand": 5200,
+   "safety_stock": 5
+  },
+  {
+   "id": "Cuadro",
+   "lead_time": 2,
+   "on_hand": 30,
+   "components": "Tubo/3",
+   "lot_size": "POQ",
+   "unit": "EACH",
+   "setup_cost": 150,
+   "holding_cost": 10,
+   "unit_cost": 60,
+   "annual_demand": 5200
+  },
+  {
+   "id": "Rueda",
+   "lead_time": 1,
+   "on_hand": 40,
+   "components": "Rayo/36",
+   "lot_size": "SM",
+   "unit": "EACH",
+   "setup_cost": 80,
+   "holding_cost": 4,
+   "unit_cost": 20,
+   "annual_demand": 10400
+  },
+  {
+   "id": "Tubo",
+   "lead_time": 1,
+   "on_hand": 100,
+   "components": "",
+   "lot_size": "FOQ",
+   "unit": "EACH",
+   "ls_multiplier": 500,
+   "unit_cost": 5,
+   "holding_cost": 1,
+   "setup_cost": 40
+  },
+  {
+   "id": "Rayo",
+   "lead_time": 2,
+   "on_hand": 8000,
+   "components": "",
+   "lot_size": "WW",
+   "unit": "EACH",
+   "unit_cost": 0.1,
+   "holding_cost": 0.02,
+   "setup_cost": 30,
+   "scrap": 2
+  }
+ ],
+ "mps": [
+  [
+   0,
+   0,
+   0,
+   80,
+   100,
+   120,
+   100,
+   90,
+   110,
+   130
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "receipts": [
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   60,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   100,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ ],
+ "capacity": [
+  [
+   120,
+   120,
+   120,
+   120,
+   120,
+   120,
+   120,
+   120,
+   120,
+   120
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Altavoces (Hillier)",
+  "problem_type": "eoq",
+  "time_unit": "mes",
+  "demand": 8000,
+  "setup_cost": 12000,
+  "holding_cost": 0.3,
+  "shortage_cost": "M",
+  "production_rate": "M",
+  "lead_time": 0,
+  "unit_cost": 10
+}

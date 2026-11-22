@@ -1,0 +1,12 @@
+QP	NormalModel	QP Sample Problem	 3	 3
+	OBJ/Constraint/VariableType/Bound
+Maximize	1a+3b-4c-2a*a+2a*b-2b*b-1c*c
+C1	1a+1b<=150
+C2	3a+2b-1c>=210
+C3	5a-2b+4c>=315
+Integer:	
+Binary:	
+Unrestricted:	
+a	>=0, <=M
+b	>=0, <=M
+c	>=0, <=M

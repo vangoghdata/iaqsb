@@ -1,0 +1,15 @@
+{
+  "name": "Solución de limpieza: descuento por cantidad (Schroeder)",
+  "problem_type": "discount",
+  "time_unit": "año",
+  "demand": 50,
+  "setup_cost": 20,
+  "holding_cost": 3.75,
+  "holding_rate": 15,
+  "shortage_cost": "M",
+  "shortage_cost_fixed": 0,
+  "production_rate": "M",
+  "lead_time": 0,
+  "unit_cost": 25,
+  "breaks": [{ "quantity": 30, "price": 20 }]
+}

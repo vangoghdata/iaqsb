@@ -1,0 +1,8 @@
+{
+  "name": "Flujo de seis trabajos en cinco maquinas",
+  "problem_type": "flow_shop",
+  "time_unit": "minuto",
+  "jobs": [{"name": "T1", "due": 60}, {"name": "T2", "due": 45}, {"name": "T3", "due": 70}, {"name": "T4", "due": 50}, {"name": "T5", "due": 80}, {"name": "T6", "due": 65}],
+  "machines": [{"name": "M1"}, {"name": "M2"}, {"name": "M3"}, {"name": "M4"}, {"name": "M5"}],
+  "times": [[5, 9, 8, 10, 1], [9, 3, 10, 1, 8], [9, 4, 5, 8, 6], [4, 8, 8, 7, 2], [3, 5, 6, 3, 7], [7, 2, 4, 6, 9]]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "M/M/1 para comprobar (W = 20)",
+  "time_unit": "minuto",
+  "components": [
+    {"name": "Llegadas", "kind": "customer", "followers": "Cola", "interarrival": "Exp/0/5"},
+    {"name": "Cola", "kind": "queue", "followers": "Servidor", "capacity": "M"},
+    {"name": "Servidor", "kind": "server", "service": "Exp/0/4"}
+  ]
+}

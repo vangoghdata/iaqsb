@@ -1,0 +1,13 @@
+ITS	QSB209	year	0	0
+          DATA  ITEM	ENTRY
+Demand per year	600
+Order or setup cost per order	50
+Unit holding cost per year	60
+Unit shortage cost per year	M
+Unit shortage cost independent of time	
+Replenishment or production rate per year	M
+Lead time for a new order in year	
+Unit acquisition cost without discount	300
+Number of discount breaks (quantities)	
+Order quantity if you known	60
+

@@ -1,0 +1,11 @@
+{
+  "name": "Parcial: lote con entregas parciales (POQ al revés)",
+  "problem_type": "despejes",
+  "model_kind": "poq",
+  "days_per_year": 360,
+  "annual_demand": 23400,
+  "growth_rate": 100,
+  "cycle_days": 30,
+  "setup_cost": 15,
+  "holding_cost": 4
+}

@@ -1,0 +1,23 @@
+[package]
+name = "iaqsb-modules"
+description = "Los módulos de IAQSB (todos menos LP-ILP)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+iaqsb-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+petgraph = "0.8"
+nalgebra = "0.35"
+statrs = "0.19"
+rand = "0.10"
+rand_distr = "0.6"
+rand_chacha = "0.10"
+clarabel = "0.11"
+cobyla = "1"
+# pronósticos: AutoARIMA, AutoETS, TBATS, Theta y Croston (port de statsforecast y de forecast de R)
+anofox-forecast = { version = "0.21", default-features = false }
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }

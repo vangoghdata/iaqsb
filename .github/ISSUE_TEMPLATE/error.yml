@@ -1,0 +1,33 @@
+name: "Error / Bug / Erro"
+description: "Algo no funciona o da un resultado incorrecto · Something is broken or gives a wrong result · Algo não funciona ou dá um resultado errado"
+labels: ["error"]
+body:
+  - type: markdown
+    attributes:
+      value: "Gracias por reportarlo. Puedes escribir en español, português o English."
+  - type: input
+    id: modulo
+    attributes:
+      label: "Módulo / Module / Módulo"
+      placeholder: "LP-ILP, NET, QA, lenguaje algebraico, CLI, MCP…"
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: "Qué hiciste / Steps / O que você fez"
+      description: "Adjunta el archivo del problema (.iaqsb, .LPP, .json o .xlsx) si puedes."
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: "Qué esperabas y qué pasó / Expected vs actual / O que esperava e o que aconteceu"
+      description: "Si el resultado es incorrecto, di de dónde sale el correcto (libro, página, otro programa)."
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: "Versión e idioma / Version and language / Versão e idioma"
+      placeholder: "0.2.0, Windows 11, español"

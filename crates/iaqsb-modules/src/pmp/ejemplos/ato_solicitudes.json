@@ -1,0 +1,85 @@
+{
+ "name": "Producto A, ensamble bajo pedido (Arango)",
+ "problem_type": "ato",
+ "on_hand": 110,
+ "lot_size": 150,
+ "safety_stock": 0,
+ "demand_fence": 2,
+ "planning_fence": 12,
+ "periods": [
+  {
+   "name": "1",
+   "forecast": 80,
+   "orders": 83
+  },
+  {
+   "name": "2",
+   "forecast": 80,
+   "orders": 78
+  },
+  {
+   "name": "3",
+   "forecast": 80,
+   "orders": 65
+  },
+  {
+   "name": "4",
+   "forecast": 70,
+   "orders": 61
+  },
+  {
+   "name": "5",
+   "forecast": 70,
+   "orders": 49
+  },
+  {
+   "name": "6",
+   "forecast": 70,
+   "orders": 51
+  },
+  {
+   "name": "7",
+   "forecast": 70,
+   "orders": 34
+  },
+  {
+   "name": "8",
+   "forecast": 70,
+   "orders": 17
+  },
+  {
+   "name": "9",
+   "forecast": 70,
+   "orders": 11
+  },
+  {
+   "name": "10",
+   "forecast": 70,
+   "orders": 7
+  },
+  {
+   "name": "11",
+   "forecast": 70,
+   "orders": 0
+  },
+  {
+   "name": "12",
+   "forecast": 70,
+   "orders": 0
+  }
+ ],
+ "requests": [
+  {
+   "period": "3",
+   "quantity": 20
+  },
+  {
+   "period": "5",
+   "quantity": 40
+  },
+  {
+   "period": "7",
+   "quantity": 120
+  }
+ ]
+}

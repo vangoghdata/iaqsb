@@ -1,0 +1,14 @@
+QA	Sample M/M/1 Problem	hour	0
+Data Description	ENTRY
+Number of servers	1
+Service rate (per server per hour)	3
+Customer arrival rate (per hour)	2
+Queue capacity (maximum waiting space)	
+Customer population	
+Busy server cost per hour	200
+Idle server cost per hour	200
+Customer waiting cost per hour	50
+Customer being served cost per hour	50
+Cost of customer being balked	 
+Unit queue capacity cost	
+

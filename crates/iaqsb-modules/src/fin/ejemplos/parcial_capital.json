@@ -1,0 +1,19 @@
+{
+ "name": "Parcial: capital de trabajo (desfase que se repite 4 veces)",
+ "problem_type": "capital",
+ "annual_expenses": 18000,
+ "annual_sales": 22000,
+ "days_per_year": 360,
+ "cycles": [
+  {
+   "name": "Actual",
+   "days_receivable": 40,
+   "days_payable": 35,
+   "times_per_year": 4
+  },
+  {
+   "name": "Inventario 20 % menor",
+   "inventory_reduction": 20
+  }
+ ]
+}

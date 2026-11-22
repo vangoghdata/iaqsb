@@ -1,0 +1,23 @@
+FLL	Line Balancing Example	LINE BALANCING	21	minute	30	0	0
+Task Number	Task Name	Task Time in minute	Task Isolated (Y/N)	Immediate Successor (task number separated by ,)
+1	Task 1	5	No	4,5,6
+2	Task 2	9	No	6,7,8
+3	Task 3	8	No	9
+4	Task 4	7	No	10
+5	Task 5	3	No	11
+6	Task 6	2	No	12,13
+7	Task 7	10	No	13
+8	Task 8	12	No	9
+9	Task 9	6	No	16
+10	Task 10	9	No	18
+11	Task 11	3	No	14
+12	Task 12	7	No	14
+13	Task 13	12	No	15,16
+14	Task 14	8	No	17
+15	Task 15	4	No	17,20
+16	Task 16	3	No	20
+17	Task 17	6	No	19
+18	Task 18	11	No	21
+19	Task 19	7	No	21
+20	Task 20	6	No	21
+21	Task 21	5	No	

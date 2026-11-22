@@ -1,0 +1,81 @@
+{
+ "name": "Clasificación ABC: 15 artículos (clase)",
+ "problem_type": "abc",
+ "items": [
+  {
+   "name": "1",
+   "price": 1.5,
+   "quantity": 2500
+  },
+  {
+   "name": "2",
+   "price": 2.2,
+   "quantity": 1250
+  },
+  {
+   "name": "3",
+   "price": 1.8,
+   "quantity": 4800
+  },
+  {
+   "name": "4",
+   "price": 3.0,
+   "quantity": 4500
+  },
+  {
+   "name": "5",
+   "price": 2.2,
+   "quantity": 1060
+  },
+  {
+   "name": "6",
+   "price": 1.0,
+   "quantity": 600
+  },
+  {
+   "name": "7",
+   "price": 0.9,
+   "quantity": 250
+  },
+  {
+   "name": "8",
+   "price": 1.7,
+   "quantity": 2000
+  },
+  {
+   "name": "9",
+   "price": 2.6,
+   "quantity": 1500
+  },
+  {
+   "name": "10",
+   "price": 2.0,
+   "quantity": 300
+  },
+  {
+   "name": "11",
+   "price": 2.5,
+   "quantity": 200
+  },
+  {
+   "name": "12",
+   "price": 1.5,
+   "quantity": 1800
+  },
+  {
+   "name": "13",
+   "price": 4.0,
+   "quantity": 200
+  },
+  {
+   "name": "14",
+   "price": 2.6,
+   "quantity": 4500
+  },
+  {
+   "name": "15",
+   "price": 1.1,
+   "quantity": 400
+  }
+ ]
+}

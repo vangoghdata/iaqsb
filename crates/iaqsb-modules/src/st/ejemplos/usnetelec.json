@@ -1,0 +1,238 @@
+{
+ "name": "Generación eléctrica neta de EE. UU. (fpp2::usnetelec)",
+ "problem_type": "pronostico",
+ "time_unit": "año",
+ "frequency": 1.0,
+ "start_season": 1,
+ "data": [
+  {
+   "name": "1949",
+   "value": 296.1
+  },
+  {
+   "name": "1950",
+   "value": 334.1
+  },
+  {
+   "name": "1951",
+   "value": 375.3
+  },
+  {
+   "name": "1952",
+   "value": 403.8
+  },
+  {
+   "name": "1953",
+   "value": 447.0
+  },
+  {
+   "name": "1954",
+   "value": 476.3
+  },
+  {
+   "name": "1955",
+   "value": 550.3
+  },
+  {
+   "name": "1956",
+   "value": 603.9
+  },
+  {
+   "name": "1957",
+   "value": 634.6
+  },
+  {
+   "name": "1958",
+   "value": 648.5
+  },
+  {
+   "name": "1959",
+   "value": 713.4
+  },
+  {
+   "name": "1960",
+   "value": 759.2
+  },
+  {
+   "name": "1961",
+   "value": 797.1
+  },
+  {
+   "name": "1962",
+   "value": 857.9
+  },
+  {
+   "name": "1963",
+   "value": 920.0
+  },
+  {
+   "name": "1964",
+   "value": 987.2
+  },
+  {
+   "name": "1965",
+   "value": 1058.4
+  },
+  {
+   "name": "1966",
+   "value": 1147.5
+  },
+  {
+   "name": "1967",
+   "value": 1217.8
+  },
+  {
+   "name": "1968",
+   "value": 1332.8
+  },
+  {
+   "name": "1969",
+   "value": 1445.5
+  },
+  {
+   "name": "1970",
+   "value": 1535.1
+  },
+  {
+   "name": "1971",
+   "value": 1615.9
+  },
+  {
+   "name": "1972",
+   "value": 1753.0
+  },
+  {
+   "name": "1973",
+   "value": 1864.1
+  },
+  {
+   "name": "1974",
+   "value": 1870.3
+  },
+  {
+   "name": "1975",
+   "value": 1920.8
+  },
+  {
+   "name": "1976",
+   "value": 2040.9
+  },
+  {
+   "name": "1977",
+   "value": 2127.4
+  },
+  {
+   "name": "1978",
+   "value": 2209.4
+  },
+  {
+   "name": "1979",
+   "value": 2250.7
+  },
+  {
+   "name": "1980",
+   "value": 2289.6
+  },
+  {
+   "name": "1981",
+   "value": 2298.0
+  },
+  {
+   "name": "1982",
+   "value": 2244.4
+  },
+  {
+   "name": "1983",
+   "value": 2313.4
+  },
+  {
+   "name": "1984",
+   "value": 2419.5
+  },
+  {
+   "name": "1985",
+   "value": 2473.0
+  },
+  {
+   "name": "1986",
+   "value": 2490.5
+  },
+  {
+   "name": "1987",
+   "value": 2575.3
+  },
+  {
+   "name": "1988",
+   "value": 2707.4
+  },
+  {
+   "name": "1989",
+   "value": 2967.3
+  },
+  {
+   "name": "1990",
+   "value": 3038.0
+  },
+  {
+   "name": "1991",
+   "value": 3073.8
+  },
+  {
+   "name": "1992",
+   "value": 3083.9
+  },
+  {
+   "name": "1993",
+   "value": 3197.2
+  },
+  {
+   "name": "1994",
+   "value": 3247.5
+  },
+  {
+   "name": "1995",
+   "value": 3353.5
+  },
+  {
+   "name": "1996",
+   "value": 3444.2
+  },
+  {
+   "name": "1997",
+   "value": 3492.2
+  },
+  {
+   "name": "1998",
+   "value": 3620.3
+  },
+  {
+   "name": "1999",
+   "value": 3694.8
+  },
+  {
+   "name": "2000",
+   "value": 3802.1
+  },
+  {
+   "name": "2001",
+   "value": 3736.6
+  },
+  {
+   "name": "2002",
+   "value": 3858.5
+  },
+  {
+   "name": "2003",
+   "value": 3848.0
+  }
+ ],
+ "model": "arima",
+ "arima_order": "",
+ "drift": false,
+ "ets_model": "",
+ "seasonal_periods": "",
+ "lambda": "",
+ "horizon": 10,
+ "test_size": 0,
+ "level": 95
+}

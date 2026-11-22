@@ -1,0 +1,176 @@
+{
+ "name": "Harrison Electric (Render)",
+ "problem_type": "goal",
+ "variables": [
+  {
+   "name": "Candelabros"
+  },
+  {
+   "name": "Ventiladores"
+  },
+  {
+   "name": "d1m"
+  },
+  {
+   "name": "d1p"
+  },
+  {
+   "name": "d2m"
+  },
+  {
+   "name": "d2p"
+  },
+  {
+   "name": "d3m"
+  },
+  {
+   "name": "d3p"
+  },
+  {
+   "name": "d4m"
+  },
+  {
+   "name": "d4p"
+  }
+ ],
+ "goals": [
+  {
+   "name": "Utilidad",
+   "objective": "min"
+  },
+  {
+   "name": "Cableado",
+   "objective": "min"
+  },
+  {
+   "name": "Horas extra",
+   "objective": "min"
+  },
+  {
+   "name": "Meta de ventiladores",
+   "objective": "min"
+  }
+ ],
+ "goal_coefs": [
+  [
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0
+  ]
+ ],
+ "constraints": [
+  {
+   "name": "Meta utilidad",
+   "direction": "=",
+   "rhs": 30
+  },
+  {
+   "name": "Meta cableado",
+   "direction": "=",
+   "rhs": 12
+  },
+  {
+   "name": "Meta ensamble",
+   "direction": "=",
+   "rhs": 30
+  },
+  {
+   "name": "Meta ventiladores",
+   "direction": "=",
+   "rhs": 7
+  }
+ ],
+ "coefs": [
+  [
+   7,
+   6,
+   1,
+   -1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   2,
+   3,
+   0,
+   0,
+   1,
+   -1,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   6,
+   5,
+   0,
+   0,
+   0,
+   0,
+   1,
+   -1,
+   0,
+   0
+  ],
+  [
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   -1
+  ]
+ ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Goferbroke con sondeo",
+  "problem_type": "tree",
+  "nodes": [
+    {"name": "Inicio", "kind": "decision", "next": ["Sondeo", "Sin sondeo"]},
+    {"name": "Sondeo", "kind": "chance", "next": ["Favorable", "Desfavorable"], "payoff": -30},
+    {"name": "Sin sondeo", "kind": "decision", "next": ["Perforar", "Vender"]},
+    {"name": "Favorable", "kind": "decision", "next": ["Perforar F", "Vender F"], "probability": 0.3},
+    {"name": "Desfavorable", "kind": "decision", "next": ["Perforar D", "Vender D"], "probability": 0.7},
+    {"name": "Perforar F", "kind": "chance", "next": ["Petroleo F", "Seco F"], "payoff": -100},
+    {"name": "Vender F", "kind": "end", "payoff": 90},
+    {"name": "Petroleo F", "kind": "end", "payoff": 800, "probability": 0.5},
+    {"name": "Seco F", "kind": "end", "probability": 0.5},
+    {"name": "Perforar D", "kind": "chance", "next": ["Petroleo D", "Seco D"], "payoff": -100},
+    {"name": "Vender D", "kind": "end", "payoff": 90},
+    {"name": "Petroleo D", "kind": "end", "payoff": 800, "probability": 0.142857},
+    {"name": "Seco D", "kind": "end", "probability": 0.857143},
+    {"name": "Perforar", "kind": "chance", "next": ["Petroleo", "Seco"], "payoff": -100},
+    {"name": "Vender", "kind": "end", "payoff": 90},
+    {"name": "Petroleo", "kind": "end", "payoff": 800, "probability": 0.25},
+    {"name": "Seco", "kind": "end", "probability": 0.75}
+  ]
+}

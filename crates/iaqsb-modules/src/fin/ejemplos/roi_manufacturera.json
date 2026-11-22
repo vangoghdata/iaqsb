@@ -1,0 +1,20 @@
+{
+ "name": "Cálculo del ROI: compañía manufacturera (clase)",
+ "problem_type": "roi",
+ "cases": [
+  {
+   "name": "Actual",
+   "sales": 1000,
+   "cost_of_sales": 700,
+   "total_expenses": 100,
+   "taxes": 35,
+   "fixed_assets": 2410,
+   "banks": 35,
+   "receivables": 70,
+   "inventories": 800
+  }
+ ],
+ "reduce_inventory_to": 200,
+ "proportional_expenses": true,
+ "tax_change": -10
+}

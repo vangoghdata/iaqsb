@@ -1,0 +1,16 @@
+{
+ "name": "Taller 3, punto 1: cajas por estiba (Grupo 8)",
+ "problem_type": "paletizado",
+ "box_length": 40,
+ "box_width": 25,
+ "box_height": 20,
+ "box_weight": 7.2,
+ "pallet_length": 120,
+ "pallet_width": 100,
+ "pallet_height": 14.5,
+ "pallet_weight": 30,
+ "max_load": 1000,
+ "max_height": 260,
+ "rows_per_lot": 2,
+ "stack_levels": 1
+}

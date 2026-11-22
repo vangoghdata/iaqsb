@@ -1,0 +1,1400 @@
+{
+  "_nota": "Métodos que cita cada módulo. Cada regla se aplica si se cumplen todas las condiciones de «si»: la clave (problem_type, una opción, un dato del resultado o «seccion», que mira las secciones del informe) tiene alguno de los valores; «*» pide un valor distinto de vacío, cero o false y «!x», uno distinto de x. Una lista vacía de condiciones se aplica siempre. Los módulos de logística (net, vrp, modo, inv, fin, alm, kpi) citan desde su código.",
+  "reglas": [
+    {
+      "modulo": "lp",
+      "si": {},
+      "refs": [
+        {
+          "id": "dantzig1963",
+          "para": "Método símplex y análisis de sensibilidad"
+        }
+      ]
+    },
+    {
+      "modulo": "lp",
+      "si": {
+        "enteras": [
+          "true"
+        ]
+      },
+      "refs": [
+        {
+          "id": "landdoig1960",
+          "para": "Ramificación y acotamiento para las variables enteras o binarias"
+        }
+      ]
+    },
+    {
+      "modulo": "lp",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Formulación de la programación lineal y método símplex"
+        }
+      ]
+    },
+    {
+      "modulo": "lp",
+      "si": {
+        "metodo": [
+          "engine",
+          "branch_and_cut"
+        ]
+      },
+      "refs": [
+        {
+          "id": "huangfuhall2018",
+          "para": "Motor HiGHS: símplex dual revisado, y ramificación y corte en los modelos enteros"
+        }
+      ]
+    },
+    {
+      "modulo": "lp",
+      "si": {
+        "diagnostico": [
+          "true"
+        ]
+      },
+      "refs": [
+        {
+          "id": "chinneck2008",
+          "para": "Diagnóstico de infactibilidad: subsistema irreducible infactible (IIS) y relajación de factibilidad"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {
+        "problem_type": [
+          "cpm"
+        ]
+      },
+      "refs": [
+        {
+          "id": "kelleywalker1959",
+          "para": "Método de la ruta crítica (CPM): tiempos más tempranos y más tardíos y holguras"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {
+        "problem_type": [
+          "pert"
+        ]
+      },
+      "refs": [
+        {
+          "id": "malcolm1959",
+          "para": "PERT: tres estimaciones, media y varianza de cada actividad y probabilidad de terminar a tiempo"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {
+        "crashing": [
+          "min_cost",
+          "deadline",
+          "budget"
+        ]
+      },
+      "refs": [
+        {
+          "id": "kelley1961",
+          "para": "Compresión del proyecto al menor costo"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {
+        "seccion": [
+          "compresion"
+        ]
+      },
+      "refs": [
+        {
+          "id": "kelley1961",
+          "para": "Compresión del proyecto al menor costo"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {
+        "seccion": [
+          "control"
+        ]
+      },
+      "refs": [
+        {
+          "id": "render2018",
+          "para": "Control de costos del proyecto (PERT/costo, cap. 11)"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {
+        "seccion": [
+          "simulacion"
+        ]
+      },
+      "refs": [
+        {
+          "id": "law2015",
+          "para": "Simulación de la duración del proyecto"
+        },
+        {
+          "id": "bernstein2008",
+          "para": "Generador ChaCha8 de números aleatorios"
+        }
+      ]
+    },
+    {
+      "modulo": "pert",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Administración de proyectos con PERT/CPM (cap. 22)"
+        }
+      ]
+    },
+    {
+      "modulo": "gp",
+      "si": {},
+      "refs": [
+        {
+          "id": "charnes1955",
+          "para": "Origen de la programación por metas"
+        },
+        {
+          "id": "charnescooper1961",
+          "para": "Metas con variables de desviación y prioridades preferentes"
+        },
+        {
+          "id": "huangfuhall2018",
+          "para": "Programa lineal o entero de cada prioridad resuelto con HiGHS"
+        },
+        {
+          "id": "render2018",
+          "para": "Programación por metas con prioridades (cap. 10)"
+        }
+      ]
+    },
+    {
+      "modulo": "qp",
+      "si": {},
+      "refs": [
+        {
+          "id": "goulartchen2024",
+          "para": "Solución de la programación cuadrática convexa con Clarabel (punto interior)"
+        },
+        {
+          "id": "kuhntucker1951",
+          "para": "Condiciones de Karush-Kuhn-Tucker del óptimo"
+        },
+        {
+          "id": "karush1939",
+          "para": "Condiciones de Karush-Kuhn-Tucker del óptimo"
+        }
+      ]
+    },
+    {
+      "modulo": "qp",
+      "si": {
+        "seccion": [
+          "pasos"
+        ]
+      },
+      "refs": [
+        {
+          "id": "wolfe1959",
+          "para": "Método de Wolfe del paso a paso"
+        }
+      ]
+    },
+    {
+      "modulo": "qp",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Programación cuadrática (secc. 13.7)"
+        }
+      ]
+    },
+    {
+      "modulo": "nlp",
+      "si": {},
+      "refs": [
+        {
+          "id": "nocedalwright2006",
+          "para": "Programación cuadrática sucesiva (SQP) con búsqueda lineal"
+        },
+        {
+          "id": "powell1978",
+          "para": "Actualización BFGS amortiguada de la hessiana"
+        },
+        {
+          "id": "goulartchen2024",
+          "para": "Subproblemas cuadráticos de cada iteración resueltos con Clarabel"
+        },
+        {
+          "id": "kuhntucker1951",
+          "para": "Condiciones de Karush-Kuhn-Tucker del óptimo"
+        },
+        {
+          "id": "karush1939",
+          "para": "Condiciones de Karush-Kuhn-Tucker del óptimo"
+        }
+      ]
+    },
+    {
+      "modulo": "nlp",
+      "si": {
+        "seccion": [
+          "pasos"
+        ]
+      },
+      "refs": [
+        {
+          "id": "fiaccomccormick1968",
+          "para": "Método de penalización del paso a paso (el de WinQSB)"
+        }
+      ]
+    },
+    {
+      "modulo": "nlp",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Programación no lineal (cap. 13)"
+        }
+      ]
+    },
+    {
+      "modulo": "dp",
+      "si": {},
+      "refs": [
+        {
+          "id": "bellman1957",
+          "para": "Principio de optimalidad y recursión hacia atrás"
+        },
+        {
+          "id": "hillier2015en",
+          "para": "Programación dinámica determinística (cap. 11)"
+        }
+      ]
+    },
+    {
+      "modulo": "ap",
+      "si": {},
+      "refs": [
+        {
+          "id": "holt1960",
+          "para": "Planificación agregada de la producción y la fuerza de trabajo"
+        }
+      ]
+    },
+    {
+      "modulo": "ap",
+      "si": {
+        "problem_type": [
+          "transportation"
+        ]
+      },
+      "refs": [
+        {
+          "id": "bowman1956",
+          "para": "Planificación agregada con el método de transporte"
+        }
+      ]
+    },
+    {
+      "modulo": "ap",
+      "si": {
+        "problem_type": [
+          "lp"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dantzig1963",
+          "para": "Plan óptimo por programación lineal"
+        }
+      ]
+    },
+    {
+      "modulo": "ap",
+      "si": {
+        "problem_type": [
+          "simple"
+        ],
+        "strategy": [
+          "lp"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dantzig1963",
+          "para": "Plan óptimo por programación lineal"
+        }
+      ]
+    },
+    {
+      "modulo": "ap",
+      "si": {},
+      "refs": [
+        {
+          "id": "heizerrender2014",
+          "para": "Estrategias de nivelación, persecución y método de transporte (cap. 13)"
+        }
+      ]
+    },
+    {
+      "modulo": "da",
+      "si": {
+        "problem_type": [
+          "payoff"
+        ]
+      },
+      "refs": [
+        {
+          "id": "savage1951",
+          "para": "Criterio de mínimo arrepentimiento"
+        },
+        {
+          "id": "hurwicz1951",
+          "para": "Criterio de Hurwicz"
+        },
+        {
+          "id": "raiffaschlaifer1961",
+          "para": "Valor esperado y valor esperado de la información perfecta"
+        }
+      ]
+    },
+    {
+      "modulo": "da",
+      "si": {
+        "problem_type": [
+          "bayesian"
+        ]
+      },
+      "refs": [
+        {
+          "id": "raiffaschlaifer1961",
+          "para": "Probabilidades a posteriori con el teorema de Bayes"
+        }
+      ]
+    },
+    {
+      "modulo": "da",
+      "si": {
+        "problem_type": [
+          "tree"
+        ]
+      },
+      "refs": [
+        {
+          "id": "raiffaschlaifer1961",
+          "para": "Análisis del árbol de decisión hacia atrás"
+        }
+      ]
+    },
+    {
+      "modulo": "da",
+      "si": {
+        "problem_type": [
+          "zero_sum"
+        ]
+      },
+      "refs": [
+        {
+          "id": "vonneumann1944",
+          "para": "Juego de suma cero, punto de silla y estrategias mixtas"
+        },
+        {
+          "id": "dantzig1963",
+          "para": "Estrategias mixtas por programación lineal"
+        }
+      ]
+    },
+    {
+      "modulo": "da",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Análisis de decisiones y teoría de juegos (caps. 15 y 16)"
+        }
+      ]
+    },
+    {
+      "modulo": "mkp",
+      "si": {},
+      "refs": [
+        {
+          "id": "kemenysnell1960",
+          "para": "Clasificación de estados, estado estable, primer paso y absorción"
+        },
+        {
+          "id": "nalgebra",
+          "para": "Sistemas lineales y matriz fundamental"
+        },
+        {
+          "id": "hillier2015en",
+          "para": "Cadenas de Markov (cap. 29)"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "eoq"
+        ]
+      },
+      "refs": [
+        {
+          "id": "harris1913",
+          "para": "Cantidad económica de pedido"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "eoq"
+        ],
+        "production_rate": [
+          "!M"
+        ]
+      },
+      "refs": [
+        {
+          "id": "taft1918",
+          "para": "Cantidad económica de producción"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "eoq"
+        ],
+        "production_per_day": [
+          "*"
+        ]
+      },
+      "refs": [
+        {
+          "id": "taft1918",
+          "para": "Cantidad económica de producción"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "eoq"
+        ],
+        "max_backorder": [
+          "*"
+        ]
+      },
+      "refs": [
+        {
+          "id": "hadleywhitin1963",
+          "para": "EOQ con faltantes planeados"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "discount"
+        ]
+      },
+      "refs": [
+        {
+          "id": "hadleywhitin1963",
+          "para": "EOQ con descuentos por cantidad"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "newsboy"
+        ]
+      },
+      "refs": [
+        {
+          "id": "arrow1951",
+          "para": "Modelo de un período (vendedor de periódicos)"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "lot_sizing"
+        ],
+        "method": [
+          "wagner_whitin"
+        ]
+      },
+      "refs": [
+        {
+          "id": "wagnerwhitin1958",
+          "para": "Tamaño de lote óptimo de Wagner-Whitin"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "lot_sizing"
+        ],
+        "method": [
+          "silver_meal"
+        ]
+      },
+      "refs": [
+        {
+          "id": "silvermeal1973",
+          "para": "Heurística de Silver-Meal"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "lot_sizing"
+        ],
+        "method": [
+          "ppb"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dematteis1968",
+          "para": "Balanceo de períodos (part-period)"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "lot_sizing"
+        ]
+      },
+      "refs": [
+        {
+          "id": "wagnerwhitin1958",
+          "para": "Costo óptimo con el que se compara cada regla de lote"
+        },
+        {
+          "id": "silver2017",
+          "para": "Reglas de tamaño de lote"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "sq",
+          "ss",
+          "rs",
+          "rss"
+        ]
+      },
+      "refs": [
+        {
+          "id": "silver2017",
+          "para": "Sistemas de revisión continua y periódica con demanda incierta"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "problem_type": [
+          "ss",
+          "rss"
+        ]
+      },
+      "refs": [
+        {
+          "id": "scarf1960",
+          "para": "Optimalidad de las políticas (s, S)"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {
+        "seccion": [
+          "simulacion"
+        ]
+      },
+      "refs": [
+        {
+          "id": "bernstein2008",
+          "para": "Generador ChaCha8 de la simulación"
+        }
+      ]
+    },
+    {
+      "modulo": "its",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Teoría de inventarios (cap. 18)"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "series"
+        ],
+        "method": [
+          "single_exponential",
+          "double_exponential"
+        ]
+      },
+      "refs": [
+        {
+          "id": "brown1959",
+          "para": "Suavizamiento exponencial"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "series"
+        ],
+        "method": [
+          "single_exponential_trend",
+          "double_exponential_trend",
+          "moving_average_trend"
+        ]
+      },
+      "refs": [
+        {
+          "id": "holt2004",
+          "para": "Suavizamiento con tendencia"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "series"
+        ],
+        "method": [
+          "holt_winters_additive",
+          "holt_winters_multiplicative"
+        ]
+      },
+      "refs": [
+        {
+          "id": "winters1960",
+          "para": "Suavizamiento de Holt-Winters con estacionalidad"
+        },
+        {
+          "id": "holt2004",
+          "para": "Nivel y tendencia de Holt"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "series"
+        ],
+        "method": [
+          "adaptive_exponential"
+        ]
+      },
+      "refs": [
+        {
+          "id": "triggleach1967",
+          "para": "Suavizamiento con tasa de respuesta adaptativa"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "series"
+        ]
+      },
+      "refs": [
+        {
+          "id": "hyndmankoehler2006",
+          "para": "Medidas de error: MAD, MSE y MAPE"
+        },
+        {
+          "id": "trigg1964",
+          "para": "Señal de rastreo"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "regression"
+        ]
+      },
+      "refs": [
+        {
+          "id": "render2018",
+          "para": "Regresión lineal y su análisis (cap. 4)"
+        },
+        {
+          "id": "nalgebra",
+          "para": "Mínimos cuadrados"
+        }
+      ]
+    },
+    {
+      "modulo": "fc",
+      "si": {
+        "problem_type": [
+          "series"
+        ]
+      },
+      "refs": [
+        {
+          "id": "render2018",
+          "para": "Pronósticos con series de tiempo (cap. 5)"
+        }
+      ]
+    },
+    {
+      "modulo": "qa",
+      "si": {},
+      "refs": [
+        {
+          "id": "erlang1909",
+          "para": "Llegadas de Poisson y tiempos exponenciales"
+        },
+        {
+          "id": "kendall1953",
+          "para": "Notación de Kendall y cola M/G/1"
+        },
+        {
+          "id": "little1961",
+          "para": "Ley de Little (L = λW)"
+        },
+        {
+          "id": "gross2018",
+          "para": "Fórmulas de los modelos de colas"
+        }
+      ]
+    },
+    {
+      "modulo": "qa",
+      "si": {
+        "seccion": [
+          "simulacion"
+        ]
+      },
+      "refs": [
+        {
+          "id": "law2015",
+          "para": "Simulación de eventos discretos"
+        },
+        {
+          "id": "bernstein2008",
+          "para": "Generador ChaCha8 de números aleatorios"
+        }
+      ]
+    },
+    {
+      "modulo": "qa",
+      "si": {},
+      "refs": [
+        {
+          "id": "hillier2015en",
+          "para": "Teoría de colas (cap. 17)"
+        }
+      ]
+    },
+    {
+      "modulo": "qss",
+      "si": {},
+      "refs": [
+        {
+          "id": "law2015",
+          "para": "Simulación de eventos discretos y su análisis"
+        },
+        {
+          "id": "bernstein2008",
+          "para": "Generador ChaCha8 de números aleatorios"
+        },
+        {
+          "id": "little1961",
+          "para": "Relación L = λW entre los resultados"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "job_shop"
+        ]
+      },
+      "refs": [
+        {
+          "id": "panwalkar1977",
+          "para": "Reglas de despacho"
+        },
+        {
+          "id": "gifflerthompson1960",
+          "para": "Programa del taller con reglas de despacho"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "johnson"
+        ]
+      },
+      "refs": [
+        {
+          "id": "johnson1954",
+          "para": "Regla de Johnson"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "cds",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "campbell1970",
+          "para": "Heurística CDS"
+        },
+        {
+          "id": "johnson1954",
+          "para": "Regla de Johnson en cada subproblema de CDS"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "palmer",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "palmer1965",
+          "para": "Índice de pendiente de Palmer"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "gupta",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "gupta1971",
+          "para": "Heurística de Gupta"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "dannenbring",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dannenbring1977",
+          "para": "Aproximación rápida de Dannenbring"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "hundal_rajgopal",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "hundalrajgopal1988",
+          "para": "Heurística de Hundal y Rajgopal"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "ho_chang",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "hochang1991",
+          "para": "Heurística de Ho y Chang"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {
+        "problem_type": [
+          "flow_shop"
+        ],
+        "flow_method": [
+          "neh",
+          "all_heuristics"
+        ]
+      },
+      "refs": [
+        {
+          "id": "neh1983",
+          "para": "Heurística NEH"
+        }
+      ]
+    },
+    {
+      "modulo": "job",
+      "si": {},
+      "refs": [
+        {
+          "id": "pinedo2016",
+          "para": "Criterios de desempeño del programa"
+        },
+        {
+          "id": "heizerrender2014",
+          "para": "Programación de operaciones (cap. 15)"
+        }
+      ]
+    },
+    {
+      "modulo": "mrp",
+      "si": {},
+      "refs": [
+        {
+          "id": "orlicky1975",
+          "para": "Explosión de materiales, necesidades netas y órdenes planeadas"
+        },
+        {
+          "id": "heizerrender2014",
+          "para": "MRP y reglas de lote (cap. 14)"
+        }
+      ]
+    },
+    {
+      "modulo": "fll",
+      "si": {
+        "problem_type": [
+          "location"
+        ]
+      },
+      "refs": [
+        {
+          "id": "francis1992",
+          "para": "Localización con distancia rectilínea, euclidiana o euclidiana al cuadrado"
+        }
+      ]
+    },
+    {
+      "modulo": "fll",
+      "si": {
+        "problem_type": [
+          "location"
+        ],
+        "distance": [
+          "euclidean"
+        ]
+      },
+      "refs": [
+        {
+          "id": "weiszfeld1937",
+          "para": "Algoritmo de Weiszfeld"
+        }
+      ]
+    },
+    {
+      "modulo": "fll",
+      "si": {
+        "problem_type": [
+          "layout"
+        ]
+      },
+      "refs": [
+        {
+          "id": "armourbuffa1963",
+          "para": "Mejora de la distribución por intercambios (CRAFT)"
+        },
+        {
+          "id": "francis1992",
+          "para": "Costo de flujo por distancia"
+        }
+      ]
+    },
+    {
+      "modulo": "fll",
+      "si": {
+        "problem_type": [
+          "line_balancing"
+        ],
+        "method": [
+          "heuristic"
+        ],
+        "rule": [
+          "rpw"
+        ]
+      },
+      "refs": [
+        {
+          "id": "helgesonbirnie1961",
+          "para": "Peso posicional (RPW)"
+        }
+      ]
+    },
+    {
+      "modulo": "fll",
+      "si": {
+        "problem_type": [
+          "line_balancing"
+        ],
+        "method": [
+          "comsoal"
+        ]
+      },
+      "refs": [
+        {
+          "id": "arcus1966",
+          "para": "Método COMSOAL"
+        }
+      ]
+    },
+    {
+      "modulo": "fll",
+      "si": {
+        "problem_type": [
+          "line_balancing"
+        ]
+      },
+      "refs": [
+        {
+          "id": "heizerrender2014",
+          "para": "Balanceo de líneas de ensamble (cap. 9)"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "single",
+          "double",
+          "multiple"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dodgeromig1959",
+          "para": "Curva OC, AOQ, AOQL e inspección total promedio"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "multiple"
+        ]
+      },
+      "refs": [
+        {
+          "id": "ansiz14",
+          "para": "Planes múltiples por atributos"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "sequential",
+          "sequential_variable"
+        ]
+      },
+      "refs": [
+        {
+          "id": "wald1947",
+          "para": "Prueba secuencial de razón de probabilidades"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "chain"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dodge1955",
+          "para": "Muestreo en cadena ChSP-1"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "continuous"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dodge1943",
+          "para": "Plan CSP-1 para producción continua"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "skip_lot"
+        ]
+      },
+      "refs": [
+        {
+          "id": "dodge1955skip",
+          "para": "Muestreo con salto de lotes"
+        },
+        {
+          "id": "perry1973",
+          "para": "Planes SkSP-2"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {
+        "problem_type": [
+          "mean",
+          "k_method",
+          "m_method"
+        ]
+      },
+      "refs": [
+        {
+          "id": "ansiz19",
+          "para": "Muestreo por variables (métodos k y M)"
+        }
+      ]
+    },
+    {
+      "modulo": "asa",
+      "si": {},
+      "refs": [
+        {
+          "id": "montgomery2020",
+          "para": "Muestreo de aceptación (caps. 15 y 16)"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {
+        "chart": [
+          "xbar",
+          "r",
+          "s",
+          "variance",
+          "x",
+          "median",
+          "midrange",
+          "p",
+          "np",
+          "c",
+          "u",
+          "demerits",
+          "std_p",
+          "std_np",
+          "std_c",
+          "std_u",
+          "modified_xbar",
+          "modified_x",
+          "acceptance_xbar",
+          "acceptance_x"
+        ]
+      },
+      "refs": [
+        {
+          "id": "shewhart1931",
+          "para": "Gráfico de control de Shewhart"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {
+        "chart": [
+          "cusum_xbar",
+          "cusum_x",
+          "cusum_r",
+          "cusum_s",
+          "cusum_p",
+          "cusum_c"
+        ]
+      },
+      "refs": [
+        {
+          "id": "page1954",
+          "para": "Gráfico de sumas acumuladas (CUSUM)"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {
+        "chart": [
+          "gma_xbar",
+          "gma_x",
+          "gma_p",
+          "gma_c"
+        ]
+      },
+      "refs": [
+        {
+          "id": "roberts1959",
+          "para": "Promedio móvil geométrico (EWMA)"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {
+        "check_rules": [
+          "true"
+        ]
+      },
+      "refs": [
+        {
+          "id": "westernelectric1956",
+          "para": "Reglas de corridas para detectar puntos fuera de control"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {
+        "seccion": [
+          "capacidad"
+        ]
+      },
+      "refs": [
+        {
+          "id": "kane1986",
+          "para": "Índices de capacidad Cp y Cpk"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {
+        "seccion": [
+          "pareto"
+        ]
+      },
+      "refs": [
+        {
+          "id": "juran1951",
+          "para": "Análisis de Pareto"
+        }
+      ]
+    },
+    {
+      "modulo": "qcc",
+      "si": {},
+      "refs": [
+        {
+          "id": "montgomery2020",
+          "para": "Gráficos de control y capacidad del proceso (caps. 6 a 9)"
+        }
+      ]
+    }
+  ]
+}

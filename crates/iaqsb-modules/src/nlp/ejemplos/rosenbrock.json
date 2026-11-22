@@ -1,0 +1,21 @@
+{
+ "name": "Función de Rosenbrock",
+ "problem_type": "nonlinear",
+ "objective": "min",
+ "function": "100*(X2 - X1^2)^2 + (1 - X1)^2",
+ "constraints": [],
+ "variables": [
+  {
+   "name": "X1",
+   "lower": -2,
+   "upper": 2,
+   "initial": -1.2
+  },
+  {
+   "name": "X2",
+   "lower": -1,
+   "upper": 3,
+   "initial": 1
+  }
+ ]
+}

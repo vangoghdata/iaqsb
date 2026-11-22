@@ -1,0 +1,4 @@
+# La app de escritorio compila en la misma carpeta que el resto del proyecto:
+# así HiGHS y el núcleo no se compilan dos veces.
+[build]
+target-dir = "../../../target"

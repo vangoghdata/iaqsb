@@ -1,0 +1,132 @@
+{
+ "name": "Ruta más corta con programación binaria (clase)",
+ "problem_type": "shortest_path",
+ "objective": "min",
+ "symmetric": false,
+ "nodes": [
+  {
+   "name": "A",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "B",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "C",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "D",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "E",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "F",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "G",
+   "supply": 0,
+   "demand": 0
+  },
+  {
+   "name": "H",
+   "supply": 0,
+   "demand": 0
+  }
+ ],
+ "arcs": [
+  [
+   null,
+   4,
+   2,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   5,
+   10,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   3,
+   null,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   2,
+   null,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   4,
+   8,
+   null
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   6
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   1
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ ],
+ "start": "A",
+ "end": "H"
+}

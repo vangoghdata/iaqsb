@@ -1,0 +1,16 @@
+NET	QSB150	TSP	Minimization	Graphic	Asymmetry
+6	0	0
+From \ To	LA	DEV	HOU	DAL	CMH	NY	
+LA	 	100	150	 	300	500	
+DEV	100	 	160	150	300	 	
+HOU	150	160	 	100	260	290	
+DAL	 	150	100	 	240	360	
+CMH	300	300	260	240	 	200	
+NY	500	 	290	360	200	 	
+-1
+1	2	1
+2	1	3
+3	2	5
+4	4	5
+5	3	3
+6	5	2

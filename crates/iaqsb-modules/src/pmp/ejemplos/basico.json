@@ -1,0 +1,60 @@
+{
+ "name": "Programa maestro básico (Arango)",
+ "problem_type": "basico",
+ "on_hand": 70,
+ "lot_size": 80,
+ "safety_stock": 0,
+ "periods": [
+  {
+   "name": "1",
+   "forecast": 40,
+   "orders": 0
+  },
+  {
+   "name": "2",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "3",
+   "forecast": 45,
+   "orders": 0
+  },
+  {
+   "name": "4",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "5",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "6",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "7",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "8",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "9",
+   "forecast": 50,
+   "orders": 0
+  },
+  {
+   "name": "10",
+   "forecast": 50,
+   "orders": 0
+  }
+ ],
+ "requests": []
+}

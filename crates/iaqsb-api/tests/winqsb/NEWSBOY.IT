@@ -1,0 +1,15 @@
+ITS	Inventory Problem	year	2	2
+          DATA  ITEM	ENTRY
+Demand distribution (in year)	Normal
+Mean (u)	1000
+Standard deviation (s>0)	100
+(Not used)	
+Order or setup cost	300
+Unit acquisition cost	20
+Unit selling price	30
+Unit shortage (opportunity) cost	10
+Unit salvage value	15
+Initial inventory	
+Order quantity if you know	
+Desired service level (%) if you know	
+

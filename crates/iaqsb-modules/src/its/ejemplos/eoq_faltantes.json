@@ -1,0 +1,13 @@
+{
+  "name": "Altavoces con faltantes planeados (Hillier)",
+  "problem_type": "eoq",
+  "time_unit": "mes",
+  "demand": 8000,
+  "setup_cost": 12000,
+  "holding_cost": 0.3,
+  "shortage_cost": 1.1,
+  "production_rate": "M",
+  "lead_time": 0.25,
+  "unit_cost": 10,
+  "known_quantity": 25000
+}
