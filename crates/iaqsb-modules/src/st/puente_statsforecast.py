@@ -49,7 +49,8 @@ def modelo(fam, extra, m):
         return M.AutoETS(season_length=s, model=u.replace("D", ""), damped=damped)
     if fam == "tbats":
         per = extra.get("periodos") or [m]
-        return M.AutoTBATS(season_length=[float(p) for p in per])
+        # statsforecast pide enteros cuando el periodo es entero (12, no 12.0)
+        return M.AutoTBATS(season_length=[int(p) if float(p).is_integer() else float(p) for p in per])
     if fam == "theta":
         return M.AutoTheta(season_length=s)
     if fam == "croston":
@@ -61,17 +62,20 @@ def modelo(fam, extra, m):
     raise ValueError("modelo desconocido: " + fam)
 
 
+NOMBRES = {"theta": "Theta", "croston": "Croston", "ingenuo": "Ingenuo", "ingenuo_estacional": "Ingenuo estacional", "tbats": "TBATS"}
+
+
 def nombre(mod, fam):
     try:
         if fam == "arima":
             from statsforecast.arima import arima_string
 
-            return arima_string(mod.model_)
+            return " ".join(arima_string(mod.model_).split())
         if fam == "ets":
-            return str(mod.model_["method"])
+            return str(mod.model_["method"]).strip()
     except Exception:
         pass
-    return type(mod).__name__
+    return NOMBRES.get(fam, type(mod).__name__)
 
 
 def main():

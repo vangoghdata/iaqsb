@@ -113,3 +113,19 @@ fn errores_claros_y_archivo() {
     let b = Module::write_file(&St, &ex("h02_arima_log")).unwrap();
     assert_eq!(Module::read_file(&St, &b).unwrap(), ex("h02_arima_log"));
 }
+
+#[test]
+fn con_python_si_esta_instalado() {
+    if motores::py_info().is_none() {
+        eprintln!("statsforecast no está instalado: se omite");
+        return;
+    }
+    let r = Module::solve(&St, &ex("usnetelec_arima"), &json!({"forecast_engine": "python"})).unwrap();
+    assert_eq!(r.data["engine"], "python");
+    let m = r.data["model"].as_str().unwrap();
+    assert!(m.starts_with("ARIMA(") && !m.ends_with(' '), "{m}");
+    assert_eq!(nums(&r.data["forecast"]).len(), 10);
+    // TBATS con el periodo entero (statsforecast no acepta 12.0)
+    let r = Module::solve(&St, &ex("gas_tbats"), &json!({"forecast_engine": "python"})).unwrap();
+    assert_eq!(r.data["model"], "TBATS");
+}

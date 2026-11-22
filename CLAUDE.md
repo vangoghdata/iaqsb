@@ -27,7 +27,7 @@ Lee primero `LEEME.md`, que es la fuente de verdad sobre funciones, comandos y e
 
 ## Comandos (Windows, PowerShell, desde la raíz)
 
-- Pruebas de Rust: `cargo test --workspace --release` (son 231; la primera vez compila HiGHS y tarda). Más rápido: `cargo test --workspace --profile pruebas`.
+- Pruebas de Rust: `cargo test --workspace --release` (son 232; la primera vez compila HiGHS y tarda). Más rápido: `cargo test --workspace --profile pruebas`.
 - Pruebas de las peticiones de red de la app: `cd apps/desktop/src-tauri; cargo test`.
 - Interfaz:
   - `cd apps/desktop; npm install; npx svelte-check; npm run build`
@@ -72,7 +72,6 @@ Pendiente:
 - Publicar el repositorio y poner su dirección en `CITATION.cff` y en `CONTRIBUTING.md` (hoy no hay ninguna).
 - Decidir si se adopta un formato de código.
 - Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
-- Probar el motor de Python (`statsforecast`) del módulo st: el puente está escrito (`crates/iaqsb-modules/src/st/puente_statsforecast.py`) pero no se ha ejecutado, porque statsforecast no está instalado en el equipo de Luis (no se instala nada sin su permiso).
 - Probar los adjuntos del asistente con proveedores reales (imágenes y PDF): se probaron con un servidor simulado compatible con OpenAI.
 - Cadena jerárquica: falta el último eslabón MRP → CRP (carga de capacidad por centro de trabajo) y botones en la interfaz para pasar de un nivel a otro (hoy se hace con `link` desde la IA, la CLI o el MCP).
 - Programa Jantero del profesor (`C:\jantero`, Visual FoxPro): pronósticos (promedios móviles, suavización simple y doble, Holt, Winters, correlograma), EOQ, vendedor de periódicos, planeación agregada (nivelación, persecución, óptimo), programa maestro (básico y ATO), MRP y secuenciación. IAQSB ya cubre todo salvo el correlograma. Luis no dio acceso de pantalla a Jantero; se compara con sus Excel.
@@ -84,6 +83,7 @@ Hecho el 22 de noviembre de 2026 (segunda parte):
 - Linux: compila y pasan las pruebas en Ubuntu 24.04 (WSL, en `/root/iaqsb`); genera `.deb` y `.AppImage`.
 - `tools/dev_server.py` y `tools/generar_fuentes.py` ahora usan UTF-8 y LF también en Windows (antes dañaban las tildes y cambiaban los finales de línea).
 - Módulo **st** (series de tiempo): exploración igual a R (Acf, Pacf, Box.test, decompose, BoxCox.lambda) y pronósticos ARIMA/ETS/TBATS/Theta/Croston con el mejor motor disponible: R con forecast (`options.forecast_engine`; `options.engine` queda para el optimizador), Python con statsforecast o el nativo en Rust (crate `anofox-forecast`, MIT). Los ejemplos son los de fpp2 que usa el profesor. Las pruebas comparan contra valores sacados de R y corren también sin R (`IAQSB_SIN_R=1` simula un equipo sin R).
+- Motor de Python del módulo st probado con statsforecast 2.1.1 (instalado en el equipo de Luis con `pip install --user statsforecast`). Su auto.arima elige a veces modelos distintos a los de R: es otra implementación.
 - Asistente: adjuntos (imágenes, capturas con Ctrl+V, PDF, xlsx con la operación `xlsx_text`, CSV y archivos de modelos) en `apps/desktop/src/lib/adjuntos.ts`; herramienta `link_models`.
 - Operación `link` (cadena jerárquica ap → pmp → mrp) en `crates/iaqsb-api/src/cadena.rs`; herramienta MCP `link_models`.
 - En Git Bash, los argumentos que empiezan con `/` se convierten en rutas de Windows (usa `MSYS_NO_PATHCONV=1`), y `\\n` dentro de heredocs de Python puede volverse un salto de línea real: para scripts largos, escribir el archivo con la herramienta Write.
