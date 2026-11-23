@@ -52,7 +52,7 @@ Lee primero `LEEME.md`, que es la fuente de verdad sobre funciones, comandos y e
   - En Rust se escriben en español y los traducen los catálogos del núcleo. Para encontrar los textos nuevos: `python3 tools/i18n_extraer.py`, compararlo con `en.json` y `pt.json`, y traducir lo que falte.
 - Todo método o ejemplo nuevo lleva su fuente, y sus pruebas comparan contra valores publicados o contra otra implementación independiente.
 
-## Estado (noviembre de 2026, versión 0.2.0)
+## Estado (noviembre de 2026, versión 0.2.1)
 
 Ya está hecho:
 - Ajustes (Ctrl+,), con cambio de idioma que no bloquea la app.
@@ -71,10 +71,14 @@ Pendiente:
 - Probar el asistente con claves reales de varios proveedores. Hasta ahora solo se probó contra servidores simulados.
 - Publicar el repositorio y poner su dirección en `CITATION.cff` y en `CONTRIBUTING.md` (hoy no hay ninguna).
 - Decidir si se adopta un formato de código.
-- Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. La versión 0.2.0 está publicada (https://github.com/vangoghdata/iaqsb/releases/tag/v0.2.0) con los seis instaladores: Windows, macOS chip Apple (macos-15) e Intel (macos-15-intel), .deb, .rpm y AppImage. Para una versión nueva: subir la versión en Cargo.toml, package.json y tauri.conf.json, crear la etiqueta y publicar el borrador. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
+- Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. La versión 0.2.1 está publicada (https://github.com/vangoghdata/iaqsb/releases/tag/v0.2.1, la más reciente) con los seis instaladores: Windows, macOS chip Apple (macos-15) e Intel (macos-15-intel), .deb, .rpm y AppImage. Para una versión nueva: subir la versión en Cargo.toml, package.json y tauri.conf.json, crear la etiqueta y publicar el borrador. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
 - Probar los adjuntos del asistente con proveedores reales (imágenes y PDF): se probaron con un servidor simulado compatible con OpenAI.
 - Cadena jerárquica (ap → pmp → mrp → crp) completa en el núcleo; faltan botones en la interfaz para pasar de un nivel a otro (hoy se hace con `link` desde la IA, la CLI o el MCP).
 - Programa Jantero del profesor (`C:\jantero`, Visual FoxPro): pronósticos (promedios móviles, suavización simple y doble, Holt, Winters, correlograma), EOQ, vendedor de periódicos, planeación agregada (nivelación, persecución, óptimo), programa maestro (básico y ATO), MRP y secuenciación. IAQSB ya cubre todo salvo el correlograma. Luis no dio acceso de pantalla a Jantero; se compara con sus Excel.
+
+Hecho el 23 de noviembre de 2026 (versión 0.2.1):
+- Asistente con Claude: el sistema queda fijo por conversación (`sistemaFijo` en `chat.svelte.ts`) y el estado de la app va en un bloque `<app_state>` al inicio de cada pregunta, porque Claude ata los bloques de razonamiento al historial exacto (sistema incluido) y rechazaba la conversación con «Invalid `signature` in `thinking` block». Al restaurar una conversación guardada se quitan los bloques de razonamiento. `MAX_TOKENS` subió a 64 000.
+- Ajustes → Inteligencia artificial → Nivel de razonamiento (`ajustes.razonamiento`): `output_config.effort` en Claude; `reasoning_effort` (o `reasoning.effort` en OpenRouter) en los compatibles con OpenAI. Si el modelo no admite el nivel, baja a «high» o se quita.
 
 Hecho el 22 de noviembre de 2026 (segunda parte):
 - Módulo **pmp** (programa maestro): básico y ATO, DPP con préstamo, solicitudes de pedidos, RCCP y PMP óptimo (MIP con HiGHS, comprobado contra la enumeración en 60 problemas al azar). Reproduce exactamente los Excel del profesor.
