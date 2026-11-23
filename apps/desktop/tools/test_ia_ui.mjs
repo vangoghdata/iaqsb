@@ -121,7 +121,7 @@ const servidor = http.createServer(async (req, res) => {
   }
   if (b.model === 'mock/cortado') {
     sse(res);
-    if (msgs.at(-1)?.content === 'cortar')
+    if (String(msgs.at(-1)?.content ?? '').endsWith('cortar'))
       return enviar(res, [chunk({ tool_calls: [{ index: 0, id: 'call_cut', function: { name: 'solve', arguments: '{"module":"lp","mod' } }] }), chunk({}, 'length'), 'data: [DONE]\n\n']);
     return enviar(res, [chunk({ content: 'SIGO-SIN-ERROR.' }), chunk({}, 'stop'), 'data: [DONE]\n\n']);
   }
@@ -285,6 +285,10 @@ ok(chats.length === 2, `dos rondas (${chats.length})`);
 const r1 = chats[0]?.cuerpo;
 ok(r1?.messages?.[0]?.role === 'system' && r1.stream === true && Array.isArray(r1.tools) && r1.tools[0].type === 'function', 'primera ronda: sistema, streaming y herramientas en formato OpenAI');
 ok(r1?.max_tokens > 0, 'max_tokens');
+// el sistema no cambia entre las rondas de una pregunta (Claude ata su razonamiento al historial exacto)
+ok(chats[1]?.cuerpo?.messages?.[0]?.content === r1?.messages?.[0]?.content, 'el sistema es idéntico en las dos rondas');
+ok(!String(r1?.messages?.[0]?.content).includes('Problem: '), 'el estado de la app no va en el sistema');
+ok(String(JSON.stringify(r1?.messages?.[1] ?? '')).includes('app_state'), 'el estado de la app va en la pregunta');
 const r2 = chats[1]?.cuerpo?.messages ?? [];
 const llamada = r2.find((m) => m.role === 'assistant' && m.tool_calls);
 const resultado = r2.find((m) => m.role === 'tool');
@@ -416,6 +420,7 @@ await page.evaluate(
     a.proveedor = 'anthropic';
     a.urls = { ...a.urls, anthropic: base + '/anthropic/v1' };
     a.claves = { ...a.claves, anthropic: clave };
+    a.razonamiento = 'high';
     localStorage.setItem('iaqsb.ajustes', JSON.stringify(a));
   },
   { base: BASE, clave: CLAVE }
@@ -428,6 +433,8 @@ await preguntar('Hola');
 await esperarTexto('CLAUDE-SIMULADO', 15000).catch(() => {});
 ok((await page.locator('aside.chat .asistente').last().innerText().catch(() => '')).includes('CLAUDE-SIMULADO'), 'responde por la API de Anthropic');
 const pa = pedidos.filter((p) => p.url === '/anthropic/v1/messages').at(-1)?.cuerpo;
+ok(pa?.output_config?.effort === 'high', 'nivel de razonamiento en output_config.effort: ' + JSON.stringify(pa?.output_config));
+ok(pa?.max_tokens >= 32000, 'max_tokens alcanza para razonar: ' + pa?.max_tokens);
 ok(pa?.model === 'claude-sonnet-5-5' && Array.isArray(pa.tools) && pa.tools[0].input_schema, 'pedido en formato de Anthropic');
 await page.screenshot({ path: join(OUT, `${modo[0]}_3_chat_anthropic.png`) });
 

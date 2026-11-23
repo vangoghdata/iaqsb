@@ -825,4 +825,13 @@ export const e: Record<string, string> = {
   "Adjuntar archivos": "Attach files",
   "Niveles de la planificación enlazados": "Planning levels linked",
   "Pasando el resultado al siguiente nivel…": "Passing the result to the next level…",
+  // nivel de razonamiento del asistente
+  "Nivel de razonamiento": "Reasoning level",
+  "Automático (el que trae el modelo)": "Automatic (the model's default)",
+  "Bajo: rápido y económico": "Low: fast and cheap",
+  "Medio": "Medium",
+  "Alto": "High",
+  "Muy alto": "Very high",
+  "Máximo: para los problemas más difíciles": "Maximum: for the hardest problems",
+  "Más razonamiento resuelve mejor los problemas difíciles, pero tarda más y gasta más. Si el modelo no admite un nivel, se usa el más cercano que admita.": "More reasoning solves hard problems better, but takes longer and costs more. If the model does not support a level, the closest supported one is used.",
 };

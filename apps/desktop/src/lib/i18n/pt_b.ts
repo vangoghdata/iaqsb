@@ -825,4 +825,13 @@ export const ptb: Record<string, string> = {
   "Adjuntar archivos": "Anexar arquivos",
   "Niveles de la planificación enlazados": "Níveis do planejamento ligados",
   "Pasando el resultado al siguiente nivel…": "Passando o resultado ao próximo nível…",
+  // nivel de razonamiento del asistente
+  "Nivel de razonamiento": "Nível de raciocínio",
+  "Automático (el que trae el modelo)": "Automático (o padrão do modelo)",
+  "Bajo: rápido y económico": "Baixo: rápido e econômico",
+  "Medio": "Médio",
+  "Alto": "Alto",
+  "Muy alto": "Muito alto",
+  "Máximo: para los problemas más difíciles": "Máximo: para os problemas mais difíceis",
+  "Más razonamiento resuelve mejor los problemas difíciles, pero tarda más y gasta más. Si el modelo no admite un nivel, se usa el más cercano que admita.": "Mais raciocínio resolve melhor os problemas difíceis, mas demora mais e gasta mais. Se o modelo não aceita um nível, usa-se o mais próximo que aceite.",
 };

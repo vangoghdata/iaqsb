@@ -12,6 +12,9 @@ export const VERSION = '0.2.0';
 export type Nivel = 'pregrado' | 'posgrado';
 export type Separador = 'auto' | 'punto' | 'coma';
 
+/** Cuánto razona el modelo antes de responder: más alto, mejor en problemas difíciles, pero más lento y costoso. */
+export type Razonamiento = 'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+
 interface Datos {
   nivel: Nivel;
   decimales: number;
@@ -25,6 +28,8 @@ interface Datos {
   modelos: Record<string, string>;
   /** Dirección propia de cada proveedor (si se cambió). */
   urls: Record<string, string>;
+  /** Nivel de razonamiento del asistente (auto = el que trae el modelo). */
+  razonamiento: Razonamiento;
   /** Al resolver, mostrar el paso a paso cuando el método lo tiene. */
   pasos: boolean;
   /** Autor, curso e institución para la portada de los informes. */
@@ -42,6 +47,7 @@ const DEF: Datos = {
   claves: {},
   modelos: {},
   urls: {},
+  razonamiento: 'auto',
   pasos: true,
   autor: '',
   curso: '',
@@ -74,6 +80,7 @@ class Ajustes {
   claves = $state<Record<string, string>>(this.d.claves);
   modelos = $state<Record<string, string>>(this.d.modelos);
   urls = $state<Record<string, string>>(this.d.urls);
+  razonamiento = $state<Razonamiento>(this.d.razonamiento);
   pasos = $state(this.d.pasos);
   autor = $state(this.d.autor);
   curso = $state(this.d.curso);
@@ -93,6 +100,7 @@ class Ajustes {
       claves: $state.snapshot(this.claves),
       modelos: $state.snapshot(this.modelos),
       urls: $state.snapshot(this.urls),
+      razonamiento: this.razonamiento,
       pasos: this.pasos,
       autor: this.autor,
       curso: this.curso,

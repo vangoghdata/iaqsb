@@ -170,7 +170,7 @@ winget install Kitware.CMake
 winget install LLVM.LLVM
 ```
 
-Depois de instalar, feche o PowerShell, abra uma janela nova e execute o script de novo. Ele compila a CLI e o servidor MCP, inclui ambos no instalador e gera um único instalador, `IAQSB_0.2.0_x64-setup.exe` (NSIS), em `target\release\bundle\nsis\`. Com `-Pruebas`, executa antes os testes. O instalador leva o logo do IAQSB (ícone, cabeçalho e painel lateral, gerados com `python3 tools/instalador_imagenes.py`) e permite escolher espanhol, inglês ou português. Os arquivos `.iaqsb` (modelos algébricos) e os do WinQSB abrem com clique duplo.
+Depois de instalar, feche o PowerShell, abra uma janela nova e execute o script de novo. Ele compila a CLI e o servidor MCP, inclui ambos no instalador e gera um único instalador, `IAQSB_0.2.1_x64-setup.exe` (NSIS), em `target\release\bundle\nsis\`. Com `-Pruebas`, executa antes os testes. O instalador leva o logo do IAQSB (ícone, cabeçalho e painel lateral, gerados com `python3 tools/instalador_imagenes.py`) e permite escolher espanhol, inglês ou português. Os arquivos `.iaqsb` (modelos algébricos) e os do WinQSB abrem com clique duplo.
 
 No Linux ou no macOS: `scripts/build.sh` (são necessários também `cmake` e `clang`; `--pruebas` executa os testes).
 
@@ -280,7 +280,7 @@ C2: 3 X1 + 2 X2 <= 18;
 
 Se você usar o IAQSB em um trabalho acadêmico, cite a versão que usou (os dados estão em [CITATION.cff](CITATION.cff) e em **Configurações → Sobre o IAQSB**, que também a copia em BibTeX):
 
-IA Nativa. (2026). *IAQSB: investigación de operaciones nativa para IA* (Versão 0.2.0) [Software].
+IA Nativa. (2026). *IAQSB: investigación de operaciones nativa para IA* (Versão 0.2.1) [Software].
 
 Cite também os métodos e os dados: cada relatório traz as suas referências em APA 7.
 

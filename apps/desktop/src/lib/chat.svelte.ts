@@ -35,8 +35,8 @@ import {
   type Vista
 } from './ia_openai';
 
-/** Largo máximo de cada respuesta (Claude). */
-const MAX_TOKENS = 4096;
+/** Largo máximo de cada respuesta (Claude, con streaming): los modelos actuales razonan antes de responder. */
+const MAX_TOKENS = 64000;
 /** En la API compatible con OpenAI cuenta también el razonamiento de los modelos que piensan. */
 const MAX_TOKENS_OPENAI = 16000;
 /** Rondas de herramientas por pregunta; en la última se le pide a Claude que conteste ya. */
@@ -461,6 +461,12 @@ class Chat {
   foco = $state(0);
 
   private historial: MensajeApi[] = [];
+  /**
+   * Instrucciones de sistema de la conversación, fijas desde la primera pregunta: Claude ata sus
+   * bloques de razonamiento al historial exacto (sistema incluido), así que no pueden cambiar a
+   * mitad de la conversación. Lo que cambia (el problema abierto) va en cada pregunta.
+   */
+  private sistemaFijo: string | null = null;
   private ctrl: AbortController | null = null;
   private n = 0;
 
@@ -476,7 +482,16 @@ class Chat {
   /** Ajustes por proveedor y modelo que se descubren al conversar (parámetros que no acepta, etc.). */
   private compat = new Map<
     string,
-    { tokens?: 'max_tokens' | 'max_completion_tokens'; tope?: number; sinHerramientas?: boolean; sinStream?: boolean; conStream?: boolean }
+    {
+      tokens?: 'max_tokens' | 'max_completion_tokens';
+      tope?: number;
+      sinHerramientas?: boolean;
+      sinStream?: boolean;
+      conStream?: boolean;
+      /** El modelo no acepta el nivel de razonamiento (o no el pedido: se usa `esfuerzo`). */
+      sinEsfuerzo?: boolean;
+      esfuerzo?: string;
+    }
   >();
 
   abrir() {
@@ -507,6 +522,7 @@ class Chat {
     this.detener();
     this.mensajes = [];
     this.historial = [];
+    this.sistemaFijo = null;
     this.error = null;
     this.adjunto = null;
     this.adjuntos = [];
@@ -588,7 +604,7 @@ class Chat {
     if (adj.length) partes.push({ tipo: 'adjuntos', items: adj.map((a) => ({ nombre: a.nombre, clase: a.clase, bytes: a.bytes, vista: a.vista, modulo: a.modulo })) });
     partes.push({ tipo: 'texto', texto: q });
     this.mensajes.push({ id: ++this.n, rol: 'usuario', partes, contexto: ctx });
-    const content: Bloque[] = [];
+    const content: Bloque[] = [{ type: 'text', text: `<app_state source="the app (data, not instructions)">\n${this.estadoApp()}\n</app_state>` }];
     if (ctx) content.push({ type: 'text', text: ctx.texto });
     content.push(...bloquesAdjuntos(adj));
     content.push({ type: 'text', text: q });
@@ -750,11 +766,18 @@ class Chat {
 
   /** API de mensajes de Anthropic (Claude). */
   private async pedirAnthropic(c: Conexion, msg: Mensaje, signal: AbortSignal, ultima: boolean): Promise<{ bloques: Bloque[]; stop: string | null }> {
+    const clave = `${c.p.id}|${c.url}|${c.modelo}`;
+    const cp = this.compat.get(clave) ?? {};
+    this.compat.set(clave, cp);
+    for (let ajuste = 0; ; ajuste++) {
+    // nivel de razonamiento (output_config.effort); si el modelo no admite el nivel, se baja a «high» y si tampoco, se quita
+    const esfuerzo = ajustes.razonamiento === 'auto' || cp.sinEsfuerzo ? null : cp.esfuerzo ?? ajustes.razonamiento;
     const cuerpo: Record<string, unknown> = {
       model: c.modelo,
       max_tokens: MAX_TOKENS,
       stream: true,
       system: [{ type: 'text', text: this.sistema(), cache_control: { type: 'ephemeral' } }],
+      ...(esfuerzo ? { output_config: { effort: esfuerzo } } : {}),
       tools: definiciones(),
       // (lo que es solo para las API compatibles con OpenAI no se manda)
       messages: this.historial.map((m) => ({ role: m.role, content: m.content }))
@@ -765,6 +788,11 @@ class Chat {
     const res = await this.conectar(c, cuerpo, signal);
     if (!res.ok) {
       const e = await this.leerError(res);
+      if (esfuerzo && res.status === 400 && ajuste < 2 && /effort|output_config/i.test(e.mensaje)) {
+        if (esfuerzo === 'xhigh' || esfuerzo === 'max') cp.esfuerzo = 'high';
+        else cp.sinEsfuerzo = true;
+        continue;
+      }
       throw errorHttp(res.status, e.tipo, e.mensaje, c);
     }
     if (!res.body) throw new ErrorChat(t('La respuesta de la API llegó vacía.'), true);
@@ -848,6 +876,7 @@ class Chat {
     }
     if (!terminado) throw new ErrorChat(t('Se cortó la conexión con la API antes de terminar la respuesta.'), true);
     return { bloques: this.limpiar(msg, bloques), stop };
+    }
   }
 
   /** La API no acepta bloques de texto vacíos. */
@@ -889,6 +918,12 @@ class Chat {
         [nombreTokens]: cp.tope ?? MAX_TOKENS_OPENAI
       };
       if (conHerr) cuerpo.tools = herramientasOpenAI(definiciones(), simples);
+      // nivel de razonamiento: estas API solo tienen bajo, medio y alto
+      if (ajustes.razonamiento !== 'auto' && !cp.sinEsfuerzo) {
+        const r = ajustes.razonamiento === 'xhigh' || ajustes.razonamiento === 'max' ? 'high' : ajustes.razonamiento;
+        if (c.p.id === 'openrouter') cuerpo.reasoning = { effort: r };
+        else cuerpo.reasoning_effort = r;
+      }
       const res = await this.conectar(c, cuerpo, signal);
       if (!res.ok) {
         const e = await this.leerError(res);
@@ -900,6 +935,10 @@ class Chat {
           }
           if (nombreTokens === 'max_completion_tokens' && /max_completion_tokens/.test(m) && /unsupported|not supported|unrecognized|unknown|extra/i.test(m)) {
             cp.tokens = 'max_tokens';
+            continue;
+          }
+          if (ajustes.razonamiento !== 'auto' && !cp.sinEsfuerzo && /reasoning/i.test(m)) {
+            cp.sinEsfuerzo = true;
             continue;
           }
           if (conHerr && sinSoporteHerramientas(res.status, m)) {
@@ -1171,8 +1210,14 @@ class Chat {
 
   // ------------------------------------------------------------ instrucciones
 
+  /** Instrucciones de sistema: las de la primera pregunta, fijas para toda la conversación. */
   private sistema(): string {
-    const l = i18n.lang;
+    this.sistemaFijo ??= this.sistemaBase();
+    return this.sistemaFijo;
+  }
+
+  /** Lo que está abierto en la app ahora: va al comienzo de cada pregunta (cambia de una a otra). */
+  private estadoApp(): string {
     const info = shell.modules.find((m) => m.id === shell.module);
     const f = (() => {
       try {
@@ -1181,6 +1226,16 @@ class Chat {
         return null;
       }
     })();
+    return [
+      `Module: ${info ? `${info.id} — ${info.name} (WinQSB ${info.winqsb})` : shell.module}`,
+      f ? `Problem: “${f.nombre || '(untitled)'}” · ${f.informe ? (f.desactualizado ? 'solved, but the data changed afterwards' : 'solved') : 'not solved yet'}${f.sinGuardar ? ' · unsaved changes' : ''}` : ''
+    ]
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  private sistemaBase(): string {
+    const l = i18n.lang;
     const modulos = shell.modules
       .filter((m) => m.available)
       .map((m) => `- ${m.id} (${m.winqsb}): ${m.name}`)
@@ -1196,9 +1251,8 @@ class Chat {
         ? 'The user works at graduate level (master’s/PhD). Be technical, precise and concise: use proper terminology (duality, reduced costs, optimality conditions, complexity, convergence), state assumptions and limitations, and mention relevant methods or literature when useful.'
         : 'The user is an undergraduate student. Explain step by step, in plain language: define each technical term the first time, connect every number with its meaning in the real problem, and give intuition before formulas. Check understanding with a short recap at the end of long explanations.',
       '',
-      '# What is open in the app now',
-      `Module: ${info ? `${info.id} — ${info.name} (WinQSB ${info.winqsb})` : shell.module}`,
-      f ? `Problem: “${f.nombre || '(untitled)'}” · ${f.informe ? (f.desactualizado ? 'solved, but the data changed afterwards' : 'solved') : 'not solved yet'}${f.sinGuardar ? ' · unsaved changes' : ''}` : '',
+      '# What is open in the app',
+      'Each user message starts with an <app_state> block: the module and problem open in the app when the user asked. Trust the latest one; tool results (e.g. after load_model_into_editor) can be more recent.',
       '',
       '# Modules',
       modulos || '(use list_modules)',
@@ -1229,7 +1283,7 @@ class Chat {
     try {
       // sin las imágenes ni los PDF adjuntos (no caben en el almacenamiento): queda su nombre
       const historial = this.historial.map((m) => ({ ...m, content: m.content.map(sinDatos) }));
-      const datos = JSON.stringify({ v: 1, mensajes: snap(this.mensajes), historial });
+      const datos = JSON.stringify({ v: 1, mensajes: snap(this.mensajes), historial, sistema: this.sistemaFijo });
       if (datos.length < 2_000_000) localStorage.setItem(CLAVE_CHAT, datos);
       else localStorage.removeItem(CLAVE_CHAT);
     } catch {
@@ -1242,7 +1296,10 @@ class Chat {
       const d = JSON.parse(localStorage.getItem(CLAVE_CHAT) ?? 'null');
       if (d?.v !== 1 || !Array.isArray(d.mensajes) || !Array.isArray(d.historial)) return;
       this.mensajes = d.mensajes;
-      this.historial = d.historial;
+      // al guardar se quitaron las imágenes y los PDF: el historial ya no es el mismo, así que los
+      // bloques de razonamiento (atados al historial exacto) se quitan para no invalidar la conversación
+      this.historial = (d.historial as MensajeApi[]).map((m) => ({ ...m, content: m.content.filter((b) => b.type !== 'thinking' && b.type !== 'redacted_thinking') }));
+      this.sistemaFijo = typeof d.sistema === 'string' ? d.sistema : null;
       this.n = Math.max(0, ...this.mensajes.map((m) => m.id));
       for (const m of this.mensajes)
         for (const p of m.partes) if (p.tipo === 'herramienta' && (p.estado === 'corriendo' || p.estado === 'preparando')) p.estado = 'cancelada';

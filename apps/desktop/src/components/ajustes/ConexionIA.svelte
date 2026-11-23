@@ -194,6 +194,25 @@
       {#each sugerencias as m (m.id)}<option value={m.id}>{m.etiqueta}</option>{/each}
     </datalist>
   </label>
+
+  <label class="campo">
+    <span class="et">{t('Nivel de razonamiento')}</span>
+    <select
+      value={ajustes.razonamiento}
+      onchange={(e) => {
+        ajustes.razonamiento = e.currentTarget.value as typeof ajustes.razonamiento;
+        ajustes.guardar();
+      }}
+    >
+      <option value="auto">{t('Automático (el que trae el modelo)')}</option>
+      <option value="low">{t('Bajo: rápido y económico')}</option>
+      <option value="medium">{t('Medio')}</option>
+      <option value="high">{t('Alto')}</option>
+      <option value="xhigh">{t('Muy alto')}</option>
+      <option value="max">{t('Máximo: para los problemas más difíciles')}</option>
+    </select>
+    <span class="ayuda">{t('Más razonamiento resuelve mejor los problemas difíciles, pero tarda más y gasta más. Si el modelo no admite un nivel, se usa el más cercano que admita.')}</span>
+  </label>
   {#if modelos.length}
     <p class="ayuda">
       {t('{0} modelos disponibles: escribe para buscar.', modelos.length)}
