@@ -34,6 +34,12 @@ pub enum Familia {
     Ets { spec: Option<String> },
     /// Periodos estacionales (pueden ser varios y no enteros, p. ej. 7 y 365.25).
     Tbats { periodos: Vec<f64> },
+    /// ses() de R: suavización exponencial simple, ETS(A,N,N) por mínimos cuadrados.
+    Ses,
+    /// holt() de R: tendencia lineal (posiblemente amortiguada), ETS(A,A,N) o ETS(A,Ad,N).
+    Holt { amortiguada: bool },
+    /// hw() de R: Holt-Winters aditivo, ETS(A,A,A), o multiplicativo, ETS(M,A,M).
+    Hw { multiplicativa: bool, amortiguada: bool },
     Theta,
     Croston,
     Ingenuo,
@@ -48,6 +54,10 @@ impl Familia {
             Familia::Ets { spec: None } => "ETS automático".into(),
             Familia::Ets { spec: Some(s) } => format!("ETS {s}"),
             Familia::Tbats { .. } => "TBATS".into(),
+            Familia::Ses => "Suavización exponencial simple".into(),
+            Familia::Holt { amortiguada: false } => "Holt (tendencia lineal)".into(),
+            Familia::Holt { amortiguada: true } => "Holt amortiguado".into(),
+            Familia::Hw { multiplicativa, amortiguada } => format!("Holt-Winters {}{}", if *multiplicativa { "multiplicativo" } else { "aditivo" }, if *amortiguada { " amortiguado" } else { "" }),
             Familia::Theta => "Theta".into(),
             Familia::Croston => "Croston".into(),
             Familia::Ingenuo => "Ingenuo".into(),
@@ -55,7 +65,21 @@ impl Familia {
         }
     }
     fn usa_lambda(&self) -> bool {
-        matches!(self, Familia::Arima { .. } | Familia::Ets { .. } | Familia::Theta | Familia::Ingenuo | Familia::IngenuoEstacional)
+        matches!(self, Familia::Arima { .. } | Familia::Ets { .. } | Familia::Ses | Familia::Holt { .. } | Familia::Hw { multiplicativa: false, .. } | Familia::Theta | Familia::Ingenuo | Familia::IngenuoEstacional)
+    }
+    /// Modelo ETS equivalente de ses(), holt() y hw() (para los motores sin esas funciones).
+    pub fn spec_ets(&self) -> Option<String> {
+        match self {
+            Familia::Ets { spec } => spec.clone(),
+            Familia::Ses => Some("ANN".into()),
+            Familia::Holt { amortiguada } => Some(if *amortiguada { "AAdN" } else { "AAN" }.into()),
+            Familia::Hw { multiplicativa, amortiguada } => Some(format!("{}A{}{}", if *multiplicativa { "M" } else { "A" }, if *amortiguada { "d" } else { "" }, if *multiplicativa { "M" } else { "A" })),
+            _ => None,
+        }
+    }
+    /// ¿Es de la familia de la suavización exponencial (ETS)?
+    pub fn es_ets(&self) -> bool {
+        matches!(self, Familia::Ets { .. } | Familia::Ses | Familia::Holt { .. } | Familia::Hw { .. })
     }
 }
 
@@ -81,6 +105,8 @@ pub struct Ajuste {
     pub inferior: Vec<f64>,
     pub superior: Vec<f64>,
     pub nota: Option<String>,
+    /// Prueba de Ljung-Box de los residuos tal como la da checkresiduals() de R: (Q*, gl, p, retardos).
+    pub ljung_box: Option<(f64, usize, f64, usize)>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -93,9 +119,16 @@ pub enum Motor {
 impl Motor {
     pub fn nombre(self) -> String {
         match self {
-            Motor::R => r_info().map(|r| format!("R {} · forecast {}", r.version, r.forecast)).unwrap_or_else(|| "R (forecast)".into()),
+            Motor::R => match r_info() {
+                Some(r) => format!("R {} · forecast {}", r.version, r.forecast),
+                None => match (r_externo(), VERSION_R_EXTERNO.lock().ok().and_then(|v| v.clone())) {
+                    (Some(d), Some(v)) => format!("R {v} ({d})"),
+                    (Some(d), None) => format!("R · forecast ({d})"),
+                    _ => "R (forecast)".into(),
+                },
+            },
             Motor::Python => py_info().map(|v| format!("Python · statsforecast {v}")).unwrap_or_else(|| "Python (statsforecast)".into()),
-            Motor::Nativo => "IAQSB nativo (anofox-forecast, Rust)".into(),
+            Motor::Nativo => "IAQSB nativo en Rust (ETS traducido de forecast; ARIMA, TBATS y Theta con anofox-forecast)".into(),
         }
     }
 }
@@ -150,7 +183,8 @@ fn candidatos_rscript() -> Vec<PathBuf> {
 pub fn r_info() -> Option<&'static RInfo> {
     static R: OnceLock<Option<RInfo>> = OnceLock::new();
     R.get_or_init(|| {
-        if std::env::var("IAQSB_SIN_R").is_ok() {
+        // IAQSB_SIN_R simula un equipo sin R; IAQSB_SIN_R_LOCAL, uno sin R instalado pero con el de la app (webR)
+        if std::env::var("IAQSB_SIN_R").is_ok() || std::env::var("IAQSB_SIN_R_LOCAL").is_ok() {
             return None;
         }
         for p in candidatos_rscript() {
@@ -175,6 +209,54 @@ pub fn r_info() -> Option<&'static RInfo> {
     .as_ref()
 }
 
+/// Ejecuta un programa de R y devuelve lo que escribió en la salida estándar.
+pub type EjecutorR = Box<dyn Fn(&str) -> Result<String, String> + Send + Sync>;
+
+static R_EXTERNO: OnceLock<(String, EjecutorR)> = OnceLock::new();
+/// Versión de R y de forecast que informó el R externo («4.6.0 · forecast 9.0.2»).
+static VERSION_R_EXTERNO: std::sync::Mutex<Option<String>> = std::sync::Mutex::new(None);
+
+/// Registra un R que no está instalado en el equipo pero que la aplicación puede usar
+/// (la app de escritorio trae webR: el R oficial compilado a WebAssembly, con el
+/// paquete forecast, que da los mismos resultados). `descripcion` va en el nombre del motor.
+pub fn registrar_r_externo(descripcion: &str, ejecutor: EjecutorR) {
+    let _ = R_EXTERNO.set((descripcion.to_string(), ejecutor));
+}
+
+fn r_externo() -> Option<&'static str> {
+    if std::env::var("IAQSB_SIN_R").is_ok() {
+        return None;
+    }
+    R_EXTERNO.get().map(|(d, _)| d.as_str())
+}
+
+/// ¿Hay R con forecast (instalado o el de la aplicación)?
+pub fn r_disponible() -> bool {
+    r_info().is_some() || r_externo().is_some()
+}
+
+/// Ejecuta un programa de R con el R instalado o, si no hay, con el de la aplicación.
+pub fn ejecutar_r(programa: &str) -> Result<String, String> {
+    if let Some(info) = r_info() {
+        let dir = std::env::temp_dir().join(format!("iaqsb-r-{}-{}", std::process::id(), std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_nanos()).unwrap_or(0)));
+        std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        let script = dir.join("programa.R");
+        std::fs::write(&script, programa).map_err(|e| e.to_string())?;
+        let out = Command::new(&info.rscript).arg("--vanilla").arg(&script).current_dir(&dir).stdin(Stdio::null()).output().map_err(|e| format!("no se pudo ejecutar R: {e}"))?;
+        let _ = std::fs::remove_dir_all(&dir);
+        let txt = String::from_utf8_lossy(&out.stdout).to_string();
+        if !out.status.success() && txt.trim().is_empty() {
+            let e = String::from_utf8_lossy(&out.stderr);
+            return Err(format!("R terminó con error: {}", e.lines().filter(|l| !l.trim().is_empty()).last().unwrap_or("sin detalle")));
+        }
+        return Ok(txt);
+    }
+    match (r_externo(), R_EXTERNO.get()) {
+        (Some(_), Some((_, f))) => f(programa),
+        _ => Err("R con el paquete forecast no está instalado".into()),
+    }
+}
+
 /// Versión de statsforecast si está instalado en el Python del equipo.
 pub fn py_info() -> Option<&'static str> {
     static P: OnceLock<Option<String>> = OnceLock::new();
@@ -192,7 +274,7 @@ pub fn py_info() -> Option<&'static str> {
 /// Motores disponibles, del mejor al de respaldo.
 pub fn disponibles() -> Vec<Motor> {
     let mut v = vec![];
-    if r_info().is_some() {
+    if r_disponible() {
         v.push(Motor::R);
     }
     if py_info().is_some() {
@@ -245,6 +327,23 @@ fn nativo(s: &Serie, t: &Trabajo) -> Result<Ajuste, String> {
     let m = s.m.round().max(1.0) as usize;
     let lam = if t.familia.usa_lambda() { s.lambda } else { None };
     let y: Vec<f64> = s.y[..t.n].iter().map(|v| lam.map_or(*v, |l| box_cox(*v, l))).collect();
+    // suavización exponencial: la traducción de ets() de forecast (los mismos números que R)
+    if t.familia.es_ets() {
+        match ets_como_r(&y, m, &t.familia, t.h, s.nivel) {
+            Ok(mut a) => {
+                if let Some(l) = lam {
+                    for v in a.ajustados.iter_mut().chain(a.media.iter_mut()).chain(a.inferior.iter_mut()).chain(a.superior.iter_mut()) {
+                        if v.is_finite() {
+                            *v = box_cox_inv(*v, l);
+                        }
+                    }
+                }
+                return Ok(a);
+            }
+            Err(e) if matches!(t.familia, Familia::Ets { spec: None }) => return Err(e),
+            Err(_) => {}
+        }
+    }
     let ts = serie_anofox(&y)?;
     let nivel = s.nivel / 100.0;
     let mut nota = None;
@@ -261,15 +360,18 @@ fn nativo(s: &Serie, t: &Trabajo) -> Result<Ajuste, String> {
             }
         }
         Familia::Ets { spec: None } => Box::new(if m > 1 { AutoETS::with_period(m) } else { AutoETS::non_seasonal() }),
-        Familia::Ets { spec: Some(sp) } => {
-            let spec = ETSSpec::from_notation(sp).map_err(|e| format!("modelo ETS «{sp}» no válido: {e}"))?;
+        Familia::Ets { spec: Some(_) } | Familia::Ses | Familia::Holt { .. } | Familia::Hw { .. } => {
+            let sp = t.familia.spec_ets().unwrap_or_default();
+            let spec = ETSSpec::from_notation(&sp).map_err(|e| format!("modelo ETS «{sp}» no válido: {e}"))?;
             Box::new(ETS::new(spec, m))
         }
         Familia::Tbats { periodos } => {
             let p: Vec<usize> = periodos.iter().map(|x| x.round().max(2.0) as usize).collect();
-            if periodos.iter().any(|x| x.fract() != 0.0) {
-                nota = Some("el motor nativo redondea los periodos estacionales no enteros; R los usa tal cual".into());
-            }
+            nota = Some(if periodos.iter().any(|x| x.fract() != 0.0) {
+                "el TBATS del motor nativo (anofox-forecast) no es el de R y redondea los periodos no enteros: los valores pueden diferir de los de R".into()
+            } else {
+                "el TBATS del motor nativo (anofox-forecast) no es el de R: los valores pueden diferir de los de R".into()
+            });
             Box::new(AutoTBATS::new(p))
         }
         Familia::Theta => Box::new(if m > 1 { AutoTheta::seasonal(m) } else { AutoTheta::new() }),
@@ -334,6 +436,9 @@ fn nativo(s: &Serie, t: &Trabajo) -> Result<Ajuste, String> {
         _ => a.modelo = t.familia.etiqueta(),
     }
     // residuos para σ²
+    if t.familia.es_ets() {
+        a.nota = Some("ETS con anofox-forecast: los valores pueden diferir de los de R".into());
+    }
     let res: Vec<f64> = y.iter().zip(&a.ajustados).filter(|(u, v)| u.is_finite() && v.is_finite()).map(|(u, v)| u - v).collect();
     if !res.is_empty() {
         a.sigma2 = Some(res.iter().map(|r| r * r).sum::<f64>() / res.len() as f64);
@@ -348,6 +453,48 @@ fn nativo(s: &Serie, t: &Trabajo) -> Result<Ajuste, String> {
     Ok(a)
 }
 
+/// ses(), holt(), hw() y ets() como en R (ver ets.rs).
+fn ets_como_r(y: &[f64], m: usize, fam: &Familia, h: usize, nivel: f64) -> Result<Ajuste, String> {
+    use super::ets::{ets, pronosticar, Criterio};
+    let (modelo, amort, crit) = match fam {
+        Familia::Ses => ("ANN".to_string(), Some(false), Criterio::Mse),
+        Familia::Holt { amortiguada } => ("AAN".to_string(), Some(*amortiguada), Criterio::Mse),
+        Familia::Hw { multiplicativa, amortiguada } => ((if *multiplicativa { "MAM" } else { "AAA" }).to_string(), Some(*amortiguada), Criterio::Mse),
+        Familia::Ets { spec: None } => ("ZZZ".to_string(), None, Criterio::Lik),
+        Familia::Ets { spec: Some(sp) } => {
+            let u = sp.to_uppercase();
+            let d = u.contains("AD") || u.contains("MD");
+            (u.replace('D', ""), Some(d), Criterio::Lik)
+        }
+        _ => return Err("no es un modelo ETS".into()),
+    };
+    let f = ets(y, m, &modelo, amort, crit)?;
+    let (media, inferior, superior) = pronosticar(&f, h, nivel);
+    // checkresiduals() de forecast 9: residuos del modelo, 2m retardos (10 sin estacionalidad), a lo sumo n/5, sin restar parámetros
+    let k = super::analisis::retardos_residuos(f.residuos.len(), m).max(3).min(f.residuos.len().saturating_sub(1)).max(1);
+    let lb = super::analisis::ljung_box(&f.residuos, k, 0);
+    let nombre = match fam {
+        Familia::Ses => "Simple exponential smoothing".to_string(),
+        Familia::Holt { amortiguada } => (if *amortiguada { "Damped Holt's method" } else { "Holt's method" }).to_string(),
+        Familia::Hw { multiplicativa, amortiguada } => format!("{}Holt-Winters' {} method", if *amortiguada { "Damped " } else { "" }, if *multiplicativa { "multiplicative" } else { "additive" }),
+        _ => f.metodo(),
+    };
+    Ok(Ajuste {
+        modelo: nombre,
+        coef: f.par.clone(),
+        aic: Some(f.aic),
+        aicc: Some(f.aicc),
+        bic: Some(f.bic),
+        sigma2: Some(f.sigma2),
+        ajustados: f.ajustados.clone(),
+        media,
+        inferior,
+        superior,
+        nota: None,
+        ljung_box: Some((lb.q, k, lb.p, k)),
+    })
+}
+
 // ------------------------------------------------------------------ R
 
 fn r_num(x: f64) -> String {
@@ -358,26 +505,30 @@ fn r_num(x: f64) -> String {
     }
 }
 
-fn r_script(s: &Serie, datos: &std::path::Path, trabajos: &[Trabajo]) -> String {
+fn r_script(s: &Serie, trabajos: &[Trabajo]) -> String {
     let lam = match s.lambda {
         Some(l) => r_num(l),
         None => "NULL".into(),
     };
     let mut r = format!(
         r#"suppressMessages(library(forecast))
-x <- scan("{}", quiet = TRUE)
+x <- c({})
 num <- function(v) paste(sprintf("%.12g", as.numeric(v)), collapse = " ")
 emit <- function(k, v) cat(k, "\t", v, "\n", sep = "")
+cat("@@info\t", paste(R.version$major, R.version$minor, sep = "."), " · forecast ", as.character(packageVersion("forecast")), "\n", sep = "")
 fin <- function(fit, fc, modelo, cf, ic, s2) {{
   emit("modelo", modelo)
   if (length(cf) > 0) emit("coef", paste(names(cf), sprintf("%.12g", cf), sep = "=", collapse = " "))
   emit("ic", num(ic)); emit("sigma2", num(s2))
   emit("ajustados", num(fc$fitted)); emit("media", num(fc$mean))
   if (!is.null(fc$lower) && length(fc$lower) > 0) {{ emit("inferior", num(fc$lower[, 1])); emit("superior", num(fc$upper[, 1])) }}
+  # la misma prueba de Ljung-Box que checkresiduals()
+  invisible(capture.output(lb <- tryCatch(checkresiduals(fc, plot = FALSE, test = "LB"), error = function(e) NULL)))
+  if (!is.null(lb)) emit("ljung", paste(num(lb$statistic), num(lb$parameter), num(lb$p.value), num(lb$parameter + if (is.null(fit) || !inherits(fit, "Arima")) 0 else length(coef(fit)))))
 }}
 m <- {}; s0 <- {}; lv <- {}; L <- {}
 "#,
-        datos.to_string_lossy().replace('\\', "/"),
+        s.y.iter().map(|v| r_num(*v)).collect::<Vec<_>>().join(", "),
         r_num(s.m),
         s.inicio.max(1),
         r_num(s.nivel),
@@ -410,6 +561,17 @@ m <- {}; s0 <- {}; lv <- {}; L <- {}
                 let p: Vec<String> = periodos.iter().map(|x| r_num(*x)).collect();
                 format!("y <- msts(x[1:{n}], seasonal.periods = c({})); fit <- tbats(y, use.parallel = FALSE); fc <- forecast(fit, h = H, level = lv); fin(fit, fc, as.character(fit), unlist(list(lambda = fit$lambda, alpha = fit$alpha, beta = fit$beta, phi = fit$damping.parameter)), c(fit$AIC, NA, NA), fit$variance)", p.join(", "))
             }
+            Familia::Ses => "fc <- ses(y, h = H, level = lv, lambda = L); fit <- fc$model; fin(fit, fc, fit$method, fit$par, c(fit$aic, fit$aicc, fit$bic), fit$sigma2)".into(),
+            Familia::Holt { amortiguada } => format!(
+                "fc <- holt(y, h = H, damped = {}, level = lv, lambda = L); fit <- fc$model; fin(fit, fc, fit$method, fit$par, c(fit$aic, fit$aicc, fit$bic), fit$sigma2)",
+                if *amortiguada { "TRUE" } else { "FALSE" }
+            ),
+            Familia::Hw { multiplicativa, amortiguada } => format!(
+                "fc <- hw(y, h = H, seasonal = \"{}\", damped = {}, level = lv{}); fit <- fc$model; fin(fit, fc, fit$method, fit$par, c(fit$aic, fit$aicc, fit$bic), fit$sigma2)",
+                if *multiplicativa { "multiplicative" } else { "additive" },
+                if *amortiguada { "TRUE" } else { "FALSE" },
+                if *multiplicativa { "" } else { ", lambda = L" }
+            ),
             Familia::Theta => "fc <- thetaf(y, h = H, level = lv); fin(NULL, fc, \"Theta\", numeric(0), c(NA, NA, NA), NA)".into(),
             Familia::Croston => "fc <- croston(y, h = H); fin(NULL, fc, \"Croston\", c(alpha = 0.1), c(NA, NA, NA), NA)".into(),
             Familia::Ingenuo => "fc <- naive(y, h = H, level = lv, lambda = L); fin(NULL, fc, \"Ingenuo\", numeric(0), c(NA, NA, NA), NA)".into(),
@@ -427,16 +589,7 @@ fn nums(s: &str) -> Vec<f64> {
 }
 
 fn con_r(s: &Serie, trabajos: &[Trabajo]) -> Result<Vec<Result<Ajuste, String>>, String> {
-    let info = r_info().ok_or("R con el paquete forecast no está instalado")?;
-    let dir = std::env::temp_dir().join(format!("iaqsb-r-{}-{}", std::process::id(), std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_nanos()).unwrap_or(0)));
-    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
-    let datos = dir.join("datos.txt");
-    let script = dir.join("pronostico.R");
-    std::fs::write(&datos, s.y.iter().map(|v| r_num(*v)).collect::<Vec<_>>().join("\n")).map_err(|e| e.to_string())?;
-    std::fs::write(&script, r_script(s, &datos, trabajos)).map_err(|e| e.to_string())?;
-    let out = Command::new(&info.rscript).arg("--vanilla").arg(&script).stdin(Stdio::null()).output().map_err(|e| format!("no se pudo ejecutar R: {e}"))?;
-    let _ = std::fs::remove_dir_all(&dir);
-    let txt = String::from_utf8_lossy(&out.stdout);
+    let txt = ejecutar_r(&r_script(s, trabajos))?;
     let mut res: Vec<Result<Ajuste, String>> = vec![Err("R no devolvió resultado".into()); trabajos.len()];
     let mut cur: Option<(usize, Ajuste, Option<String>)> = None;
     let guardar = |c: Option<(usize, Ajuste, Option<String>)>, res: &mut Vec<Result<Ajuste, String>>| {
@@ -450,6 +603,15 @@ fn con_r(s: &Serie, trabajos: &[Trabajo]) -> Result<Vec<Result<Ajuste, String>>,
         }
     };
     for linea in txt.lines() {
+        // la versión de R va antes que los trabajos (@@0, @@1…)
+        if let Some(v) = linea.strip_prefix("@@info\t") {
+            if r_info().is_none() {
+                if let Ok(mut g) = VERSION_R_EXTERNO.lock() {
+                    *g = Some(v.trim().to_string());
+                }
+            }
+            continue;
+        }
         if let Some(i) = linea.strip_prefix("@@") {
             guardar(cur.take(), &mut res);
             cur = i.trim().parse().ok().map(|i| (i, Ajuste::default(), None));
@@ -470,14 +632,19 @@ fn con_r(s: &Serie, trabajos: &[Trabajo]) -> Result<Vec<Result<Ajuste, String>>,
             "media" => a.media = nums(v),
             "inferior" => a.inferior = nums(v),
             "superior" => a.superior = nums(v),
+            "ljung" => {
+                let x = nums(v);
+                if x.len() >= 3 && x[0].is_finite() {
+                    a.ljung_box = Some((x[0], x[1] as usize, x[2], x.get(3).copied().unwrap_or(x[1]) as usize));
+                }
+            }
             "error" => *err = Some(format!("R: {}", v.trim())),
             _ => {}
         }
     }
     guardar(cur.take(), &mut res);
-    if res.iter().all(|r| r.is_err()) && !out.status.success() {
-        let e = String::from_utf8_lossy(&out.stderr);
-        return Err(format!("R terminó con error: {}", e.lines().filter(|l| !l.trim().is_empty()).last().unwrap_or("sin detalle")));
+    if res.iter().all(|r| r.is_err()) && !txt.contains("@@") {
+        return Err(format!("R no devolvió resultados: {}", txt.lines().filter(|l| !l.trim().is_empty()).last().unwrap_or("sin detalle")));
     }
     for (r, t) in res.iter_mut().zip(trabajos) {
         if let Ok(a) = r {
@@ -506,7 +673,7 @@ fn con_python(s: &Serie, trabajos: &[Trabajo]) -> Result<Vec<Result<Ajuste, Stri
         .map(|t| {
             let (fam, extra) = match &t.familia {
                 Familia::Arima { orden, deriva } => ("arima", json!({"orden": orden, "deriva": deriva})),
-                Familia::Ets { spec } => ("ets", json!({"spec": spec})),
+                Familia::Ets { .. } | Familia::Ses | Familia::Holt { .. } | Familia::Hw { .. } => ("ets", json!({"spec": t.familia.spec_ets()})),
                 Familia::Tbats { periodos } => ("tbats", json!({"periodos": periodos})),
                 Familia::Theta => ("theta", json!({})),
                 Familia::Croston => ("croston", json!({})),
@@ -544,6 +711,7 @@ fn con_python(s: &Serie, trabajos: &[Trabajo]) -> Result<Vec<Result<Ajuste, Stri
                 inferior: f(&r["inferior"]),
                 superior: f(&r["superior"]),
                 nota: None,
+                ljung_box: None,
             })
         })
         .collect())

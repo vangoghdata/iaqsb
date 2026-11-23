@@ -12,6 +12,7 @@
   import { t } from '../../lib/i18n.svelte';
   import { tick } from 'svelte';
   import { ACEPTA, tamano } from '../../lib/adjuntos';
+  import { motoresWeb } from '../../lib/motores_web.svelte';
 
   let lista: HTMLElement | undefined = $state();
   let entrada: HTMLTextAreaElement | undefined = $state();
@@ -126,6 +127,25 @@
     return m.partes.some((p) => p.tipo === 'texto' || (p.tipo === 'herramienta' && (p.estado === 'preparando' || p.estado === 'corriendo')));
   }
 
+  /** Código de run_r y run_python (la entrada es JSON). */
+  function codigoDe(p: Extract<Parte, { tipo: 'herramienta' }>): string | null {
+    if (p.nombre !== 'run_r' && p.nombre !== 'run_python') return null;
+    try {
+      const c = JSON.parse(p.entrada || '{}').code;
+      return typeof c === 'string' ? c : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function fecha(ms: number): string {
+    try {
+      return new Date(ms).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    } catch {
+      return '';
+    }
+  }
+
   function textoDe(m: Mensaje): string {
     return m.partes
       .filter((p): p is Extract<Parte, { tipo: 'texto' }> => p.tipo === 'texto')
@@ -184,6 +204,9 @@
           {ajustes.iaLista ? ajustes.iaNombre : t('Sin conectar')}<Icon name="abajo" size={11} />
         </button>
       </div>
+      <button class="btn ghost icon" class:activo={chat.verHistorial} title={t('Conversaciones guardadas')} aria-label={t('Conversaciones guardadas')} aria-pressed={chat.verHistorial} onclick={() => chat.alternarHistorial()}>
+        <Icon name="reloj" size={16} />
+      </button>
       <button class="btn ghost icon" title={t('Conversación nueva')} aria-label={t('Conversación nueva')} onclick={() => chat.nueva()} disabled={!chat.mensajes.length && !chat.adjunto}>
         <Icon name="nuevo" size={16} />
       </button>
@@ -195,7 +218,30 @@
       </button>
     </header>
 
-    <div class="lista" bind:this={lista} onscroll={alDesplazar} aria-live="polite">
+    {#if chat.verHistorial}
+      <section class="historial" aria-label={t('Conversaciones guardadas')}>
+        <div class="htit">
+          <strong>{t('Conversaciones guardadas')}</strong>
+          <span class="muted peq">{t('Se guardan solas en este equipo.')}</span>
+        </div>
+        {#if !chat.conversaciones.length}
+          <p class="muted">{t('Todavía no hay conversaciones guardadas.')}</p>
+        {/if}
+        <ul>
+          {#each chat.conversaciones as c (c.id)}
+            <li class:actual={c.id === chat.id}>
+              <button class="conv" onclick={() => chat.abrirConversacion(c.id)}>
+                <span class="ct">{c.titulo}</span>
+                <span class="muted peq">{fecha(c.fecha)} · {t('{0} mensajes', c.n)}</span>
+              </button>
+              <button class="btn ghost icon mini" title={t('Borrar esta conversación')} aria-label={t('Borrar esta conversación')} onclick={() => chat.borrarConversacion(c.id)}><Icon name="cerrar" size={13} /></button>
+            </li>
+          {/each}
+        </ul>
+      </section>
+    {/if}
+
+    <div class="lista" bind:this={lista} onscroll={alDesplazar} aria-live="polite" hidden={chat.verHistorial}>
       {#if conectando}
         <section class="clave card">
           <h3><Icon name="chispa" size={16} />{t('Conecta un modelo de IA')}</h3>
@@ -259,13 +305,19 @@
                   </summary>
                   <div class="hdet">
                     <span class="hk">{t('Entrada')} · <code>{p.nombre}</code></span>
-                    <pre>{p.entrada || '{}'}</pre>
+                    <pre>{codigoDe(p) ?? (p.entrada || '{}')}</pre>
                     {#if p.salida !== undefined}
                       <span class="hk">{t('Resultado')}</span>
                       <pre>{p.salida}</pre>
                     {/if}
                   </div>
                 </details>
+                {#if (p.estado === 'preparando' || p.estado === 'corriendo') && motoresWeb.detalle && (p.nombre === 'run_r' || p.nombre === 'run_python' || p.nombre === 'solve')}
+                  <p class="aviso"><span class="spinner" aria-hidden="true"></span>{motoresWeb.detalle}</p>
+                {/if}
+                {#each p.imagenes ?? [] as img, j (j)}
+                  <img class="grafica" src={img} alt={t('Gráfica {0}', j + 1)} />
+                {/each}
               {:else if p.tipo === 'aviso'}
                 <p class="aviso"><Icon name="info" size={14} />{p.texto}</p>
               {/if}
@@ -355,6 +407,74 @@
 {/if}
 
 <style>
+  .lista[hidden] {
+    display: none !important;
+  }
+  .historial {
+    flex: 1;
+    overflow: auto;
+    padding: 12px 14px;
+  }
+  .historial .htit {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 10px;
+  }
+  .historial ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .historial li {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px 4px 2px 0;
+  }
+  .historial li.actual {
+    border-color: var(--accent);
+  }
+  .historial .conv {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    text-align: left;
+    background: none;
+    border: 0;
+    padding: 6px 8px;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+  }
+  .historial .ct {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .historial .peq {
+    font-size: 0.8em;
+  }
+  .btn.activo {
+    background: var(--hover, rgba(127, 127, 127, 0.15));
+  }
+  .grafica {
+    display: block;
+    max-width: 100%;
+    margin: 6px 0;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #fff;
+  }
   :global(.avisos) {
     right: calc(max(0px, min(var(--chat-abierto-w, 0px), 100vw - 420px)) + 20px) !important;
   }

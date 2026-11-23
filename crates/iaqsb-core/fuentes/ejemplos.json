@@ -1337,6 +1337,18 @@
       "resultado": "",
       "estado": "verificada",
       "nota": "Con R: TBATS(0.001, {0,0}, 0.97, {<12,5>})."
+    },
+    "st/evaluacion_clase": {
+      "origen": "clase",
+      "refs": [
+        {
+          "id": "arango2022suavizacion",
+          "donde": "cuestionario del curso con el mismo procedimiento de las diapositivas: ts() desde mayo de 2021, window() hasta diciembre de 2023, ses(), naive(), tbats() y accuracy()"
+        }
+      ],
+      "resultado": "Suavización exponencial simple: RMSE 938.8517 en el entrenamiento y 881.5052 en la prueba; ingenuo 889.3556 en la prueba",
+      "estado": "verificada",
+      "nota": "Comprobado contra R 4.6.1 con forecast 9.0.2: ses 938.8517 y 881.5052, naive 1269.1197 y 889.3556, tbats 954.0058 y 890.3481 (BATS(1, {0,0}, -, -)). El motor nativo da ses y naive exactamente; TBATS igual a R solo con R (el del equipo o el que trae la app de escritorio)."
     }
   }
 }

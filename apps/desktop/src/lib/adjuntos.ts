@@ -29,6 +29,8 @@ export interface Adjunto {
   bytes: number;
   /** Miniatura (data URL) para mostrar en el chat. */
   vista?: string;
+  /** Archivo original (datos, no imágenes): queda en la carpeta de trabajo de run_r y run_python. */
+  crudo?: Uint8Array;
 }
 
 const LADO_MAX = 1568;

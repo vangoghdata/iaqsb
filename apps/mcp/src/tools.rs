@@ -31,9 +31,13 @@ pub const INSTRUCTIONS: &str = "IAQSB resuelve problemas de investigación de op
 inv gestión de inventarios, fin finanzas del inventario, alm almacenes, kpi indicadores) y tres de planificación y pronóstico: \
 pmp programa maestro (básico y ATO, disponible para promesa, solicitudes de pedidos, RCCP y PMP óptimo por programación entera), \
 mrp2 MRP II por matrices (Gozinto) y st series de tiempo (exploración: ACF, PACF, Ljung-Box, descomposición, Box-Cox; pronóstico: \
-ARIMA, ETS, TBATS, Theta, Croston automáticos o con órdenes dados, y comparación de modelos en un periodo de prueba). En st el motor \
-de pronóstico es el mejor disponible en el equipo (options.forecast_engine = auto: R con el paquete forecast, si no Python con statsforecast, \
-si no el nativo en Rust); el informe dice cuál usó.\n\
+ARIMA, ETS, TBATS, Theta, Croston, ses, holt y hw automáticos o con órdenes dados, y comparación de modelos en un periodo de prueba; \
+evaluación como en clase con R: problem_type \"evaluacion\" con start (\"2021-05\" = ts(x, start = c(2021, 5))), train_end (\"2023-12\" = \
+window(y, end = c(2023, 12))) y models (\"ses, naive, tbats\"), que da accuracy() en entrenamiento y prueba, checkresiduals() y la \
+suavización que sugiere el autocorrelograma). En st el motor de pronóstico es el mejor disponible en el equipo (options.forecast_engine = \
+auto: R con el paquete forecast, si no Python con statsforecast, si no el nativo en Rust); el informe dice cuál usó. Los ejercicios escritos \
+para R dan exactamente los números de R solo con el motor R: si el informe dice que usó otro motor, avísalo (los valores pueden diferir, \
+sobre todo en TBATS) y sugiere instalar R con install.packages(\"forecast\") o usar la app de escritorio, que trae R.\n\
 Si el usuario te da una foto, un PDF o una tabla de un ejercicio: lee el enunciado, di qué datos extrajiste (para que los revise), \
 elige el módulo, plantea el modelo con describe_module y resuélvelo con solve; nunca inventes datos que no se ven. \
 Los archivos de WinQSB se leen con import_winqsb_file y los libros de Excel con import_excel.\n\

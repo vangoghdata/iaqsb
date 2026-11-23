@@ -2541,6 +2541,21 @@
       "nota": "Diapositivas y hojas de cálculo del curso Taller de Producción y Logística de Ingeniería Industrial de la Universidad Nacional de Colombia, entregadas por un estudiante del curso. Autor según los metadatos de los archivos (Jaime Antero Arango Marín) y el pie de las diapositivas."
     },
     {
+      "id": "arango2022suavizacion",
+      "tipo": "diapositivas",
+      "autores": [
+        "Arango Marín, J. A."
+      ],
+      "anio": "2022",
+      "titulo": "Pronósticos por suavización exponencial",
+      "descripcion": "Diapositivas de clase del curso Taller de Producción y Logística, Ingeniería Industrial",
+      "editorial": "Universidad Nacional de Colombia",
+      "estado": "por_verificar",
+      "pendiente": "El año sale de los metadatos del archivo (creado en 2020, última modificación en 2022) y del pie de las diapositivas (14/10/2022); confirmar la versión usada en el curso.",
+      "tema": "Suavización exponencial simple, Holt y Holt-Winters con ses(), holt() y hw() del paquete forecast de R; conjuntos de entrenamiento y prueba, accuracy() y comparación con el pronóstico ingenuo.",
+      "nota": "Diapositivas del curso Taller de Producción y Logística de Ingeniería Industrial de la Universidad Nacional de Colombia, entregadas por un estudiante del curso. Autor según los metadatos del archivo (Jaime Antero Arango Marín) y el pie de las diapositivas."
+    },
+    {
       "id": "arango2021series",
       "tipo": "diapositivas",
       "autores": [

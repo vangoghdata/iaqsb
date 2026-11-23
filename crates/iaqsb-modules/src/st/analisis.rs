@@ -77,10 +77,10 @@ pub fn ljung_box(x: &[f64], retardos: usize, param: usize) -> LjungBox {
     LjungBox { q, gl, p, retardos }
 }
 
-/// Retardos de `checkresiduals()`: 10 en series sin estacionalidad, 2m con estacionalidad, a lo sumo n/5.
+/// Retardos de `checkresiduals()`: 10 en series sin estacionalidad, 2m con estacionalidad, a lo sumo n/5 (redondeado, como round() de R).
 pub fn retardos_residuos(n: usize, m: usize) -> usize {
     let k = if m > 1 { 2 * m } else { 10 };
-    k.min(n / 5).max(1)
+    k.min(((n as f64) / 5.0).round() as usize).max(1)
 }
 
 pub struct Descomposicion {

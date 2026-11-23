@@ -131,6 +131,14 @@ const servidor = http.createServer(async (req, res) => {
     if (!b.tools) return enviar(res, [chunk({ content: 'FINAL-SIN-HERRAMIENTAS.' }), chunk({}, 'stop'), 'data: [DONE]\n\n']);
     return enviar(res, [chunk({ tool_calls: [{ index: 0, id: 'call_' + msgs.length, function: { name: 'list_modules', arguments: '{}' } }] }), chunk({}, 'tool_calls'), 'data: [DONE]\n\n']);
   }
+  if (b.model === 'mock/r') {
+    // pide ejecutar R (webR dentro de la app) y después repite lo que salió
+    sse(res);
+    const ult = msgs.at(-1);
+    if (ult?.role === 'tool') return enviar(res, [chunk({ content: 'R-LISTO: ' + String(ult.content).replace(/\s+/g, ' ') }), chunk({}, 'stop'), 'data: [DONE]\n\n']);
+    const code = 'library(forecast)\nd <- c(621.6,621.6,1716.8,2545.6,2604.8,1539.2,236.8,2516,29.6,118.4,621.6,207.2,1302.4,2575.2,1006.4,2812,1835.2,2456.8,2693.6,2693.6,2072,2664,947.2,621.6,2841.6,1213.6,1509.6,2486.4,1243.2,2841.6,532.8,1805.6,1657.6,2397.6,2634.4,947.2,2960,1657.6,355.2,769.6)\ny <- ts(d, start = c(2021, 5), frequency = 12)\ntr <- window(y, end = c(2023, 12)); te <- window(y, start = c(2024, 1))\ncat(sprintf("%.4f", accuracy(ses(tr, h = 8), te)[2, "RMSE"]))\nplot(tr)';
+    return enviar(res, [chunk({ tool_calls: [{ index: 0, id: 'call_r1', type: 'function', function: { name: 'run_r', arguments: JSON.stringify({ code }) } }] }), chunk({}, 'tool_calls'), 'data: [DONE]\n\n']);
+  }
   if (b.model === 'mock/lento') {
     // respuesta larga: se detiene desde la app
     sse(res);
@@ -202,6 +210,27 @@ function simularTauri() {
         return j.result;
       }
       if (cmd === 'initial_file') return null;
+      if (cmd === 'plugin:event|listen') return 1;
+      // conversaciones «en disco» (en la app real, la carpeta de datos)
+      const disco = () => JSON.parse(localStorage.getItem('discoConv') ?? '{}');
+      if (cmd === 'conversacion_guardar') {
+        const d = disco();
+        d[args.id] = { datos: args.datos, resumen: args.resumen };
+        localStorage.setItem('discoConv', JSON.stringify(d));
+        return null;
+      }
+      if (cmd === 'conversacion_leer') {
+        const c = disco()[args.id];
+        if (!c) throw 'no existe';
+        return c.datos;
+      }
+      if (cmd === 'conversacion_borrar') {
+        const d = disco();
+        delete d[args.id];
+        localStorage.setItem('discoConv', JSON.stringify(d));
+        return null;
+      }
+      if (cmd === 'conversaciones_listar') return Object.values(disco()).map((c) => c.resumen).sort((a, b) => b.fecha - a.fecha);
       if (cmd === 'file_exists') return false;
       if (cmd === 'ia_cancel') {
         cancelar[args.id]?.abort();
@@ -396,6 +425,34 @@ await esperarTexto('FINAL-SIN-HERRAMIENTAS', 30000).catch(() => {});
 const rondas = pedidos.filter((p) => p.url === '/v1/chat/completions').length - antesBucle;
 ok(await page.locator('aside.chat').getByText('FINAL-SIN-HERRAMIENTAS').isVisible(), 'termina con una respuesta sin herramientas');
 ok(rondas === 9, `rondas limitadas (${rondas})`);
+
+console.log('· R dentro de la app (webR) desde el asistente');
+await usarModelo('mock/r');
+await preguntar('Resuelve el ejercicio en R');
+await esperarTexto('R-LISTO', 120000).catch(() => {});
+const textoR = await page.locator('aside.chat .asistente').last().innerText().catch(() => '');
+ok(textoR.includes('881.5052'), 'run_r da el mismo RMSE de prueba que R (881.5052): ' + textoR.slice(0, 200));
+ok((await page.locator('aside.chat img.grafica').count()) >= 1, 'la gráfica de R se ve en el chat');
+const pedR = pedidos.filter((p) => p.url === '/v1/chat/completions').at(-1)?.cuerpo;
+ok(String(pedR?.messages?.find((m) => m.role === 'tool')?.content ?? '').includes('webR'), 'el resultado dice qué R se usó');
+await page.screenshot({ path: join(OUT, `${modo[0]}_5_chat_r.png`) });
+
+console.log('· Conversaciones guardadas');
+await page.reload();
+await page.waitForSelector('[data-r="1"][data-c="1"]');
+await page.getByRole('button', { name: 'Asistente' }).first().click();
+await esperarTexto('R-LISTO', 5000).catch(() => {});
+ok(await page.locator('aside.chat').getByText('R-LISTO').first().isVisible().catch(() => false), 'la conversación sigue ahí después de cerrar y abrir');
+await page.locator('aside.chat button[title="Conversación nueva"]').click();
+ok(!(await page.locator('aside.chat .asistente').count()), 'conversación nueva vacía');
+await page.locator('aside.chat button[title="Conversaciones guardadas"]').click();
+await page.locator('aside.chat .historial li').first().waitFor({ timeout: 5000 }).catch(() => {});
+const nConv = await page.locator('aside.chat .historial li').count();
+ok(nConv >= 2, `el historial lista las conversaciones anteriores (${nConv})`);
+await page.screenshot({ path: join(OUT, `${modo[0]}_6_historial.png`) });
+await page.locator('aside.chat .historial li .conv').filter({ hasText: 'Resuelve el ejercicio en R' }).first().click();
+await esperarTexto('R-LISTO', 5000).catch(() => {});
+ok(await page.locator('aside.chat').getByText('R-LISTO').first().isVisible().catch(() => false), 'abrir una conversación guardada la muestra');
 
 console.log('· Clave equivocada');
 await page.evaluate(() => {

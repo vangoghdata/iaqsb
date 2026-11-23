@@ -52,7 +52,7 @@ Lee primero `LEEME.md`, que es la fuente de verdad sobre funciones, comandos y e
   - En Rust se escriben en español y los traducen los catálogos del núcleo. Para encontrar los textos nuevos: `python3 tools/i18n_extraer.py`, compararlo con `en.json` y `pt.json`, y traducir lo que falte.
 - Todo método o ejemplo nuevo lleva su fuente, y sus pruebas comparan contra valores publicados o contra otra implementación independiente.
 
-## Estado (noviembre de 2026, versión 0.2.1)
+## Estado (noviembre de 2026, versión 0.2.2)
 
 Ya está hecho:
 - Ajustes (Ctrl+,), con cambio de idioma que no bloquea la app.
@@ -71,10 +71,18 @@ Pendiente:
 - Probar el asistente con claves reales de varios proveedores. Hasta ahora solo se probó contra servidores simulados.
 - Publicar el repositorio y poner su dirección en `CITATION.cff` y en `CONTRIBUTING.md` (hoy no hay ninguna).
 - Decidir si se adopta un formato de código.
-- Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. La versión 0.2.1 está publicada (https://github.com/vangoghdata/iaqsb/releases/tag/v0.2.1, la más reciente) con los seis instaladores: Windows, macOS chip Apple (macos-15) e Intel (macos-15-intel), .deb, .rpm y AppImage. Para una versión nueva: subir la versión en Cargo.toml, package.json y tauri.conf.json, crear la etiqueta y publicar el borrador. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
+- Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. La versión 0.2.2 está publicada (https://github.com/vangoghdata/iaqsb/releases/tag/v0.2.2, la más reciente) con los seis instaladores: Windows, macOS chip Apple (macos-15) e Intel (macos-15-intel), .deb, .rpm y AppImage. Para una versión nueva: subir la versión en Cargo.toml, package.json y tauri.conf.json, crear la etiqueta y publicar el borrador. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
 - Probar los adjuntos del asistente con proveedores reales (imágenes y PDF): se probaron con un servidor simulado compatible con OpenAI.
 - Cadena jerárquica (ap → pmp → mrp → crp) completa en el núcleo; faltan botones en la interfaz para pasar de un nivel a otro (hoy se hace con `link` desde la IA, la CLI o el MCP).
 - Programa Jantero del profesor (`C:\jantero`, Visual FoxPro): pronósticos (promedios móviles, suavización simple y doble, Holt, Winters, correlograma), EOQ, vendedor de periódicos, planeación agregada (nivelación, persecución, óptimo), programa maestro (básico y ATO), MRP y secuenciación. IAQSB ya cubre todo salvo el correlograma. Luis no dio acceso de pantalla a Jantero; se compara con sus Excel.
+
+Hecho el 23 de noviembre de 2026 (versión 0.2.2):
+- Causa de los números distintos de R en el Mac: el equipo no tenía R y el motor nativo (anofox) no es el de R. Ahora:
+  - `crates/iaqsb-modules/src/st/ets.rs`: `ets()` de forecast traducido a Rust (initstate, initparam, admissible, etscalc, el Nelder-Mead `nmmin` de R, selección por AICc y forecast.ets con las clases 1, 2 y 3). ses, holt, hw y ETS dan lo mismo que R (parámetros con diferencias de 1e-10). TBATS nativo sigue siendo el de anofox: solo con R da lo de R.
+  - La app de escritorio trae R: webR 0.6.0 (R 4.6 en WebAssembly) desde https://webr.r-wasm.org, con forecast de https://repo.r-wasm.org. Si el equipo no tiene R con forecast, el módulo st le pide a la ventana que ejecute el programa de R (`registrar_r_externo` en `st/motores.rs`, puente en `apps/desktop/src-tauri/src/puentes.rs`, `src/lib/motores_web.svelte.ts`). Da los mismos números que R. La CSP permite webr.r-wasm.org, repo.r-wasm.org y cdn.jsdelivr.net, con 'wasm-unsafe-eval' y 'unsafe-eval' (webR los necesita).
+  - Tipo de problema `evaluacion` en st: start ("2021-05"), train_end ("2023-12"), models ("ses, naive, tbats"); accuracy() en entrenamiento y prueba, checkresiduals() (Ljung-Box como forecast 9: gl = retardos salvo en ARIMA, retardos = min(2m, round(n/5))) y la suavización que sugiere el correlograma. Ejemplo `st/evaluacion_clase` (cuestionario del curso).
+- Asistente: herramientas `run_r` (webR) y `run_python` (Pyodide 0.29.5) con los adjuntos en la carpeta de trabajo y las gráficas en el chat; conversaciones guardadas en la carpeta de datos de la app (`conversaciones/`, comandos `conversacion_*` en puentes.rs; en el navegador, localStorage) con historial (botón del reloj).
+- Respuestas de los ejercicios que mandó Luis: series (datos de mayo de 2021): 1) 3, 2) 881.5052, 3) 889.3556, 4) 954.0058, 5) 1 (la versión ×3.1875: 2809.6829, 2834.8211, 3040.8936); PMP ATO: último periodo con PMP = 0 es el 14; MRP II: necesidad ajustada del periodo 3 = 0 (277 − 533 − 36 < 0); barrera de tiempo de demanda de A = 21.5 h (A 3.0 + B 9.2 + D 9.3, la ruta más larga).
 
 Hecho el 23 de noviembre de 2026 (versión 0.2.1):
 - Asistente con Claude: el sistema queda fijo por conversación (`sistemaFijo` en `chat.svelte.ts`) y el estado de la app va en un bloque `<app_state>` al inicio de cada pregunta, porque Claude ata los bloques de razonamiento al historial exacto (sistema incluido) y rechazaba la conversación con «Invalid `signature` in `thinking` block». Al restaurar una conversación guardada se quitan los bloques de razonamiento. `MAX_TOKENS` subió a 64 000.

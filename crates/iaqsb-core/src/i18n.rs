@@ -718,6 +718,8 @@ const PROTECTED: &[&str] = &[
     "space_mode", "review", "discipline", "distribution", "input_rule", "metric", "model_kind", "lot_size", "side", "resource",
     "time_distribution", "service", "interarrival", "values", "created", "delivered", "promised", "date", "time", "cost_function",
     "bom_kind", "rate_unit",
+    // series de tiempo: códigos de modelos y de motores, y nombres de periodos
+    "recommended_smoothing", "best_training_rmse", "best_test_rmse", "family", "engine", "seasonal_type", "train_end", "test_start", "forecast_engine",
 ];
 
 /// Campos de los modelos que nombran otros elementos («Cola torno/0.1, Desechos»):

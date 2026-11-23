@@ -3,6 +3,7 @@
 //! La interfaz web llama a estos comandos; todos delegan en iaqsb-api, el mismo
 //! núcleo que usan la línea de comandos y el servidor MCP.
 
+mod puentes;
 mod red;
 
 use iaqsb_api as api;
@@ -179,7 +180,29 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(red::Pedidos::default())
-        .invoke_handler(tauri::generate_handler![red::ia_fetch, red::ia_cancel, api_call, read_file, write_file, save_export, file_exists, save_render, mcp_info, initial_file])
+        .setup(|app| {
+            // si el equipo no tiene R con forecast, las series de tiempo usan el R de la app (webR)
+            puentes::registrar_webr(app.handle().clone());
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![
+            red::ia_fetch,
+            red::ia_cancel,
+            api_call,
+            read_file,
+            write_file,
+            save_export,
+            file_exists,
+            save_render,
+            mcp_info,
+            initial_file,
+            puentes::r_resultado,
+            puentes::conversacion_guardar,
+            puentes::conversacion_leer,
+            puentes::conversacion_borrar,
+            puentes::conversaciones_listar,
+            puentes::conversaciones_carpeta
+        ])
         .run(tauri::generate_context!())
         .expect("no se pudo iniciar IAQSB");
 }

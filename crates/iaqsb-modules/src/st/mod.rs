@@ -11,10 +11,16 @@
 //!   e ingenuos, con intervalos de predicción, medidas de error, revisión de los
 //!   residuos y, en modo automático, comparación de los modelos en un periodo de
 //!   prueba como `accuracy()` (el mejor por MASE se vuelve a ajustar con toda la serie).
-//! - **Motor**: R con forecast si está instalado (la referencia), si no
-//!   statsforecast de Python, y si no el motor nativo en Rust (siempre incluido).
+//! - **Evaluación** (como en clase con R): conjunto de entrenamiento hasta un
+//!   periodo, varios modelos (ses, holt, hw, naive, snaive, tbats, auto.arima…),
+//!   `accuracy()` en entrenamiento y prueba, `checkresiduals()` y el modelo de
+//!   suavización que sugiere el correlograma.
+//! - **Motor**: R con forecast si está instalado (la referencia); en la app de
+//!   escritorio, si no hay R, el R que trae la app (webR, con forecast: los mismos
+//!   resultados); si no, statsforecast de Python y, si no, el motor nativo en Rust.
 
 pub mod analisis;
+pub mod ets;
 pub mod motores;
 
 use analisis::*;
@@ -35,7 +41,7 @@ pub struct Obs {
 pub struct StModel {
     #[serde(default)]
     pub name: String,
-    /// "exploracion" o "pronostico".
+    /// "exploracion", "pronostico" o "evaluacion".
     #[serde(default = "pron")]
     pub problem_type: String,
     #[serde(default = "mes")]
@@ -47,7 +53,11 @@ pub struct StModel {
     #[serde(default = "uno_u")]
     pub start_season: u32,
     pub data: Vec<Obs>,
-    /// Modelo: auto (comparar), arima, ets, tbats, theta, croston, ingenuo, ingenuo_estacional.
+    /// Primer periodo, p. ej. "2021-05" (mensual) o "2021-2" (trimestral): nombra los periodos
+    /// sin nombre y fija la estación del primer dato, como ts(x, start = c(2021, 5)).
+    #[serde(default)]
+    pub start: String,
+    /// Modelo: auto (comparar), ses, holt, hw, arima, ets, tbats, theta, croston, ingenuo, ingenuo_estacional.
     #[serde(default = "auto")]
     pub model: String,
     /// ARIMA: "p,d,q" o "p,d,q,P,D,Q" (vacío = automático).
@@ -58,6 +68,19 @@ pub struct StModel {
     /// ETS: "MAM", "AAdN"… (vacío = automático).
     #[serde(default)]
     pub ets_model: String,
+    /// holt y hw: tendencia amortiguada.
+    #[serde(default)]
+    pub damped: bool,
+    /// hw: "aditiva" o "multiplicativa".
+    #[serde(default)]
+    pub seasonal_type: String,
+    /// Evaluación: modelos separados por comas (ses, holt, hw, naive, snaive, tbats, arima, ets, theta…);
+    /// vacío = la suavización que sugiere el correlograma, el ingenuo que corresponda y TBATS.
+    #[serde(default)]
+    pub models: String,
+    /// Evaluación: último periodo del entrenamiento (su nombre, p. ej. "2023-12"), como window(y, end = c(2023, 12)).
+    #[serde(default)]
+    pub train_end: String,
     /// TBATS: periodos estacionales separados por comas (vacío = la frecuencia).
     #[serde(default)]
     pub seasonal_periods: String,
@@ -154,8 +177,51 @@ fn datos(m: &StModel) -> Result<Datos, ModError> {
         return invalid("la frecuencia debe ser 1 o más (12 mensual, 4 trimestral…)");
     }
     let mi = m.frequency.round() as usize;
-    let inicio = (m.start_season as usize).clamp(1, mi.max(1));
+    let mut inicio = (m.start_season as usize).clamp(1, mi.max(1));
+    if let Some((anio, est)) = periodo_inicial(&m.start, mi)? {
+        inicio = est;
+        // los nombres vacíos o de la plantilla (1, 2, 3…) se cambian por los periodos
+        let plantilla = nombres.iter().enumerate().all(|(k, n)| *n == (k + 1).to_string());
+        for (k, n) in nombres.iter_mut().enumerate() {
+            if plantilla || n.trim().is_empty() {
+                *n = nombre_periodo(anio, est, k, mi);
+            }
+        }
+    }
     Ok(Datos { y, nombres, m: m.frequency, mi, inicio })
+}
+
+/// "2021-05", "2021/5", "2021-T2" o "2021-Q2" → (año, estación).
+fn periodo_inicial(t: &str, mi: usize) -> Result<Option<(i64, usize)>, ModError> {
+    let t = t.trim();
+    if t.is_empty() {
+        return Ok(None);
+    }
+    let partes: Vec<&str> = t.split(['-', '/', ' ', '.', ',']).filter(|x| !x.is_empty()).collect();
+    let mal = || ModError::Invalid(format!("primer periodo no válido: «{t}» (usa año-estación, p. ej. 2021-05 para mayo de 2021)"));
+    let anio: i64 = partes.first().and_then(|a| a.parse().ok()).ok_or_else(mal)?;
+    let est: usize = match partes.get(1) {
+        None => 1,
+        Some(e) => e.trim_start_matches(['T', 'Q', 't', 'q', 'S', 's']).parse().map_err(|_| mal())?,
+    };
+    if est < 1 || (mi > 1 && est > mi) {
+        return Err(mal());
+    }
+    Ok(Some((anio, est)))
+}
+
+/// Nombre del periodo k (desde 0) contando desde (año, estación).
+fn nombre_periodo(anio: i64, est: usize, k: usize, mi: usize) -> String {
+    if mi <= 1 {
+        return (anio + k as i64).to_string();
+    }
+    let idx = est - 1 + k;
+    let (a, e) = (anio + (idx / mi) as i64, idx % mi + 1);
+    match mi {
+        12 => format!("{a}-{e:02}"),
+        4 => format!("{a}-T{e}"),
+        _ => format!("{a}-{e}"),
+    }
 }
 
 fn grafico_barras(titulo: &str, valores: &[f64], banda: f64, eje: &str) -> Block {
@@ -322,6 +388,12 @@ fn familia(m: &StModel, nombre: &str, d: &Datos) -> Result<Familia, ModError> {
             Familia::Arima { orden, deriva: m.drift }
         }
         "ets" => Familia::Ets { spec: Some(m.ets_model.trim().to_uppercase()).filter(|s| !s.is_empty() && s != "ZZZ") },
+        "ses" | "suavizacion_simple" => Familia::Ses,
+        "holt" => Familia::Holt { amortiguada: m.damped },
+        "holt_amortiguado" => Familia::Holt { amortiguada: true },
+        "hw" | "holt_winters" => Familia::Hw { multiplicativa: m.seasonal_type.trim().to_lowercase().starts_with('m'), amortiguada: m.damped },
+        "hw_multiplicativo" => Familia::Hw { multiplicativa: true, amortiguada: m.damped },
+        "hw_aditivo" => Familia::Hw { multiplicativa: false, amortiguada: m.damped },
         "tbats" => {
             let t = m.seasonal_periods.trim();
             let periodos: Vec<f64> = if t.is_empty() { vec![d.m] } else { t.split([',', ';', ' ']).filter(|s| !s.is_empty()).map(|s| s.trim().replace(',', ".").parse::<f64>()).collect::<Result<_, _>>().map_err(|_| ModError::Invalid(format!("periodos estacionales no válidos: «{t}»")))? };
@@ -329,9 +401,11 @@ fn familia(m: &StModel, nombre: &str, d: &Datos) -> Result<Familia, ModError> {
         }
         "theta" => Familia::Theta,
         "croston" => Familia::Croston,
-        "ingenuo" => Familia::Ingenuo,
-        "ingenuo_estacional" => Familia::IngenuoEstacional,
-        o => return invalid(format!("modelo desconocido: «{o}» (usa auto, arima, ets, tbats, theta, croston, ingenuo o ingenuo_estacional)")),
+        "ingenuo" | "naive" => Familia::Ingenuo,
+        "ingenuo_estacional" | "snaive" => Familia::IngenuoEstacional,
+        "auto.arima" | "auto_arima" => Familia::Arima { orden: None, deriva: false },
+        "thetaf" => Familia::Theta,
+        o => return invalid(format!("modelo desconocido: «{o}» (usa auto, ses, holt, hw, arima, ets, tbats, theta, croston, ingenuo o ingenuo_estacional)")),
     })
 }
 
@@ -431,9 +505,8 @@ fn pronosticar(m: &StModel, o: &StOptions, d: &Datos) -> Result<Report, ModError
     let residuos: Vec<f64> = d.y.iter().zip(&a.ajustados).map(|(y, f)| if f.is_finite() { y - f } else { f64::NAN }).collect();
     let res_ok: Vec<f64> = residuos.iter().copied().filter(|x| x.is_finite()).collect();
     let err = errores(&d.y, &a.ajustados, &d.y, d.mi);
-    let npar = a.coef.iter().filter(|(k, _)| !k.starts_with('s') && k != "l" && k != "b" && k != "lambda").count();
-    let lbk = retardos_residuos(res_ok.len(), d.mi);
-    let lb = ljung_box(&res_ok, lbk.min(res_ok.len().saturating_sub(1)).max(1), npar.min(lbk.saturating_sub(1)));
+    let lb = prueba_residuos(&a, &fam, &res_ok, d.mi);
+    let (npar, lbk) = (lb.retardos - lb.gl, lb.retardos);
 
     // nombres de los periodos futuros
     let futuros: Vec<String> = (1..=h).map(|i| format!("+{i}")).collect();
@@ -521,6 +594,7 @@ fn pronosticar(m: &StModel, o: &StOptions, d: &Datos) -> Result<Report, ModError
             Familia::Arima { orden: None, .. } => "ARIMA automático (Hyndman y Khandakar, 2008): el número de diferencias d con pruebas de raíz unitaria (KPSS), las diferencias estacionales D con la fuerza de la estacionalidad; luego búsqueda paso a paso de p, q, P y Q minimizando el AICc, con los parámetros por máxima verosimilitud.".to_string(),
             Familia::Arima { orden: Some(_), .. } => "ARIMA con los órdenes dados: parámetros por máxima verosimilitud.".to_string(),
             Familia::Ets { .. } => "ETS (error, tendencia, estacionalidad) en espacio de estados con innovaciones (Hyndman et al., 2002): se prueban los modelos admisibles y se elige el de menor AICc; los parámetros se estiman por máxima verosimilitud.".to_string(),
+            Familia::Ses | Familia::Holt { .. } | Familia::Hw { .. } => explicacion_suavizacion(&fam),
             Familia::Tbats { .. } => "TBATS (De Livera et al., 2011): Box-Cox, estacionalidad trigonométrica (también varias y no enteras), errores ARMA y tendencia (posiblemente amortiguada); se elige la configuración de menor AIC.".to_string(),
             Familia::Theta => "Método Theta (Assimakopoulos y Nikolopoulos, 2000): suavización exponencial simple con deriva igual a la mitad de la pendiente de la tendencia lineal, sobre la serie desestacionalizada.".to_string(),
             Familia::Croston => "Croston (1972): suaviza por separado el tamaño de las demandas distintas de cero y el intervalo entre ellas (α = 0.1); el pronóstico es tamaño / intervalo.".to_string(),
@@ -548,6 +622,9 @@ fn pronosticar(m: &StModel, o: &StOptions, d: &Datos) -> Result<Report, ModError
     let fam_id = match &fam {
         Familia::Arima { .. } => "arima",
         Familia::Ets { .. } => "ets",
+        Familia::Ses => "ses",
+        Familia::Holt { .. } => "holt",
+        Familia::Hw { .. } => "hw",
         Familia::Tbats { .. } => "tbats",
         Familia::Theta => "theta",
         Familia::Croston => "croston",
@@ -575,6 +652,7 @@ fn pronosticar(m: &StModel, o: &StOptions, d: &Datos) -> Result<Report, ModError
     rep = match &fam {
         Familia::Arima { .. } => rep.cite("hyndmankhandakar2008", "Algoritmo de Hyndman-Khandakar (auto.arima) y paquete forecast"),
         Familia::Ets { .. } => rep.cite("hyndman2002ets", "Modelos ETS en espacio de estados y selección automática").cite("hyndmankhandakar2008", "Paquete forecast: ets()"),
+        Familia::Ses | Familia::Holt { .. } | Familia::Hw { .. } => rep.cite("hyndman2002ets", "Suavización exponencial como modelo ETS (ses, holt y hw de forecast)").cite("hyndmankhandakar2008", "Paquete forecast"),
         Familia::Tbats { .. } => rep.cite("delivera2011", "Modelo TBATS"),
         Familia::Theta => rep.cite("assimakopoulos2000", "Método Theta"),
         Familia::Croston => rep.cite("croston1972", "Método de Croston para demanda intermitente"),
@@ -587,12 +665,350 @@ fn pronosticar(m: &StModel, o: &StOptions, d: &Datos) -> Result<Report, ModError
     Ok(rep)
 }
 
+/// Ljung-Box de los residuos como checkresiduals() de forecast 9: con R se toma la de R;
+/// si no, retardos = 2m (o 10 sin estacionalidad), a lo sumo n/5 redondeado, y los grados
+/// de libertad del modelo solo cuentan en los ARIMA.
+fn prueba_residuos(a: &Ajuste, fam: &Familia, res_ok: &[f64], mi: usize) -> LjungBox {
+    if let Some((q, gl, p, ret)) = a.ljung_box {
+        return LjungBox { q, gl, p, retardos: ret.max(gl) };
+    }
+    let df = if matches!(fam, Familia::Arima { .. }) { a.coef.iter().filter(|(k, _)| k != "lambda").count() } else { 0 };
+    let k = retardos_residuos(res_ok.len(), mi).max(df + 3).min(res_ok.len().saturating_sub(1)).max(1);
+    let mut lb = ljung_box(res_ok, k, df);
+    lb.gl = k.saturating_sub(df).max(1);
+    lb
+}
+
+fn explicacion_suavizacion(f: &Familia) -> String {
+    match f {
+        Familia::Ses => "Suavización exponencial simple, ses() de R: ℓₜ = α yₜ + (1 − α) ℓₜ₋₁ y el pronóstico es el último nivel. α y el nivel inicial ℓ₀ se estiman minimizando el error cuadrático medio (ETS(A,N,N) con opt.crit = \"mse\").".into(),
+        Familia::Holt { amortiguada } => format!(
+            "Tendencia lineal de Holt, holt() de R{}: nivel ℓₜ = α yₜ + (1 − α)(ℓₜ₋₁ + {}bₜ₋₁) y tendencia bₜ = β*(ℓₜ − ℓₜ₋₁) + (1 − β*){}bₜ₋₁. Los parámetros y los estados iniciales se estiman minimizando el error cuadrático medio.",
+            if *amortiguada { " con tendencia amortiguada (φ)" } else { "" },
+            if *amortiguada { "φ" } else { "" },
+            if *amortiguada { "φ" } else { "" }
+        ),
+        Familia::Hw { multiplicativa, .. } => format!(
+            "Holt-Winters {}, hw() de R: nivel, tendencia y un índice por estación ({}). Los parámetros α, β, γ y los estados iniciales se estiman minimizando el error cuadrático medio.",
+            if *multiplicativa { "multiplicativo" } else { "aditivo" },
+            if *multiplicativa { "los índices promedian 1" } else { "los índices suman 0" }
+        ),
+        _ => String::new(),
+    }
+}
+
+/// Theil's U de accuracy() en el conjunto de prueba.
+fn theil_u(real: &[f64], prono: &[f64]) -> f64 {
+    let n = real.len().min(prono.len());
+    if n < 2 {
+        return f64::NAN;
+    }
+    let (mut a, mut b) = (0.0, 0.0);
+    for t in 1..n {
+        let x0 = real[t - 1];
+        if x0 == 0.0 {
+            continue;
+        }
+        a += ((prono[t] - real[t]) / x0).powi(2);
+        b += ((real[t] - x0) / x0).powi(2);
+    }
+    if b > 0.0 {
+        (a / b).sqrt()
+    } else {
+        f64::NAN
+    }
+}
+
+/// Suavización exponencial que sugiere el correlograma del entrenamiento.
+fn recomendar_suavizacion(r: &[f64], banda: f64, mi: usize) -> (Familia, String) {
+    let f = |x: f64| fmt(r4(x));
+    if mi > 1 && mi <= r.len() && r[mi - 1] > banda {
+        (
+            Familia::Hw { multiplicativa: false, amortiguada: false },
+            format!("La autocorrelación en el retardo {mi} (un ciclo) es {}, fuera de la banda ±{}: hay estacionalidad. Lo apropiado es Holt-Winters (suavización con tendencia y estacionalidad).", f(r[mi - 1]), f(banda)),
+        )
+    } else if r.len() >= 2 && r[0] > banda && r[1] > banda && r[0] >= r[1] {
+        (
+            Familia::Holt { amortiguada: false },
+            format!("Las primeras autocorrelaciones son positivas, salen de la banda ±{} y bajan despacio (r(1) = {}, r(2) = {}): hay tendencia sin estacionalidad. Lo apropiado es la suavización doble de Holt.", f(banda), f(r[0]), f(r[1])),
+        )
+    } else {
+        let fuera = r.iter().filter(|x| x.abs() > banda).count();
+        (
+            Familia::Ses,
+            format!(
+                "Ninguna autocorrelación muestra tendencia (no hay valores altos que bajen despacio) ni estacionalidad (r({}) no sale de la banda ±{}){}. Lo apropiado es la suavización exponencial simple.",
+                mi.max(1),
+                f(banda),
+                if fuera > 0 { format!("; {fuera} de {} retardos salen de la banda, sin formar un patrón", r.len()) } else { "; todas quedan dentro de la banda".into() }
+            ),
+        )
+    }
+}
+
+fn nombre_modelo(f: &Familia) -> &'static str {
+    match f {
+        Familia::Ses => "ses",
+        Familia::Holt { amortiguada: false } => "holt",
+        Familia::Holt { amortiguada: true } => "holt_amortiguado",
+        Familia::Hw { multiplicativa: false, .. } => "hw_aditivo",
+        Familia::Hw { multiplicativa: true, .. } => "hw_multiplicativo",
+        Familia::Arima { .. } => "arima",
+        Familia::Ets { .. } => "ets",
+        Familia::Tbats { .. } => "tbats",
+        Familia::Theta => "theta",
+        Familia::Croston => "croston",
+        Familia::Ingenuo => "ingenuo",
+        Familia::IngenuoEstacional => "ingenuo_estacional",
+    }
+}
+
+/// Evaluación como en clase: entrenamiento y prueba, accuracy() y checkresiduals() de cada modelo.
+fn evaluar(m: &StModel, o: &StOptions, d: &Datos) -> Result<Report, ModError> {
+    let n = d.y.len();
+    let nt = if !m.train_end.trim().is_empty() {
+        let fin = m.train_end.trim();
+        let normal = |x: &str| x.trim().to_lowercase().replace(['/', ' ', '.'], "-");
+        let pos = d.nombres.iter().position(|x| normal(x) == normal(fin)).or_else(|| {
+            // 2023-12 también como 2023-12 frente a «2023-12» de otro formato (2023-T4, 2023-4…)
+            let (a, e) = periodo_inicial(fin, d.mi).ok().flatten()?;
+            d.nombres.iter().position(|x| periodo_inicial(x, d.mi).ok().flatten() == Some((a, e)))
+        });
+        match pos {
+            Some(i) => i + 1,
+            None => return invalid(format!("el último periodo del entrenamiento «{fin}» no está entre los periodos de la serie ({} … {}); indica el primer periodo (start, p. ej. 2021-05) o usa test_size", d.nombres[0], d.nombres[n - 1])),
+        }
+    } else if m.test_size > 0 {
+        n.saturating_sub(m.test_size as usize)
+    } else {
+        let h = if m.horizon > 0 { m.horizon as usize } else if d.mi > 1 { d.mi } else { (n / 5).max(1) };
+        n.saturating_sub(h)
+    };
+    if nt < 4 || nt >= n {
+        return invalid(format!("el entrenamiento debe tener al menos 4 datos y dejar al menos uno para la prueba (hay {n} datos y el entrenamiento tendría {nt})"));
+    }
+    let k = n - nt;
+    let tr = &d.y[..nt];
+    let te = &d.y[nt..];
+
+    // correlograma del entrenamiento
+    let lags = if o.lags > 0 { (o.lags as usize).min(nt - 1) } else { retardos_por_defecto(nt, d.mi) };
+    let r = acf(tr, lags);
+    let banda = 1.96 / (nt as f64).sqrt();
+    let (sugerida, por_que) = recomendar_suavizacion(&r, banda, d.mi);
+    let estacional = matches!(sugerida, Familia::Hw { .. });
+
+    // modelos pedidos
+    let lista = m.models.trim().to_lowercase();
+    let fams: Vec<Familia> = if lista.is_empty() || lista == "auto" {
+        let mut v = vec![sugerida.clone(), if estacional { Familia::IngenuoEstacional } else { Familia::Ingenuo }];
+        v.push(Familia::Tbats { periodos: vec![d.m] });
+        v
+    } else {
+        let mut v = vec![];
+        for nombre in lista.split([',', ';']).map(str::trim).filter(|x| !x.is_empty()) {
+            let nombre = nombre.replace(['(', ')', ' '], "");
+            let f = match nombre.as_str() {
+                "suavizacion" | "sugerida" | "recomendada" => sugerida.clone(),
+                "ingenuo_sugerido" => if estacional { Familia::IngenuoEstacional } else { Familia::Ingenuo },
+                x => familia(m, x, d)?,
+            };
+            if !v.contains(&f) {
+                v.push(f);
+            }
+        }
+        v
+    };
+    let lambda = match m.lambda.trim() {
+        "" => None,
+        "auto" => lambda_guerrero(tr, d.mi),
+        t => Some(t.replace(',', ".").parse::<f64>().map_err(|_| ModError::Invalid(format!("λ de Box-Cox no válido: «{t}»")))?),
+    };
+    let serie = Serie { y: &d.y, m: d.m, inicio: d.inicio, lambda, nivel: m.level };
+    let mot = motores_pedidos(o)?;
+    let trabajos: Vec<Trabajo> = fams.iter().map(|f| Trabajo { familia: f.clone(), n: nt, h: k }).collect();
+    let (motor, res, mut avisos) = ajustar(&mot, &serie, &trabajos)?;
+
+    struct Fila {
+        fam: Familia,
+        a: Ajuste,
+        ent: Errores,
+        pru: Errores,
+        u: f64,
+        lb: LjungBox,
+    }
+    let mut filas: Vec<Fila> = vec![];
+    for (f, r) in fams.iter().zip(res) {
+        match r {
+            Ok(a) => {
+                let ent = errores(tr, &a.ajustados, tr, d.mi);
+                let pru = errores(te, &a.media, tr, d.mi);
+                let u = theil_u(te, &a.media);
+                let res_ok: Vec<f64> = tr.iter().zip(&a.ajustados).filter(|(_, f)| f.is_finite()).map(|(y, f)| y - f).collect();
+                let lb = prueba_residuos(&a, f, &res_ok, d.mi);
+                filas.push(Fila { fam: f.clone(), a, ent, pru, u, lb });
+            }
+            Err(e) => avisos.push(format!("{}: {e}", f.etiqueta())),
+        }
+    }
+    if filas.is_empty() {
+        return invalid(format!("ningún modelo se pudo ajustar ({})", avisos.join("; ")));
+    }
+    let mejor = |g: &dyn Fn(&Fila) -> f64| filas.iter().enumerate().filter(|(_, x)| g(x).is_finite()).min_by(|a, b| g(a.1).partial_cmp(&g(b.1)).unwrap()).map(|(i, _)| i);
+    let mejor_ent = mejor(&|x: &Fila| x.ent.rmse);
+    let mejor_pru = mejor(&|x: &Fila| x.pru.rmse);
+    let etiqueta = |x: &Fila| format!("{} ({})", x.fam.etiqueta(), x.a.modelo);
+
+    // tablas
+    let mut ta = Table::new(Some("Exactitud: accuracy(pronóstico, prueba)"), &["Modelo", "Conjunto", "ME", "RMSE", "MAE", "MPE", "MAPE", "MASE", "ACF1", "Theil's U"]).left(1);
+    for (i, x) in filas.iter().enumerate() {
+        let e = &x.ent;
+        ta.row_tone(cells![etiqueta(x).as_str(), "Entrenamiento", celda(e.me), celda(e.rmse), celda(e.mae), celda(e.mpe), celda(e.mape), celda(e.mase), celda(e.acf1), "—"], if Some(i) == mejor_ent { Tone::Highlight } else { Tone::Normal });
+        let e = &x.pru;
+        ta.row_tone(cells![etiqueta(x).as_str(), "Prueba", celda(e.me), celda(e.rmse), celda(e.mae), celda(e.mpe), celda(e.mape), celda(e.mase), celda(e.acf1), celda(x.u)], if Some(i) == mejor_pru { Tone::Highlight } else { Tone::Normal });
+    }
+    let mut tr_ = Table::new(Some("RMSE de cada modelo"), &["Modelo", "RMSE entrenamiento", "RMSE prueba"]).left(0);
+    for x in &filas {
+        tr_.row(cells![etiqueta(x).as_str(), celda(x.ent.rmse), celda(x.pru.rmse)]);
+    }
+    let mut tl = Table::new(Some("Residuos: checkresiduals() (prueba de Ljung-Box)"), &["Modelo", "Q*", "gl", "p", "Retardos", "¿Ruido blanco?"]).left(0);
+    for x in &filas {
+        let rb = x.lb.p >= 0.05;
+        tl.row_tone(cells![etiqueta(x).as_str(), celda(x.lb.q), x.lb.gl as f64, celda(x.lb.p), x.lb.retardos as f64, if rb { "Sí (1)" } else { "No (2)" }], if rb { Tone::Normal } else { Tone::Bad });
+    }
+    let mut cab = vec!["Periodo", "Real"];
+    let etq: Vec<String> = filas.iter().map(|x| x.fam.etiqueta()).collect();
+    cab.extend(etq.iter().map(|s| s.as_str()));
+    let mut tp = Table::new(Some("Pronósticos del periodo de prueba"), &cab).left(0);
+    for j in 0..k {
+        let mut c = cells![d.nombres[nt + j].as_str(), celda(te[j])];
+        for x in &filas {
+            c.push(celda(x.a.media.get(j).copied().unwrap_or(f64::NAN)));
+        }
+        tp.row(c);
+    }
+    let mut ch = Chart::new(Some("Serie, entrenamiento y pronósticos de la prueba"), &m.time_unit, "Valor");
+    ch.categories = Some(d.nombres.clone());
+    ch = ch.series(Series::new("Serie", SeriesKind::Line, d.y.iter().enumerate().map(|(t, v)| [t as f64, *v]).collect()).tone(Tone::Muted));
+    for x in &filas {
+        ch = ch.series(Series::new(x.fam.etiqueta(), SeriesKind::Line, x.a.media.iter().enumerate().map(|(j, v)| [(nt + j) as f64, r4(*v)]).collect()));
+    }
+
+    let nombre = |i: Option<usize>| i.map(|i| filas[i].fam.etiqueta()).unwrap_or_else(|| "—".into());
+    let conclusion = match (mejor_ent, mejor_pru) {
+        (Some(a), Some(b)) if a == b => format!("El modelo más recomendable es {}: tiene el menor RMSE tanto en el entrenamiento ({}) como en la prueba ({}).", nombre(Some(a)), fmt(r4(filas[a].ent.rmse)), fmt(r4(filas[a].pru.rmse))),
+        (a, b) => format!(
+            "En el entrenamiento el menor RMSE es el de {} ({}) y en la prueba el de {} ({}). Para pronosticar pesa más la prueba: son datos que el modelo no vio.",
+            nombre(a),
+            a.map(|i| fmt(r4(filas[i].ent.rmse))).unwrap_or_default(),
+            nombre(b),
+            b.map(|i| fmt(r4(filas[i].pru.rmse))).unwrap_or_default()
+        ),
+    };
+
+    let mut sol = vec![
+        metrics(vec![
+            metric_main("Mejor en la prueba (RMSE)", Cell::from(nombre(mejor_pru).as_str())),
+            metric("Entrenamiento", nt as f64),
+            metric("Prueba", k as f64),
+            metric("Suavización sugerida", Cell::from(sugerida.etiqueta().as_str())),
+        ]),
+        text(format!("Entrenamiento: {} a {} ({nt} datos); prueba: {} a {} ({k} datos).", d.nombres[0], d.nombres[nt - 1], d.nombres[nt], d.nombres[n - 1])),
+        grafico_barras("Autocorrelograma del entrenamiento (ACF)", &r, banda, "ACF"),
+        text(por_que.clone()),
+        tr_.block(),
+        ta.block(),
+        tl.block(),
+        text(conclusion.clone()),
+        tp.block(),
+        ch.block(),
+        text(format!("Motor: {}.", motor.nombre())),
+    ];
+    let distintos: Vec<String> = filas.iter().filter(|x| !x.fam.es_ets() && !matches!(x.fam, Familia::Ingenuo | Familia::IngenuoEstacional)).map(|x| x.fam.etiqueta()).collect();
+    if motor != Motor::R && !distintos.is_empty() {
+        sol.push(text_tone(format!("Nota: sin R, estos modelos se calculan con otra implementación y pueden diferir de los de R: {}. La suavización exponencial (ses, holt, hw, ets) y los ingenuos sí dan lo mismo que R. Para obtener exactamente los de R, instala R con el paquete forecast o usa la app de escritorio, que trae R.", distintos.join(", ")), Tone::Highlight));
+    }
+    if let Some(l) = lambda {
+        sol.push(text(format!("Se trabajó con la transformación de Box-Cox λ = {}.", fmt(r4(l)))));
+    }
+    if !avisos.is_empty() {
+        sol.push(text_tone(format!("Avisos: {}.", avisos.join("; ")), Tone::Muted));
+    }
+    let mut par = vec![];
+    for x in &filas {
+        if !x.a.coef.is_empty() {
+            let mut t = Table::new(Some(&format!("Parámetros: {}", etiqueta(x))), &["Parámetro", "Valor"]).left(0);
+            for (kk, v) in &x.a.coef {
+                t.row(cells![kk.as_str(), celda(*v)]);
+            }
+            par.push(t.block());
+        }
+    }
+    let pasos = if o.steps {
+        let mut v = vec![
+            step("Conjuntos de entrenamiento y prueba", format!("Como window(y, end = …) en R: los primeros {nt} datos entrenan los modelos y los {k} siguientes los prueban."), vec![]),
+            step("Autocorrelograma", format!("r(k) del entrenamiento con bandas ±1.96/√{nt} = ±{}. {}", fmt(r4(banda)), por_que), vec![]),
+        ];
+        for x in &filas {
+            let ex = match &x.fam {
+                Familia::Ses | Familia::Holt { .. } | Familia::Hw { .. } => explicacion_suavizacion(&x.fam),
+                Familia::Ingenuo => "Ingenuo, naive() de R: el pronóstico es el último valor del entrenamiento.".into(),
+                Familia::IngenuoEstacional => "Ingenuo estacional, snaive() de R: el pronóstico es el valor de la misma estación del último ciclo.".into(),
+                Familia::Tbats { .. } => "TBATS, tbats() de R (De Livera et al., 2011): prueba Box-Cox, tendencia, amortiguamiento, estacionalidad trigonométrica y errores ARMA, y se queda con la configuración de menor AIC.".into(),
+                f => format!("{}.", f.etiqueta()),
+            };
+            v.push(step(&etiqueta(x), format!("{ex} RMSE en el entrenamiento {} y en la prueba {}.", fmt(r4(x.ent.rmse)), fmt(r4(x.pru.rmse))), vec![]));
+        }
+        v.push(step("Exactitud", "accuracy(): en el entrenamiento los errores son yₜ − ŷₜ (valores ajustados); en la prueba, los datos reales menos los pronósticos. RMSE = √(Σe²/n), MAE = Σ|e|/n, MAPE = 100·Σ|e/y|/n y MASE = MAE / (error medio del ingenuo estacional del entrenamiento).", vec![]));
+        v.push(step("Residuos", "checkresiduals(): prueba de Ljung-Box de los residuos del entrenamiento; p ≥ 0.05 = parecen ruido blanco.", vec![]));
+        vec![steps(v)]
+    } else {
+        vec![]
+    };
+    let modelos_json: Vec<Value> = filas
+        .iter()
+        .map(|x| {
+            let acc = |e: &Errores| json!({"me": e.me, "rmse": e.rmse, "mae": e.mae, "mpe": e.mpe, "mape": e.mape, "mase": e.mase, "acf1": e.acf1});
+            json!({
+                "id": nombre_modelo(&x.fam), "label": x.fam.etiqueta(), "model": x.a.modelo,
+                "accuracy": {"training": acc(&x.ent), "test": acc(&x.pru), "theil_u": x.u},
+                "ljung_box": {"q": x.lb.q, "df": x.lb.gl, "p_value": x.lb.p, "lags": x.lb.retardos, "white_noise": x.lb.p >= 0.05},
+                "forecast": x.a.media, "coefficients": x.a.coef.iter().map(|(kk, v)| json!({"name": kk, "value": v})).collect::<Vec<_>>(), "aic": x.a.aic, "aicc": x.a.aicc, "bic": x.a.bic,
+            })
+        })
+        .collect();
+    let head = format!("{} Suavización sugerida por el autocorrelograma: {}.", conclusion, sugerida.etiqueta());
+    let mut rep = Report::new("st", &m.name, Status::Solved, head)
+        .section("solucion", "Evaluación", sol)
+        .section("parametros", "Parámetros", par)
+        .section("pasos", "Paso a paso", pasos)
+        .data(json!({
+            "train_size": nt, "test_size": k, "train_end": d.nombres[nt - 1], "test_start": d.nombres[nt],
+            "acf_training": r.iter().map(|x| r4(*x)).collect::<Vec<_>>(), "band": banda,
+            "recommended_smoothing": nombre_modelo(&sugerida), "recommended_smoothing_label": sugerida.etiqueta(), "recommended_reason": por_que,
+            "models": modelos_json,
+            "best_training_rmse": mejor_ent.map(|i| nombre_modelo(&filas[i].fam)), "best_test_rmse": mejor_pru.map(|i| nombre_modelo(&filas[i].fam)),
+            "engine": match motor { Motor::R => "r", Motor::Python => "python", Motor::Nativo => "nativo" }, "engine_name": motor.nombre(),
+        }))
+        .cite("hyndman2018fpp", "Conjuntos de entrenamiento y prueba, medidas de exactitud y revisión de residuos")
+        .cite("hyndman2002ets", "Suavización exponencial (ses, holt, hw) como modelos ETS")
+        .cite("hyndmankhandakar2008", "Paquete forecast de R")
+        .cite("ljungbox1978", "Prueba de Ljung-Box de los residuos")
+        .cite("arango2024arima", "Modelos de pronóstico en R en el curso");
+    if filas.iter().any(|x| matches!(x.fam, Familia::Tbats { .. })) {
+        rep = rep.cite("delivera2011", "Modelo TBATS");
+    }
+    rep = rep.cite_if(motor == Motor::Nativo, "anofox2026", "Motor nativo de pronósticos en Rust");
+    Ok(rep)
+}
+
 fn solve_st(m: &StModel, o: &StOptions) -> Result<Report, ModError> {
     let d = datos(m)?;
     match m.problem_type.as_str() {
         "exploracion" => explorar(m, o, &d),
         "pronostico" => pronosticar(m, o, &d),
-        t => invalid(format!("tipo de problema desconocido: «{t}» (usa exploracion o pronostico)")),
+        "evaluacion" => evaluar(m, o, &d),
+        t => invalid(format!("tipo de problema desconocido: «{t}» (usa exploracion, pronostico o evaluacion)")),
     }
 }
 
@@ -608,7 +1024,11 @@ impl TypedModule for St {
 
     fn spec(&self) -> ModuleSpec {
         let serie = |t: &str| Widget::records(Some(t), "data", vec![Field::text("name", "Periodo"), Field::number("value", "Valor").optional()], Some("Añadir dato"));
-        let base = vec![Field::number("frequency", "Frecuencia (periodo estacional)").default(12.0).help("12 mensual, 4 trimestral, 7 diaria con semana, 52.18 semanal; 1 = sin estacionalidad"), Field::integer("start_season", "Estación del primer dato", 1)];
+        let base = vec![
+            Field::number("frequency", "Frecuencia (periodo estacional)").default(12.0).help("12 mensual, 4 trimestral, 7 diaria con semana, 52.18 semanal; 1 = sin estacionalidad"),
+            Field::text("start", "Primer periodo").help("Año-estación, p. ej. 2021-05 para mayo de 2021 (como start = c(2021, 5) en R); nombra los periodos"),
+            Field::integer("start_season", "Estación del primer dato", 1).help("Solo si no se indica el primer periodo"),
+        ];
         ModuleSpec {
             id: "st".into(),
             winqsb: "Nuevo".into(),
@@ -624,6 +1044,27 @@ impl TypedModule for St {
                     layout: vec![Widget::params(Some("Serie"), base.clone()), serie("Datos")],
                 },
                 ProblemType {
+                    id: "evaluacion".into(),
+                    label: "Evaluar modelos (entrenamiento y prueba)".into(),
+                    description: "Como en clase con R: conjunto de entrenamiento hasta un periodo, el autocorrelograma y la suavización que sugiere, varios modelos (ses, holt, hw, naive, snaive, tbats, auto.arima…), accuracy() en entrenamiento y prueba y checkresiduals()".into(),
+                    dims: vec![Field::integer("observations", "Número de datos", 40)],
+                    layout: vec![
+                        Widget::params(
+                            Some("Evaluación"),
+                            vec![
+                                Field::text("train_end", "Último periodo del entrenamiento").help("Su nombre, p. ej. 2023-12 (como window(y, end = c(2023, 12))); vacío = usar los periodos de prueba"),
+                                Field::integer("test_size", "Periodos de prueba", 0).help("Si no se indica el último periodo del entrenamiento; 0 = un ciclo"),
+                                Field::text("models", "Modelos").help("Separados por comas: ses, holt, hw, naive, snaive, tbats, arima, ets, theta… Vacío = la suavización que sugiere el correlograma, el ingenuo y TBATS"),
+                                Field::boolean("damped", "Tendencia amortiguada (holt, hw)", false),
+                                Field::choice("seasonal_type", "Estacionalidad (hw)", &[("aditiva", "Aditiva"), ("multiplicativa", "Multiplicativa")]),
+                                Field::text("lambda", "λ de Box-Cox").help("Vacío = sin transformar; auto = Guerrero; 0 = logaritmo"),
+                            ],
+                        ),
+                        Widget::params(Some("Serie"), base.clone()),
+                        serie("Datos"),
+                    ],
+                },
+                ProblemType {
                     id: "pronostico".into(),
                     label: "Pronóstico (ARIMA, ETS, TBATS…)".into(),
                     description: "Un modelo o la comparación automática de varios en un periodo de prueba, con intervalos de predicción y revisión de los residuos".into(),
@@ -637,6 +1078,9 @@ impl TypedModule for St {
                                     "Modelo",
                                     &[
                                         ("auto", "Automático: comparar y elegir el mejor"),
+                                        ("ses", "Suavización exponencial simple (ses)"),
+                                        ("holt", "Holt: tendencia (holt)"),
+                                        ("hw", "Holt-Winters: tendencia y estacionalidad (hw)"),
                                         ("arima", "ARIMA"),
                                         ("ets", "ETS (suavización exponencial)"),
                                         ("tbats", "TBATS (estacionalidad compleja)"),
@@ -649,6 +1093,8 @@ impl TypedModule for St {
                                 Field::text("arima_order", "Órdenes ARIMA").help("p,d,q o p,d,q,P,D,Q; vacío = automático (auto.arima)").show_if("model", &["arima"]),
                                 Field::boolean("drift", "Con deriva", false).show_if("model", &["arima"]),
                                 Field::text("ets_model", "Modelo ETS").help("MAM, AAdN, ANN…; vacío = automático").show_if("model", &["ets"]),
+                                Field::boolean("damped", "Tendencia amortiguada", false).show_if("model", &["holt", "hw"]),
+                                Field::choice("seasonal_type", "Estacionalidad", &[("aditiva", "Aditiva"), ("multiplicativa", "Multiplicativa")]).show_if("model", &["hw"]),
                                 Field::text("seasonal_periods", "Periodos estacionales").help("Separados por comas, p. ej. 7, 365.25; vacío = la frecuencia").show_if("model", &["tbats"]),
                                 Field::text("lambda", "λ de Box-Cox").help("Vacío = sin transformar; auto = Guerrero; 0 = logaritmo"),
                                 Field::integer("horizon", "Periodos a pronosticar", 0).help("0 = dos ciclos o 10"),
@@ -671,18 +1117,26 @@ impl TypedModule for St {
     }
 
     fn template(&self, pt: &str, dims: &Value) -> Result<StModel, ModError> {
-        let n = dim(dims, "observations", if pt == "exploracion" { 24 } else { 36 }, 4, 100000)?;
+        let n = dim(dims, "observations", match pt { "exploracion" => 24, "evaluacion" => 40, _ => 36 }, 4, 100000)?;
         Ok(StModel {
             name: "Serie de tiempo".into(),
-            problem_type: if pt == "exploracion" { "exploracion".into() } else { "pronostico".into() },
+            problem_type: match pt {
+                "exploracion" | "evaluacion" => pt.into(),
+                _ => "pronostico".into(),
+            },
             time_unit: "mes".into(),
             frequency: 12.0,
             start_season: 1,
             data: (1..=n).map(|i| Obs { name: i.to_string(), value: None }).collect(),
+            start: String::new(),
             model: "auto".into(),
             arima_order: String::new(),
             drift: false,
             ets_model: String::new(),
+            damped: false,
+            seasonal_type: String::new(),
+            models: String::new(),
+            train_end: String::new(),
             seasonal_periods: String::new(),
             lambda: String::new(),
             horizon: 0,
@@ -717,6 +1171,7 @@ impl TypedModule for St {
             ("h02_arima_log", ex(include_str!("ejemplos/h02.json"))),
             ("qcement_comparar", ex(include_str!("ejemplos/qcement.json"))),
             ("gas_tbats", ex(include_str!("ejemplos/gas.json"))),
+            ("evaluacion_clase", ex(include_str!("ejemplos/evaluacion.json"))),
         ]
     }
 }

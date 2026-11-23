@@ -2005,7 +2005,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-api"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "iaqsb-core",
  "iaqsb-formats",
@@ -2020,7 +2020,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-core"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "crc32fast",
  "flate2",
@@ -2034,7 +2034,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-desktop"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "futures-util",
  "iaqsb-api",
@@ -2050,7 +2050,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-formats"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "iaqsb-core",
  "iaqsb-lp",
@@ -2059,7 +2059,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-lp"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "iaqsb-core",
  "schemars 0.8.22",
@@ -2070,7 +2070,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-modules"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "anofox-forecast",
  "chrono",
@@ -2090,7 +2090,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-render"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "color_quant",
  "iaqsb-core",

@@ -16,8 +16,11 @@
   import { sesion } from './lib/sesion.svelte';
   import { t } from './lib/i18n.svelte';
   import { onMount } from 'svelte';
+  import { escucharPedidosR, motoresWeb } from './lib/motores_web.svelte';
 
   onMount(() => ui.iniciar());
+  // el núcleo puede pedir el R de la app (series de tiempo sin R instalado)
+  onMount(() => void escucharPedidosR());
 
   // si se abrió la app con doble clic en un archivo de WinQSB, cargarlo
   onMount(async () => {
@@ -60,9 +63,28 @@
 <AjustesPage />
 <AparienciaDialog />
 <Avisos />
+{#if motoresWeb.detalle && !chat.abierto}
+  <div class="motorweb" role="status"><span class="spinner" aria-hidden="true"></span>{motoresWeb.detalle}</div>
+{/if}
 <ChatPanel />
 
 <style>
+  .motorweb {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--panel, #fff);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    font-size: 0.9em;
+  }
   .borde-lateral {
     position: fixed;
     left: 0;

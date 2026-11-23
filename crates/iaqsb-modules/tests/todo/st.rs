@@ -129,3 +129,86 @@ fn con_python_si_esta_instalado() {
     let r = Module::solve(&St, &ex("gas_tbats"), &json!({"forecast_engine": "python"})).unwrap();
     assert_eq!(r.data["model"], "TBATS");
 }
+
+/// Ejercicio de clase (cuestionario): mismos números que R 4.6.1 con forecast 9.0.2.
+/// La suavización exponencial y el ingenuo los da igual el motor nativo; TBATS, solo R.
+#[test]
+fn evaluacion_como_en_clase() {
+    let r = Module::solve(&St, &ex("evaluacion_clase"), &json!({"forecast_engine": "nativo"})).unwrap();
+    let d = &r.data;
+    assert_eq!(d["train_end"], "2023-12");
+    assert_eq!(d["train_size"], 32);
+    assert_eq!(d["test_size"], 8);
+    assert_eq!(d["recommended_smoothing"], "ses", "el correlograma no muestra tendencia ni estacionalidad");
+    let modelo = |id: &str| d["models"].as_array().unwrap().iter().find(|m| m["id"] == id).unwrap().clone();
+    let ses = modelo("ses");
+    // accuracy(ses(tr, h = 8), te)[, "RMSE"]
+    cerca(ses["accuracy"]["training"]["rmse"].as_f64().unwrap(), 938.8517287, 1e-6, "RMSE de ses en el entrenamiento");
+    cerca(ses["accuracy"]["test"]["rmse"].as_f64().unwrap(), 881.5051704, 1e-6, "RMSE de ses en la prueba");
+    // checkresiduals(ses): Q* = 4.0338, df = 6, p-value = 0.6721
+    cerca(ses["ljung_box"]["q"].as_f64().unwrap(), 4.0338, 5e-5, "Q* de ses");
+    assert_eq!(ses["ljung_box"]["df"], 6);
+    cerca(ses["ljung_box"]["p_value"].as_f64().unwrap(), 0.6721, 5e-5, "p de ses");
+    let ing = modelo("ingenuo");
+    cerca(ing["accuracy"]["training"]["rmse"].as_f64().unwrap(), 1269.1196603, 1e-6, "RMSE del ingenuo en el entrenamiento");
+    cerca(ing["accuracy"]["test"]["rmse"].as_f64().unwrap(), 889.3556319, 1e-6, "RMSE del ingenuo en la prueba");
+    assert_eq!(d["best_test_rmse"], "ses");
+    // misma serie ×3.1875 (la otra versión del cuestionario): 2992.590339 y 2809.682925
+    let mut m2 = ex("evaluacion_clase");
+    for o in m2["data"].as_array_mut().unwrap() {
+        let v = o["value"].as_f64().unwrap() * 3.1875;
+        o["value"] = json!(v);
+    }
+    let r2 = Module::solve(&St, &m2, &json!({"forecast_engine": "nativo", "steps": false})).unwrap();
+    let s2 = r2.data["models"].as_array().unwrap().iter().find(|m| m["id"] == "ses").unwrap().clone();
+    cerca(s2["accuracy"]["training"]["rmse"].as_f64().unwrap(), 2992.590339, 1e-5, "RMSE de ses ×3.1875 en el entrenamiento");
+    cerca(s2["accuracy"]["test"]["rmse"].as_f64().unwrap(), 2809.682925, 1e-5, "RMSE de ses ×3.1875 en la prueba");
+}
+
+#[test]
+fn evaluacion_con_r_incluye_tbats() {
+    if !motores::r_disponible() {
+        eprintln!("R con forecast no está instalado: se omite");
+        return;
+    }
+    let r = Module::solve(&St, &ex("evaluacion_clase"), &json!({"forecast_engine": "r"})).unwrap();
+    let t = r.data["models"].as_array().unwrap().iter().find(|m| m["id"] == "tbats").unwrap().clone();
+    assert_eq!(t["model"], "BATS(1, {0,0}, -, -)");
+    cerca(t["accuracy"]["training"]["rmse"].as_f64().unwrap(), 954.0058404, 1e-6, "RMSE de tbats en el entrenamiento");
+    cerca(t["accuracy"]["test"]["rmse"].as_f64().unwrap(), 890.3480692, 1e-6, "RMSE de tbats en la prueba");
+}
+
+/// ets(), holt() y hw() traducidos de forecast: mismos parámetros y pronósticos que R.
+#[test]
+fn ets_nativo_igual_a_r() {
+    let solve = |ejemplo: &str, extra: Value| {
+        let mut m = ex(ejemplo);
+        m["problem_type"] = json!("pronostico");
+        m["horizon"] = json!(4);
+        for (k, v) in extra.as_object().unwrap() {
+            m[k] = v.clone();
+        }
+        Module::solve(&St, &m, &json!({"forecast_engine": "nativo", "steps": false})).unwrap().data
+    };
+    let coef = |d: &Value, n: &str| d["coefficients"].as_array().unwrap().iter().find(|c| c["name"] == n).unwrap()["value"].as_f64().unwrap();
+    // hw(qcement, h = 4, seasonal = "multiplicative")
+    let d = solve("qcement_comparar", json!({"model": "hw", "seasonal_type": "multiplicativa"}));
+    assert_eq!(d["model"], "Holt-Winters' multiplicative method");
+    cerca(coef(&d, "alpha"), 0.6117689501, 1e-7, "alpha");
+    cerca(coef(&d, "beta"), 0.0001111052346, 1e-9, "beta");
+    cerca(coef(&d, "gamma"), 0.0001080417085, 1e-9, "gamma");
+    cerca(nums(&d["forecast"])[0], 2.5285, 1e-4, "pronóstico");
+    cerca(nums(&d["lower"])[0], 2.2514, 1e-4, "límite inferior del 95 %");
+    // holt(utilidades, h = 4, damped = TRUE)
+    let d = solve("utilidades_arango", json!({"model": "holt", "damped": true}));
+    assert_eq!(d["model"], "Damped Holt's method");
+    cerca(coef(&d, "alpha"), 0.3128705579, 1e-7, "alpha");
+    cerca(coef(&d, "phi"), 0.9799999946, 1e-7, "phi");
+    cerca(nums(&d["forecast"])[0], 364.6542, 1e-4, "pronóstico");
+    cerca(nums(&d["lower"])[0], 297.6244, 1e-4, "límite inferior del 95 %");
+    // ets(utilidades): ETS(M,N,M), AICc 381.4362
+    let d = solve("utilidades_arango", json!({"model": "ets"}));
+    assert_eq!(d["model"], "ETS(M,N,M)");
+    cerca(d["aicc"].as_f64().unwrap(), 381.4362335, 1e-5, "AICc");
+    cerca(nums(&d["forecast"])[0], 285.3838, 1e-4, "pronóstico");
+}
