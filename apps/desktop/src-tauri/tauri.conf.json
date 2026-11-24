@@ -34,7 +34,7 @@
     "copyright": "IA Nativa",
     "category": "Education",
     "shortDescription": "Investigación de operaciones nativa para IA · AI-native operations research",
-    "longDescription": "IAQSB reimplementa los módulos de WinQSB con un motor en Rust, abre sus archivos y se conecta con Claude mediante MCP. Hecho por IA Nativa.",
+    "longDescription": "IAQSB es un programa para aprender y resolver problemas de ingeniería industrial, con guías de cada tema, un motor de cálculo moderno y un asistente de IA. Abre los archivos de WinQSB y se conecta con Claude mediante MCP. Hecho por IA Nativa.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

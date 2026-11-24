@@ -1,10 +1,10 @@
 # IAQSB
 
-AI-native operations research. Made by IA Nativa.
+Learn and apply industrial engineering, with AI. Made by IA Nativa.
 
 Code: <https://github.com/vangoghdata/iaqsb> · Installers: <https://github.com/vangoghdata/iaqsb/releases> · [How to install (Spanish)](INSTALAR.md)
 
-Free software (MIT license) in Spanish, English and Portuguese, designed for universities in Latin America: from the first undergraduate operations research course to the doctoral thesis. *[Español: LEEME.md](LEEME.md) · [Português: LEIAME.md](LEIAME.md)*
+Free software (MIT license) in Spanish, English and Portuguese, designed for students, instructors and professionals in Latin America: from the first undergraduate course to the doctoral thesis and work in industry. *[Español: LEEME.md](LEEME.md) · [Português: LEIAME.md](LEIAME.md)*
 
 | Document | Purpose |
 | --- | --- |
@@ -15,7 +15,9 @@ Free software (MIT license) in Spanish, English and Portuguese, designed for uni
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to report bugs, propose improvements, translate and contribute code |
 | [CITATION.cff](CITATION.cff) | How to cite IAQSB |
 
-IAQSB reimplements the 19 modules of WinQSB 2.0 in Rust, opens and saves their files, and explains each solution step by step. It also adds six logistics modules that WinQSB does not have: vehicle routing, transportation mode selection, inventory management, inventory finance, warehouses and logistics KPIs, two production planning modules (the master production schedule and matrix MRP II, Gozinto) and a time series module with modern forecasting (ARIMA, ETS, TBATS). It can be used in three ways, all with the same calculation engine:
+IAQSB is a program to learn and solve industrial engineering problems: operations research, decision theory, production, logistics, inventory, forecasting and quality. Each topic comes with a guide (what it is, what it is for in real life, its history with sources, how to use it and how industry does it today), examples from textbooks and courses, and a modern calculation engine (HiGHS, Gurobi or CPLEX when installed, R and Python) that shows every solution step by step. It is designed so that someone can study a topic with IAQSB alone, and so that instructors can use it in class.
+
+It started as a replacement for programs that were still taught although they no longer run on current computers, such as WinQSB: it opens and saves their files, but it is not a copy. Today it has 28 modules (optimization, networks, projects, decisions, queues and simulation, inventory, forecasting and time series, production planning, MRP, job scheduling, facility location, quality and logistics) and an AI assistant, Nativo, that formulates, solves and explains with the same engine. It can be used in three ways, all with the same calculation engine:
 
 - **Desktop application** (Tauri 2 + Svelte) for students and instructors, with a macOS-inspired design: the system font (SF Pro on Mac, Inter on Windows), Apple system colors, and light, dark, automatic and custom themes. The module sidebar appears when the mouse reaches the left edge (or with Ctrl+K) and hides by itself; it can be pinned. Calculation options go in an «Options» panel so they do not take space away from the results. Every chart has buttons to enlarge it (full-screen viewer with zoom and pan), copy it as an image and download it as PNG or SVG, and charts show the value of each series on mouse hover. Entering a cell selects its value, so whatever is typed replaces it.
 - **MCP server** (`iaqsb-mcp`), so that Claude or another compatible assistant can formulate and solve problems.
@@ -23,7 +25,7 @@ IAQSB reimplements the 19 modules of WinQSB 2.0 in Rust, opens and saves their f
 
 ## Modules
 
-All 19 WinQSB modules are available. Each report has a summary, structured results, tables and charts, and a **Step by step** tab with the formulas applied to the data.
+Every module has its guide (the **Guide me** button). The «WinQSB» column tells which old program it replaces and which files it opens; «Nuevo» marks modules WinQSB did not have. Each report has a summary, structured results, tables and charts, and a **Step by step** tab with the formulas applied to the data.
 
 | WinQSB | IAQSB | Highlights |
 | --- | --- | --- |

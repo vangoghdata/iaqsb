@@ -1,6 +1,6 @@
 # IAQSB: contexto para Claude Code
 
-IAQSB es una reimplementación de WinQSB en Rust, Tauri 2 y Svelte 5, con una CLI (`iaqsb`) y un servidor MCP (`iaqsb-mcp`). Es software libre (MIT), en español, inglés y portugués de Brasil, para universidades de Latinoamérica: de pregrado a doctorado. Marca: «Hecho por IA Nativa». Autor: Luis (Grupo 8, Taller de Producción y Logística, Ingeniería Industrial, Universidad Nacional de Colombia).
+IAQSB es un programa para aprender y aplicar la ingeniería industrial (investigación de operaciones, decisiones, producción, logística y más), en Rust, Tauri 2 y Svelte 5, con una CLI (`iaqsb`) y un servidor MCP (`iaqsb-mcp`). Empezó reemplazando a WinQSB (abre y guarda sus archivos), pero Luis no quiere que se presente como una copia de WinQSB: es una plataforma de aprendizaje que va a crecer con temas que creen profesores y estudiantes. Es software libre (MIT), en español, inglés y portugués de Brasil, para universidades de Latinoamérica: de pregrado a doctorado. Marca: «Hecho por IA Nativa». Autor: Luis (Grupo 8, Taller de Producción y Logística, Ingeniería Industrial, Universidad Nacional de Colombia).
 
 Lee primero `LEEME.md`, que es la fuente de verdad sobre funciones, comandos y estructura. `CONTRIBUTING.md` explica cómo se trabaja.
 

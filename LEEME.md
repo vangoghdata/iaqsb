@@ -1,10 +1,10 @@
 # IAQSB
 
-Investigación de operaciones nativa para IA. Hecho por IA Nativa.
+Para aprender y aplicar la ingeniería industrial, con IA. Hecho por IA Nativa.
 
 Código: <https://github.com/vangoghdata/iaqsb> · Instaladores: <https://github.com/vangoghdata/iaqsb/releases> · [Cómo instalar](INSTALAR.md)
 
-Software libre (licencia MIT) en español, inglés y portugués, pensado para las universidades de Latinoamérica: del primer curso de investigación de operaciones en pregrado hasta la tesis de doctorado. *[English: README.md](README.md) · [Português: LEIAME.md](LEIAME.md)*
+Software libre (licencia MIT) en español, inglés y portugués, pensado para estudiantes, profesores y profesionales de Latinoamérica: del primer curso de pregrado hasta la tesis de doctorado y el trabajo en la empresa. *[English: README.md](README.md) · [Português: LEIAME.md](LEIAME.md)*
 
 | Documento | Para qué |
 | --- | --- |
@@ -16,7 +16,9 @@ Software libre (licencia MIT) en español, inglés y portugués, pensado para la
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Cómo reportar errores, proponer mejoras, traducir y contribuir código |
 | [CITATION.cff](CITATION.cff) | Cómo citar IAQSB |
 
-IAQSB reimplementa en Rust los 19 módulos de WinQSB 2.0, abre y guarda sus archivos, y explica cada solución paso a paso. Además agrega seis módulos de logística que WinQSB no tiene: ruteo de vehículos, selección del modo de transporte, gestión de inventarios, finanzas del inventario, almacenes e indicadores logísticos, dos de planificación de la producción (el programa maestro y el MRP II por matrices, Gozinto) y uno de series de tiempo con pronósticos modernos (ARIMA, ETS, TBATS). Se usa de tres maneras, con el mismo motor de cálculo:
+IAQSB es un programa para aprender y resolver problemas de ingeniería industrial: investigación de operaciones, teoría de decisiones, producción, logística, inventarios, pronósticos y calidad. Cada tema trae una guía (qué es, para qué sirve en la vida real, su historia con fuentes, cómo usarlo y cómo se hace hoy en la industria), ejemplos de libros y de cursos, y un motor de cálculo moderno (HiGHS, Gurobi o CPLEX si están, R y Python) que muestra cada solución paso a paso. Está pensado para que alguien pueda estudiar un tema solo con IAQSB y para que los profesores lo usen en clase.
+
+Nació para reemplazar programas que se seguían enseñando aunque ya no corren en los computadores actuales, como WinQSB: abre y guarda sus archivos, pero no es una copia. Hoy trae 28 módulos (optimización, redes, proyectos, decisiones, colas y simulación, inventarios, pronósticos y series de tiempo, planeación de la producción, MRP, programación de trabajos, localización, calidad y logística) y un asistente de IA, Nativo, que plantea, resuelve y explica con el mismo motor. Se usa de tres maneras, con el mismo motor de cálculo:
 
 - **Aplicación de escritorio** (Tauri 2 + Svelte) para estudiantes y profesores, con un diseño inspirado en macOS: letra del sistema (SF Pro en Mac, Inter en Windows), colores del sistema de Apple, temas claro, oscuro, automático y personalizado. La barra lateral de módulos aparece al llevar el mouse al borde izquierdo (o con Ctrl+K) y se esconde sola; se puede fijar. Las opciones del cálculo van en un panel «Opciones» para no quitarle espacio a los resultados. Cada gráfica tiene botones para ampliarla (visor a pantalla completa con zoom y arrastre), copiarla como imagen y descargarla en PNG o SVG, y los gráficos muestran el valor de cada serie al pasar el mouse. Al entrar a una celda se selecciona su valor, así que lo que se escribe lo reemplaza.
 - **Servidor MCP** (`iaqsb-mcp`), para que Claude u otro asistente compatible plantee y resuelva problemas.
@@ -24,7 +26,7 @@ IAQSB reimplementa en Rust los 19 módulos de WinQSB 2.0, abre y guarda sus arch
 
 ## Módulos
 
-Los 19 módulos de WinQSB están disponibles. Cada informe trae un resumen, resultados estructurados, tablas y gráficos, y una pestaña **Paso a paso** con las fórmulas aplicadas a los datos.
+Cada módulo tiene su guía (botón **Guíame**). La columna «WinQSB» dice qué programa viejo reemplaza y qué archivos abre; «Nuevo» son módulos que WinQSB no tenía. Cada informe trae un resumen, resultados estructurados, tablas y gráficos, y una pestaña **Paso a paso** con las fórmulas aplicadas a los datos.
 
 | WinQSB | IAQSB | Lo principal |
 | --- | --- | --- |
