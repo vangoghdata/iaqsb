@@ -1,0 +1,102 @@
+{
+  "modulo": "modo",
+  "titulo": "Selección del modo de transporte",
+  "resumen": "Compara medios de transporte (tren, camión, avión, barco u otros) por el costo total de la cadena: el flete más el costo de tener inventario en la planta, en tránsito y en el centro de distribución. Es para gerentes de logística, de compras y de comercio exterior.",
+  "que_es": [
+    "Elegir un medio de transporte solo por la tarifa es un error frecuente. Un medio barato y lento obliga a despachar lotes grandes y deja el producto muchos días en camino: ese inventario inmoviliza capital y ocupa bodegas. Un medio rápido y caro permite despachar poco y seguido, con menos inventario. El modelo del trade-off transporte-inventarios suma todos esos costos para cada medio y recomienda el de menor costo total.",
+    "Para cada medio se calculan cuatro costos anuales. Almacenaje en la planta: i × C × inventario promedio en la planta. Almacenaje en tránsito: i × C × D × T / 365. Almacenaje en el centro de distribución: i × (C + R) × inventario promedio en el CD, porque ahí el producto ya lleva el flete encima. Transporte: D × R. Aquí D es la demanda anual, C el costo del producto, i el costo anual de mantener inventario como fracción del valor, R el flete por unidad y T los días en tránsito."
+  ],
+  "analogia": "Es como decidir cómo surtir tu despensa. Si vas al mercado mayorista una vez al mes, pagas menos por cada viaje, pero llenas la alacena y la plata queda quieta en comida. Si compras a diario en la tienda de la esquina, el viaje cuesta más por unidad, pero casi no guardas nada. La mejor opción depende de cuánto vale tener cosas guardadas.",
+  "para_que_sirve": [
+    { "sector": "Exportación de flores", "ejemplo": "Un exportador compara avión y contenedor refrigerado por barco. El producto pierde valor cada día, lo que en el modelo equivale a un costo de mantener muy alto, y eso explica por qué el avión domina." },
+    { "sector": "Consumo masivo", "ejemplo": "Una empresa de alimentos decide entre tren y camión para llevar producto de la planta a un centro de distribución en otra ciudad." },
+    { "sector": "Repuestos y tecnología", "ejemplo": "Un importador de repuestos de alto valor compara carga aérea con marítima; el costo de capital del inventario en tránsito pesa más que el flete." },
+    { "sector": "Minería y graneles", "ejemplo": "Una minera de carbón compara tren, camión y barcaza fluvial; con un producto de bajo valor, el flete manda y gana el medio más barato." },
+    { "sector": "Comercio exterior", "ejemplo": "Un importador evalúa si traer la mercancía consolidada en barco cada mes o en envíos aéreos semanales." }
+  ],
+  "historia": [
+    { "anio": "1970", "hecho": "Baumol y Vinod proponen un modelo de demanda de transporte de carga basado en la teoría de inventarios: la elección del medio depende del flete, del tiempo en tránsito y de los costos de inventario que genera.", "refs": ["baumolvinod1970"] },
+    { "anio": "2003", "hecho": "Long analiza el peso económico del transporte en la logística internacional y la unitarización de la carga.", "refs": ["long2003"] },
+    { "anio": "2004", "hecho": "Ballou presenta la selección del servicio de transporte por costo total: el flete se compara junto con los inventarios en la planta, en tránsito y en el centro de distribución.", "refs": ["ballou2004", "ballou2004es"] },
+    { "anio": "2026", "hecho": "Las diapositivas del curso Taller de Producción y Logística de la Universidad Nacional de Colombia plantean el trade-off transporte-inventarios con el ejemplo que trae IAQSB.", "refs": ["sarache2026transporte"] }
+  ],
+  "necesitas": [
+    { "dato": "Demanda anual (D)", "para_que": "Unidades que se mueven al año por esa ruta. Sale del pronóstico de ventas o del plan de distribución." },
+    { "dato": "Costo del producto en la planta (C)", "para_que": "El valor de cada unidad antes del flete; con él se calcula cuánto capital queda inmovilizado. Sale del costo estándar de contabilidad." },
+    { "dato": "Costo de mantener inventario (i, % anual)", "para_que": "Costo de capital, seguros, obsolescencia y almacenamiento, como porcentaje del valor. Lo usual está entre 20 % y 40 % al año." },
+    { "dato": "Flete por unidad (R) de cada medio", "para_que": "La tarifa de cada medio. Sale de cotizaciones de transportadores o de tarifas pactadas." },
+    { "dato": "Días en tránsito (T) de cada medio", "para_que": "Tiempo promedio puerta a puerta, incluidos cargue, transbordos y descargue." },
+    { "dato": "Despachos al año o inventarios promedio", "para_que": "Si no conoces el inventario en la planta y en el CD, IAQSB lo estima como la mitad de cada despacho: D / (2 × despachos al año)." }
+  ],
+  "supuestos": [
+    "La demanda anual es conocida y constante a lo largo del año.",
+    "El costo de mantener es proporcional al valor del inventario y al tiempo.",
+    "El tiempo en tránsito es determinístico; el modelo no incluye inventario de seguridad por la variabilidad del tiempo de entrega.",
+    "El flete es un costo por unidad, sin descuentos por volumen ni costos fijos por despacho.",
+    "No se consideran pérdidas, daños, robos ni restricciones de capacidad de cada medio."
+  ],
+  "pasos": [
+    { "titulo": "Crea el problema", "texto": "Entra a «Selección del modo de transporte» y, en «Problema nuevo», escoge «Trade-off transporte-inventarios» con el número de «Medios de transporte». Puedes abrir el ejemplo tren_camion_avion de la clase." },
+    { "titulo": "Describe el producto y la demanda", "texto": "En «Producto y demanda» escribe la «Demanda anual (D)», el «Costo del producto en la planta (C)», el «Costo de mantener inventario (i, % anual)» (30 significa 30 % del valor al año) y los «Días del año», 365 por defecto." },
+    { "titulo": "Agrega los medios de transporte", "texto": "En «Medios de transporte» escribe el «Medio», el «Flete por unidad (R)», los «Días en tránsito (T)» y, según lo que sepas, los «Despachos al año» o el «Inventario en la planta» y el «Inventario en el CD». Si dejas vacíos los inventarios, se calculan como la mitad de cada despacho." },
+    { "titulo": "Elige las opciones", "texto": "Deja marcado «Costo según la demanda anual» para ver la sensibilidad, y «Mostrar paso a paso» para ver cada cálculo." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver». Revisa las pestañas «Solución», «Gráficos», «Sensibilidad», «Paso a paso» (un paso por medio con sus cuatro costos y el paso «Comparar») y «Modos», con las ventajas y desventajas de cada modo de transporte." }
+  ],
+  "como_resuelve": [
+    "IAQSB aplica las cuatro fórmulas a cada medio. Si diste los inventarios, los usa como dato; si no, los calcula con los despachos al año. Suma los cuatro costos y recomienda el medio con el menor total.",
+    "La sección de sensibilidad grafica el costo total de cada medio según la demanda anual y busca, entre 0 y el triple de la demanda actual, la demanda en la que dos medios cuestan lo mismo (tabla «Demanda en la que dos medios cuestan lo mismo»). Como los costos son lineales en D, ese punto se halla por bisección. Los inventarios escritos como dato se dejan fijos; los que dependen de los despachos crecen con la demanda.",
+    "El paso a paso muestra cada multiplicación con los números reales. Son fórmulas cerradas: no se usa un solver."
+  ],
+  "interpretar": [
+    "En el ejemplo de la clase, con D = 700 000 unidades, C = 30 e i = 30 %, el tren tiene el flete más bajo (70 000 al año) pero el costo total más alto (2 235 466), porque obliga a tener mucho inventario en la planta, en tránsito y en el CD.",
+    "El avión tiene el menor costo de inventarios, pero su flete de 980 000 lo hace más caro que el camión. Gana el camión con 1 129 301 al año, 345 719 menos que el avión.",
+    "Mira la composición del costo en «Gráficos»: si domina el flete, conviene negociar tarifas o consolidar; si domina el inventario, conviene acortar tiempos o despachar más seguido.",
+    "En «Sensibilidad», revisa los puntos de cruce. En el ejemplo, por debajo de unas 392 974 unidades al año el avión sería más barato que el camión, porque en el ejemplo los inventarios se dieron como dato y quedan fijos, mientras el flete alto del avión crece con la demanda. Ese punto es un dato clave para el plan de crecimiento o de contracción."
+  ],
+  "industria": [
+    { "nombre": "Oracle Transportation Management, SAP Transportation Management y Blue Yonder TMS", "tipo": "software", "uso": "Sistemas de gestión del transporte: selección de modo y transportador, consolidación, tarifas y seguimiento de envíos." },
+    { "nombre": "anyLogistix y Coupa Supply Chain Design", "tipo": "software", "uso": "Diseño de redes donde la elección de modo se evalúa junto con la ubicación de bodegas y los inventarios." },
+    { "nombre": "Freightos y plataformas de cotización de fletes", "tipo": "servicio", "uso": "Comparan tarifas y tiempos de tránsito de transporte marítimo, aéreo y terrestre para cotizar en línea." },
+    { "nombre": "Costo total de propiedad (TCO) y costo total logístico", "tipo": "metodologia", "uso": "Marco con el que compras y logística evalúan proveedores y modos considerando todos los costos, no solo el precio." },
+    { "nombre": "Incoterms", "tipo": "metodologia", "uso": "Reglas de la Cámara de Comercio Internacional que definen quién paga y asume el riesgo en cada tramo del transporte internacional." }
+  ],
+  "alternativas": [
+    "Transporte intermodal (por ejemplo barco más camión) cuando ningún medio solo cubre bien la ruta; se evalúa sumando tramos.",
+    "Modelos con inventario de seguridad, que agregan el costo de la variabilidad del tiempo de entrega (módulo INV).",
+    "Modelos de transporte y transbordo (módulo NET) cuando hay varios orígenes y destinos y se decide cuánto mover por cada ruta.",
+    "Evaluación multicriterio cuando pesan factores no monetarios como la huella de carbono, la seguridad o la confiabilidad."
+  ],
+  "errores_comunes": [
+    "Escoger el medio con el flete más bajo sin calcular los inventarios que genera.",
+    "Escribir el costo de mantener como 0.30 cuando el campo espera 30 (porcentaje).",
+    "Olvidar que en el CD el producto vale C + R, no solo C.",
+    "Usar los días de viaje del vehículo y no el tiempo puerta a puerta, que incluye esperas, cargue y aduanas.",
+    "Aplicar el modelo a productos perecederos sin aumentar el costo de mantener por la pérdida de valor."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Calcular los cuatro componentes del costo total de cada medio de transporte.",
+      "Explicar el trade-off entre flete e inventario y su efecto en el capital de trabajo.",
+      "Analizar cómo cambia la decisión con la demanda, el valor del producto y el costo de mantener."
+    ],
+    "actividades": [
+      "Con tren_camion_avion, subir el costo del producto de 30 a 300 y observar qué medio gana; discutir por qué los productos de alto valor viajan en avión.",
+      "Buscar tarifas y tiempos reales de una ruta nacional, por ejemplo de Buenaventura a Bogotá, para camión y para una alternativa intermodal, y plantear el caso.",
+      "Resolver el caso de selección del servicio de transporte del capítulo de transporte de Ballou y compararlo con el ejemplo de la clase."
+    ],
+    "preguntas": [
+      "¿Por qué el almacenaje en el CD usa C + R y el de la planta solo C?",
+      "Si el tiempo en tránsito del tren baja de 21 a 10 días, ¿cuánto baja su costo de inventario en tránsito?",
+      "¿Qué otros factores, aparte del costo, considerarías para elegir un medio de transporte?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Trade-off", "definicion": "Compensación entre dos costos que se mueven en sentido contrario; bajar uno sube el otro." },
+    { "termino": "Inventario en tránsito", "definicion": "Producto que ya salió de la planta y aún no llega al destino; vale dinero aunque no esté en una bodega." },
+    { "termino": "Costo de mantener inventario", "definicion": "Costo anual de tener una unidad en inventario, expresado como porcentaje de su valor." },
+    { "termino": "Flete", "definicion": "Precio que se paga por transportar una unidad de carga." },
+    { "termino": "Centro de distribución (CD)", "definicion": "Bodega intermedia desde donde se atiende a los clientes de una región." },
+    { "termino": "Tiempo puerta a puerta", "definicion": "Tiempo total desde que la carga sale del remitente hasta que llega al destinatario." }
+  ],
+  "referencias": ["ballou2004", "ballou2004es", "baumolvinod1970", "long2003", "sarache2026transporte"]
+}

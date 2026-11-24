@@ -1,0 +1,104 @@
+{
+  "modulo": "gp",
+  "titulo": "Programación por metas (GP-IGP)",
+  "resumen": "Ayuda a decidir cuando hay varias metas que compiten entre sí (utilidad, uso de capacidad, empleo, calidad) y no todas se pueden cumplir. Busca el plan que se acerque más a las metas, respetando el orden de importancia que fija la gerencia.",
+  "que_es": [
+    "La programación por metas es una extensión de la programación lineal para problemas con varios objetivos. En vez de maximizar una sola cantidad, cada objetivo se convierte en una meta con un valor deseado, y se miden las desviaciones: cuánto falta para llegar (desviación negativa) y cuánto se pasa (desviación positiva).",
+    "En la versión preferente o lexicográfica, que es la que trae IAQSB, las metas tienen prioridades. Primero se logra lo mejor posible en la meta de prioridad 1; luego, sin empeorar lo logrado allí, se busca lo mejor en la prioridad 2, y así sucesivamente. Una meta de baja prioridad solo cede si mejorarla dañaría una más importante.",
+    "Las restricciones del modelo se dividen en dos clases. Las rígidas no admiten desviación (la capacidad física de una máquina). Las de meta tienen la forma «expresión + d− − d+ = valor deseado», y la función de cada meta penaliza la desviación que no se quiere."
+  ],
+  "analogia": "Es como un estudiante que quiere aprobar todas las materias, dormir ocho horas y trabajar medio tiempo. Si no le alcanza el día, primero asegura aprobar, luego protege el trabajo y por último cede horas de sueño. No busca un único número mejor: busca cumplir en orden lo que más importa.",
+  "para_que_sirve": [
+    { "sector": "Manufactura", "ejemplo": "Plan de producción que primero asegura una utilidad mínima, luego evita horas extra y por último cumple una meta comercial de un producto. La gerencia ve qué metas se sacrifican y cuánto." },
+    { "sector": "Sector público y salud", "ejemplo": "Asignación de presupuesto entre programas con metas de cobertura, equidad territorial y techo de gasto, donde la ley fija el orden de prioridades." },
+    { "sector": "Talento humano", "ejemplo": "Programación de personal que cumple primero la cobertura mínima, luego las preferencias de turnos y por último el balance de cargas." },
+    { "sector": "Agroindustria", "ejemplo": "Planeación de cultivos con metas de ingreso, uso de agua y rotación de suelos, cuando el recurso hídrico obliga a escoger." },
+    { "sector": "Finanzas", "ejemplo": "Selección de inversiones con metas de rentabilidad, liquidez y exposición a riesgo por sector." }
+  ],
+  "historia": [
+    { "anio": "1955", "hecho": "Abraham Charnes, William Cooper y Robert Ferguson usan programación lineal para estimar la compensación de ejecutivos minimizando desviaciones respecto a valores deseados, idea que dio origen a la programación por metas.", "refs": ["charnes1955"] },
+    { "anio": "1961", "hecho": "Charnes y Cooper desarrollan la programación por metas en su libro sobre modelos de gestión y aplicaciones industriales de la programación lineal.", "refs": ["charnescooper1961"] },
+    { "anio": "2010", "hecho": "Dylan Jones y Mehrdad Tamiz publican una guía práctica que organiza las variantes modernas: lexicográfica, ponderada y de Chebyshev.", "refs": ["jonestamiz2010"] }
+  ],
+  "necesitas": [
+    { "dato": "Variables de decisión", "para_que": "Las cantidades a decidir, como en programación lineal: unidades a producir, horas a programar, dinero a invertir." },
+    { "dato": "Metas y su valor deseado", "para_que": "La cifra que la gerencia quiere alcanzar en cada objetivo: utilidad de 30 millones, uso total de 12 horas de cableado. Salen del plan estratégico o del presupuesto." },
+    { "dato": "Orden de prioridad", "para_que": "Qué meta se protege primero. Debe acordarse con quien decide, no inventarse en el modelo." },
+    { "dato": "Variables de desviación", "para_que": "Un par por meta (falta y exceso). En IAQSB se escriben como variables normales, igual que en WinQSB, por ejemplo d1m y d1p." },
+    { "dato": "Restricciones rígidas", "para_que": "Límites que no admiten desviación: capacidad física, normas, disponibilidad de materia prima." }
+  ],
+  "supuestos": [
+    "Las relaciones son lineales, como en la programación lineal.",
+    "Las prioridades son absolutas: ninguna cantidad de mejora en una meta baja compensa empeorar una meta alta.",
+    "Los valores deseados y los coeficientes se conocen con certeza.",
+    "Si dos metas tienen la misma importancia, deben combinarse en una sola meta con pesos, porque en el modo preferente cada meta ocupa un nivel."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo y el ejemplo", "texto": "En la barra lateral elige «Programación por metas». Para practicar, abre «Ejemplos» y carga «Harrison Electric (Render)»." },
+    { "titulo": "Crea el problema", "texto": "Pulsa «Nuevo problema». El tipo de problema es «Metas preferentes». Indica «Número de metas», «Número de variables» (cuenta también las de desviación) y «Número de restricciones», y pulsa «Crear problema»." },
+    { "titulo": "Escribe las metas en orden", "texto": "En la tabla «Metas (en orden de prioridad)» cada fila es una meta: la primera fila es la prioridad 1. Elige su «Criterio» («Minimizar» o «Maximizar») y escribe el coeficiente de cada variable; lo usual es poner 1 en la desviación que se quiere evitar y 0 en las demás." },
+    { "titulo": "Escribe las restricciones", "texto": "En «Restricciones, cotas y tipos» escribe cada restricción con sus coeficientes, el «Sentido» y el «Lado derecho». Las de meta llevan la forma expresión + d− − d+ = valor deseado. Abajo define «Cota inferior», «Cota superior» y «Tipo» («Continua», «Entera», «Binaria» o «Libre») de cada variable." },
+    { "titulo": "Resuelve y mira el paso a paso", "texto": "Deja activo «Mostrar paso a paso» y pulsa «Resolver». Revisa las pestañas «Solución», «Análisis» y «Paso a paso». Con «¿Qué pasa si…?» puedes cambiar un valor deseado y ver qué metas ceden." }
+  ],
+  "como_resuelve": [
+    "IAQSB resuelve el modelo de forma exacta, prioridad por prioridad. Para la prioridad 1 resuelve un programa lineal (o entero, si hay variables enteras) con HiGHS. Fija el valor logrado como una restricción adicional y pasa a la prioridad 2. Repite hasta la última meta. Así ninguna meta mejora a costa de una más importante.",
+    "Además, para cada meta calcula el mejor valor que lograría si fuera la única. Esa comparación muestra cuánto cede cada meta por respetar las de mayor prioridad.",
+    "En modelos continuos, el «Paso a paso» muestra el símplex de metas que se enseña en clase: una fila Cj − Zj por cada prioridad. Una variable entra a la base solo si mejora una prioridad sin empeorar ninguna superior. La fase uno de las variables artificiales se trata como la prioridad más alta. El resultado se compara con el de HiGHS."
+  ],
+  "interpretar": [
+    "El encabezado resume el plan y dice qué metas logran su mejor valor y cuáles ceden. En Harrison Electric, el plan es 0 candelabros y 6 ventiladores: las tres primeras metas se cumplen y la meta de ventiladores cede 1 unidad.",
+    "La tabla «Metas» muestra por prioridad el «Valor logrado», el «Mejor valor posible sola» y la «Diferencia». En verde quedan las metas que logran lo mismo que si fueran únicas; en ámbar, las que ceden.",
+    "La tabla de variables muestra el valor de cada variable y de cada desviación. Una desviación positiva en una meta que se quería cumplir indica cuánto faltó o cuánto se pasó.",
+    "En «Análisis», el precio sombra de cada restricción en cada prioridad dice cuánto mejora o empeora esa meta con una unidad más de lado derecho, manteniendo lo logrado en las metas superiores. Sirve para decidir dónde conviene invertir: por ejemplo, en más horas de ensamble."
+  ],
+  "industria": [
+    { "nombre": "Gurobi Optimizer (objetivos múltiples)", "tipo": "software", "uso": "Permite declarar varias funciones objetivo con prioridad y peso, y resolverlas en modo lexicográfico, que es la idea de la programación por metas preferente." },
+    { "nombre": "IBM ILOG CPLEX (objetivos múltiples)", "tipo": "software", "uso": "Ofrece optimización multiobjetivo lexicográfica y ponderada dentro del mismo motor de LP y MIP." },
+    { "nombre": "Pyomo y PuLP", "tipo": "libreria", "uso": "En Python, permiten escribir las variables de desviación y resolver por etapas con cualquier motor, automatizando la secuencia de prioridades." },
+    { "nombre": "LINGO y Solver de Excel", "tipo": "software", "uso": "Se usan en docencia y en empresas pequeñas para modelos de metas de tamaño moderado, resolviendo una prioridad tras otra." },
+    { "nombre": "Optimización multiobjetivo en la planeación", "tipo": "metodologia", "uso": "Los sistemas de planeación avanzada combinan metas de servicio, costo e inventario con jerarquías de objetivos, que es la misma lógica de prioridades." }
+  ],
+  "alternativas": [
+    "Programación por metas ponderada: todas las desviaciones se suman con pesos en un solo objetivo. Conviene cuando las metas son comparables y la gerencia acepta compensaciones.",
+    "Programación por metas de Chebyshev (minimax): minimiza la mayor desviación. Conviene cuando se busca equilibrio entre metas.",
+    "Objetivos múltiples en el módulo LP-ILP: desde la CLI o el MCP, el campo de objetivos con prioridad y peso hace lo mismo con la sintaxis de Gurobi.",
+    "Frontera de Pareto (método de la restricción ε): se optimiza un objetivo y los demás se vuelven restricciones con varios niveles; muestra todas las compensaciones posibles.",
+    "Métodos multicriterio discretos (AHP, TOPSIS) cuando las alternativas son pocas y ya están definidas."
+  ],
+  "errores_comunes": [
+    "Penalizar la desviación equivocada: para una meta de utilidad mínima se minimiza la falta (d−), no el exceso.",
+    "Olvidar escribir las dos desviaciones en cada restricción de meta. Sin ellas, la meta se vuelve una restricción rígida y el modelo puede quedar no factible.",
+    "Poner en la misma prioridad metas con unidades distintas (pesos y horas) sin normalizarlas.",
+    "Inventar el orden de prioridades. El orden es una decisión gerencial y cambia la respuesta; documéntalo.",
+    "Leer el valor de la función de una meta como si fuera la utilidad. Es una desviación, no el resultado del negocio."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Convertir objetivos gerenciales en metas con variables de desviación.",
+      "Explicar la diferencia entre restricciones rígidas y de meta.",
+      "Resolver un modelo preferente y justificar por qué cede cada meta.",
+      "Comparar la solución preferente con una ponderada y discutir las implicaciones."
+    ],
+    "actividades": [
+      "Cargar Harrison Electric, resolverlo y pedir que expliquen con la tabla «Metas» por qué cede la meta de ventiladores.",
+      "Cambiar el orden de dos metas y comparar los planes; discutir quién debería decidir ese orden en la empresa.",
+      "Seguir el «Paso a paso» del símplex de metas y verificar a mano una iteración con sus filas Cj − Zj.",
+      "Plantear con datos de una pyme de la región un problema con tres metas (utilidad, empleo y uso de capacidad) y presentar el informe exportado."
+    ],
+    "preguntas": [
+      "¿Qué significa que una meta tenga desviación positiva y negativa iguales a cero?",
+      "¿Por qué en el modo preferente una meta de baja prioridad no puede compensar a una de alta prioridad?",
+      "¿Cuándo es preferible la versión ponderada a la preferente?",
+      "¿Qué información da el precio sombra por prioridad que no da el valor logrado?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Meta", "definicion": "Valor deseado para un objetivo, que puede cumplirse, quedar corto o excederse." },
+    { "termino": "Desviación negativa (d−)", "definicion": "Cantidad que falta para llegar a la meta." },
+    { "termino": "Desviación positiva (d+)", "definicion": "Cantidad en que se supera la meta." },
+    { "termino": "Restricción rígida", "definicion": "Restricción que no admite desviación." },
+    { "termino": "Prioridad preferente", "definicion": "Orden absoluto entre metas: una de nivel superior nunca se sacrifica por una inferior." },
+    { "termino": "Optimización lexicográfica", "definicion": "Optimizar objetivos uno tras otro, fijando lo logrado en los anteriores." }
+  ],
+  "referencias": ["charnes1955", "charnescooper1961", "jonestamiz2010", "render2018", "hillier2015en", "taha2012", "huangfuhall2018", "chang2003"]
+}

@@ -1,0 +1,110 @@
+{
+  "modulo": "qcc",
+  "titulo": "Gráficos de control de calidad (QCC)",
+  "resumen": "Vigila si un proceso es estable en el tiempo y si cumple las especificaciones del cliente. Es para ingenieros de calidad, supervisores de producción y analistas de mejora continua.",
+  "que_es": [
+    "Un gráfico de control muestra, muestra tras muestra, un estadístico del proceso (la media, el rango, la proporción de defectuosos o el número de defectos) junto con una línea central y dos límites de control. Mientras los puntos caen dentro de los límites y sin patrones raros, el proceso solo tiene variación natural, la que Shewhart llamó de causas comunes. Un punto fuera o una racha sospechosa indica una causa asignable: un operario nuevo, un lote de materia prima distinto, una herramienta gastada.",
+    "Hay dos familias. Los gráficos por variables usan mediciones (diámetro, peso, temperatura) y vigilan el centro y la dispersión. Los gráficos por atributos cuentan: unidades defectuosas (gráficos P y nP) o defectos (gráficos C y u). A esto se suman herramientas complementarias: la capacidad del proceso, que compara la variación con las especificaciones; el histograma con prueba ji cuadrada, que revisa si los datos siguen la distribución supuesta; y el análisis de Pareto, que ordena las causas de mayor a menor peso."
+  ],
+  "analogia": "Es como medir todos los días cuánto tardas en llegar a la universidad. Unos días son 40 minutos y otros 47: eso es normal. Si un día tardas 90, algo pasó, un accidente o un paro. Y si diez días seguidos tardas más que el promedio, aunque ninguno sea extremo, probablemente cambió algo de fondo, como una obra en la vía. El gráfico de control formaliza esa intuición.",
+  "para_que_sirve": [
+    { "sector": "Alimentos y bebidas", "ejemplo": "Una envasadora vigila el peso de las bolsas de café con gráficos X̄ y R. Detecta a tiempo una dosificadora desajustada y evita regalar producto o incumplir el contenido neto declarado." },
+    { "sector": "Autopartes", "ejemplo": "Un proveedor de una ensambladora mide el diámetro de bujes y reporta el índice de capacidad. Muchos clientes de este sector piden índices de 1.33 o más para aprobar una pieza." },
+    { "sector": "Electrónica", "ejemplo": "Una planta de tarjetas de circuito cuenta defectos de soldadura por tarjeta con un gráfico C y prioriza con Pareto los tipos de defecto que más ocurren." },
+    { "sector": "Servicios y banca", "ejemplo": "Un centro de contacto controla la proporción de llamadas mal resueltas con un gráfico P y separa los días con problemas puntuales de los cambios reales de desempeño." },
+    { "sector": "Salud", "ejemplo": "Un hospital sigue la tasa de infecciones por cada mil días de hospitalización con un gráfico u para saber si una intervención funcionó." }
+  ],
+  "historia": [
+    { "anio": "1931", "hecho": "Walter Shewhart, de los Laboratorios Bell, publica el libro que formaliza el gráfico de control y la distinción entre causas comunes y causas asignables.", "refs": ["shewhart1931"] },
+    { "anio": "1951", "hecho": "Joseph Juran edita el Quality-control handbook, que difunde el análisis de Pareto para separar los pocos problemas vitales de los muchos triviales.", "refs": ["juran1951"] },
+    { "anio": "1954", "hecho": "E. S. Page propone los esquemas de sumas acumuladas (CUSUM), más sensibles que el gráfico de Shewhart a cambios pequeños y persistentes.", "refs": ["page1954"] },
+    { "anio": "1956", "hecho": "El manual de Western Electric publica las reglas de rachas (por ejemplo, 2 de 3 puntos más allá de 2 sigma) que hoy usan casi todos los programas.", "refs": ["westernelectric1956"] },
+    { "anio": "1959", "hecho": "S. W. Roberts introduce el gráfico de promedio móvil geométrico, hoy conocido como EWMA.", "refs": ["roberts1959"] },
+    { "anio": "1986", "hecho": "Victor Kane publica un análisis de los índices de capacidad Cp y Cpk que ayudó a extender su uso en la industria.", "refs": ["kane1986"] },
+    { "anio": "2020", "hecho": "Montgomery publica la 8.ª edición de su texto, la referencia universitaria más usada en control estadístico de la calidad.", "refs": ["montgomery2020"] }
+  ],
+  "necesitas": [
+    { "dato": "Mediciones o conteos por subgrupo", "para_que": "Son los datos del gráfico. Se toman del proceso a intervalos regulares, por ejemplo cinco piezas cada hora. Deben registrarse en el orden en que se produjeron." },
+    { "dato": "Tamaño de cada subgrupo", "para_que": "En atributos, el número de unidades inspeccionadas en cada muestra. Si varía, los límites del gráfico P o u cambian de muestra en muestra." },
+    { "dato": "Especificaciones LSL, objetivo y USL", "para_que": "Son los límites que fija el cliente o el diseño. Se usan para la capacidad del proceso, no para los límites de control." },
+    { "dato": "Causas y acciones (opcional)", "para_que": "Si registras la causa de cada problema o la acción tomada, el análisis de Pareto las ordena." },
+    { "dato": "Pesos de demérito (opcional)", "para_que": "En el gráfico U de deméritos, cada tipo de defecto pesa según su gravedad." }
+  ],
+  "supuestos": [
+    "Los límites calculados con los datos solo son válidos si esos datos provienen de un proceso estable; los puntos con causa identificada deben excluirse antes de fijar los límites.",
+    "Los gráficos de Shewhart para variables suponen datos aproximadamente normales e independientes entre muestras.",
+    "El gráfico P supone un modelo binomial y el C un modelo de Poisson.",
+    "Los límites de control no son límites de especificación: un proceso puede estar en control y aun así producir piezas fuera de especificación."
+  ],
+  "pasos": [
+    { "titulo": "Elige el tipo de datos", "texto": "Entra a «Gráficos de control de calidad» y, en «Problema nuevo», escoge «Datos por variables» (mediciones) o «Datos por atributos» (defectuosos o defectos). Indica «Características», «Subgrupos» y «Tamaño de los subgrupos». También puedes abrir los ejemplos anillos_de_piston, latas_de_jugo_p, tarjetas_de_circuito_c o defectos_pareto." },
+    { "titulo": "Llena la matriz de datos", "texto": "En variables, cada fila es una «Observación» con su número de «Subgrupo». En atributos, cada fila es un «Subgrupo» con su «Tamaño». Para cada característica puedes escribir «LSL», «Objetivo» y «USL». Usa «Deshabilitado» para excluir del cálculo un subgrupo con causa conocida, y «Causa», «Acción» y «Comentario» para documentar." },
+    { "titulo": "Revisa las reglas de fuera de control", "texto": "La tabla «Reglas de fuera de control» trae 14 reglas al estilo de WinQSB: un punto sobre el LCS, 2 de 3 puntos más allá de 2 sigma, 8 puntos seguidos del mismo lado, entre otras. Puedes cambiar n, m y las desviaciones, o añadir reglas." },
+    { "titulo": "Escoge el gráfico y sus límites", "texto": "En «Gráfico de control» elige entre los 36 disponibles; si lo dejas vacío, IAQSB usa X̄ para subgrupos, X para individuales, P para proporciones y C para conteos. En «Límites de control» elige «k desviaciones», «Probabilidad» o «Valores dados». Ajusta «Línea central» y «Desviación estándar» (por ejemplo R̄/d2 o S̄/c4) si el curso lo pide." },
+    { "titulo": "Activa los análisis complementarios", "texto": "Marca «Revisar las reglas de fuera de control», «Histograma y prueba ji cuadrada» (con la «Distribución a probar» y el «Nivel de significancia»), «Gráfico de probabilidad» y «Análisis de Pareto». Para CUSUM, EWMA o media móvil aparecen sus parámetros: α, β y Δ, el peso λ o la amplitud." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver». Revisa las pestañas «Gráfico», «Solución», «Reglas», «Capacidad», «Curva OC», «Histograma», «Probabilidad», «Pareto» y «Paso a paso», donde se ve la estimación de la línea central y de sigma y la fórmula de los límites." }
+  ],
+  "como_resuelve": [
+    "IAQSB calcula primero la línea central y la desviación del proceso con los subgrupos habilitados. Para X̄ y R usa, por defecto, la media de las medias y σ = R̄/d2, con las constantes de tablas (d2, c4, A2, D3, D4). Los límites son LC ± k·σ del estadístico; con k = 3 la probabilidad de falsa alarma por punto es cerca de 0.27 %.",
+    "Después recorre los puntos y aplica cada regla de fuera de control. Cada violación queda en la tabla «Reglas violadas» con el subgrupo y la regla.",
+    "La capacidad compara la distribución normal estimada con las especificaciones: PCR = (USL − LSL)/6σ mide el potencial y PCRk = mín(PCR-U, PCR-L) mide lo que de verdad se logra con el centrado actual. También estima el porcentaje y las partes por millón fuera de especificación.",
+    "La curva OC muestra la probabilidad de no detectar un corrimiento de la media en la siguiente muestra. El histograma agrupa los datos en celdas y aplica la prueba ji cuadrada de bondad de ajuste con la distribución que elijas. Las distribuciones y sus inversas se calculan con la librería statrs de Rust.",
+    "No hay optimización: son cálculos estadísticos cerrados, así que no interviene HiGHS."
+  ],
+  "interpretar": [
+    "Empieza por el encabezado: cuántos puntos están fuera de control. En el ejemplo de los anillos de pistón son 6 de 50; la tabla «Reglas violadas» dice qué regla rompió cada uno.",
+    "Un punto fuera de control es una señal para investigar, no una conclusión. Busca qué pasó en ese turno, anótalo en «Causa» y, si la causa se eliminó, deshabilita el punto y vuelve a calcular los límites.",
+    "En «Capacidad», un PCRk de 1.33 o más indica un proceso capaz; entre 1 y 1.33, apenas capaz; menos de 1, produce fuera de especificación. En los anillos, PCR = 1.41 pero PCRk = 0.61: la variación cabe en la tolerancia, pero el proceso está descentrado. La decisión es centrar, no comprar una máquina más precisa.",
+    "Si la prueba ji cuadrada rechaza la normalidad, los límites de 3 sigma y el porcentaje fuera de especificación son menos confiables; revisa el gráfico de probabilidad.",
+    "En el Pareto, actúa primero sobre las dos o tres causas que suman la mayor parte de los problemas."
+  ],
+  "industria": [
+    { "nombre": "Minitab Statistical Software", "tipo": "software", "uso": "El estándar de facto en programas Seis Sigma para gráficos de control, capacidad y Pareto." },
+    { "nombre": "JMP", "tipo": "software", "uso": "Control estadístico de procesos y análisis exploratorio interactivo, usado en manufactura y farmacéutica." },
+    { "nombre": "InfinityQS ProFicient y Enact", "tipo": "software", "uso": "Control estadístico en tiempo real conectado a las máquinas y a los sistemas de planta." },
+    { "nombre": "Paquete qcc de R", "tipo": "libreria", "uso": "Gráficos de Shewhart, CUSUM, EWMA, curvas OC, capacidad y Pareto en R." },
+    { "nombre": "Seis Sigma (DMAIC)", "tipo": "metodologia", "uso": "Marco de mejora donde los gráficos de control se usan en las fases de medir y controlar." },
+    { "nombre": "IATF 16949 y PPAP", "tipo": "metodologia", "uso": "Requisitos del sector automotor que exigen estudios de capacidad y control estadístico de las características críticas." }
+  ],
+  "alternativas": [
+    "CUSUM y EWMA, que también están en IAQSB, detectan corrimientos pequeños (de 0.5 a 1.5 sigma) mucho antes que el gráfico de Shewhart.",
+    "Gráficos multivariados como T² de Hotelling cuando varias características están correlacionadas y vigilarlas por separado da falsas alarmas.",
+    "Muestreo de aceptación (módulo ASA) cuando no controlas el proceso del proveedor y solo puedes inspeccionar los lotes que llegan.",
+    "Monitoreo con aprendizaje automático o detección de anomalías cuando hay muchos sensores; aun así, los gráficos de control siguen siendo la base interpretable."
+  ],
+  "errores_comunes": [
+    "Usar los límites de especificación como límites de control. Los primeros los pone el cliente; los segundos los pone el proceso.",
+    "Calcular los límites con datos de un proceso fuera de control y luego usarlos para vigilar. Primero hay que limpiar las causas asignables (fase I) y después vigilar (fase II).",
+    "Ajustar la máquina cada vez que un punto se mueve dentro de los límites. Eso aumenta la variación en lugar de reducirla.",
+    "Usar un gráfico P cuando se cuentan defectos por unidad, o un gráfico C cuando el tamaño de la muestra cambia. Para defectos con tamaño variable corresponde el gráfico u.",
+    "Reportar solo Cp. Un Cp alto con un proceso descentrado engaña; reporta también Cpk (PCRk en IAQSB)."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Elegir el gráfico de control adecuado según el tipo de dato y el tamaño de la muestra.",
+      "Calcular e interpretar límites de control, reglas de rachas e índices de capacidad.",
+      "Diferenciar estabilidad estadística y cumplimiento de especificaciones."
+    ],
+    "actividades": [
+      "Con el ejemplo anillos_de_piston, calcular a mano los límites X̄ y R de los primeros subgrupos y compararlos con el «Paso a paso».",
+      "Medir en clase el peso de 20 muestras de 5 galletas o el tiempo de 20 grupos de 5 tareas, cargar los datos y discutir si el proceso está en control.",
+      "Con latas_de_jugo_p, deshabilitar los subgrupos con causa identificada, recalcular los límites y comentar el cambio."
+    ],
+    "preguntas": [
+      "¿Por qué un proceso con PCR = 1.4 y PCRk = 0.6 no es capaz y qué harías primero?",
+      "¿Qué ventaja tiene un gráfico CUSUM sobre uno de Shewhart para detectar un corrimiento de 1 sigma?",
+      "Si el tamaño de la muestra cambia cada día, ¿qué gráfico usarías para la proporción de defectuosos y por qué cambian los límites?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Causa asignable", "definicion": "Fuente de variación identificable y corregible, ajena al funcionamiento normal del proceso." },
+    { "termino": "Límite de control", "definicion": "Valor calculado con los datos, normalmente a 3 sigma de la línea central, que separa la variación natural de las señales." },
+    { "termino": "Subgrupo racional", "definicion": "Muestra tomada de forma que la variación dentro de ella sea solo de causas comunes." },
+    { "termino": "Regla de rachas", "definicion": "Patrón de varios puntos, como 8 seguidos del mismo lado, que indica un cambio aunque ningún punto salga de los límites." },
+    { "termino": "PCRk (Cpk)", "definicion": "Índice de capacidad que considera el centrado: la menor distancia a una especificación dividida por 3 sigma." },
+    { "termino": "Curva OC", "definicion": "Probabilidad de no detectar un cambio del proceso en función del tamaño del cambio." },
+    { "termino": "Gráfico P", "definicion": "Gráfico de la proporción de unidades defectuosas por subgrupo." },
+    { "termino": "Gráfico C", "definicion": "Gráfico del número de defectos por unidad de inspección de tamaño constante." }
+  ],
+  "referencias": ["montgomery2020", "montgomery2004", "shewhart1931", "westernelectric1956", "page1954", "roberts1959", "kane1986", "juran1951", "chang2003", "statrs"]
+}

@@ -1,0 +1,192 @@
+{
+  "modulo": "fin",
+  "titulo": "Finanzas del inventario: ROI, liquidez y capital de trabajo",
+  "resumen": "Muestra en cifras financieras lo que vale reducir el inventario: cuánto sube la rentabilidad sobre la inversión, cómo cambian la razón corriente y la prueba ácida, y cuánto capital de trabajo se libera al acortar el ciclo operativo. Sirve a ingenieros de logística que deben justificar sus proyectos ante la gerencia financiera.",
+  "que_es": [
+    "El inventario aparece dos veces en los estados financieros. En el balance es un activo corriente: dinero de la empresa convertido en materias primas, productos en proceso y productos terminados. En el estado de resultados pesa a través de los gastos que genera: bodegaje, seguros, mermas, obsolescencia y el costo del capital que lo financia. Por eso una decisión de inventario es también una decisión financiera.",
+    "Tres indicadores conectan el inventario con las finanzas. El ROI (utilidad neta / activo total) mide cuánto rinde cada peso invertido; se puede ver como margen × rotación del activo, y bajar el inventario mejora los dos. La razón corriente (activo corriente / pasivo corriente) y la prueba ácida (que excluye el inventario) miden la capacidad de pagar las deudas de corto plazo. El capital de trabajo se calcula con el ciclo operativo: los días que el dinero pasa en inventario más los días de cartera, menos los días que el proveedor nos financia. Ese desfase es lo que la empresa debe financiar con recursos propios.",
+    "IAQSB tiene tres tipos de problema, que no existen en WinQSB y siguen el curso de inventarios: «Rentabilidad (ROI)», «Liquidez» y «Capital de trabajo». Cada uno compara situaciones: la actual frente a una con menos inventario, o varios escenarios."
+  ],
+  "analogia": "Piensa en una tienda de barrio que compra mercancía con su propio dinero, la vende fiada a 30 días y paga al mayorista a 15 días. Durante el tiempo en que la mercancía está en el estante y el cliente no ha pagado, el tendero tiene su plata quieta. Si el mayorista le diera 30 días de plazo o si vendiera más rápido, necesitaría menos dinero para operar. Ese dinero quieto es el capital de trabajo.",
+  "para_que_sirve": [
+    {
+      "sector": "Manufactura",
+      "ejemplo": "Una fábrica muestra que reducir el inventario de 800 a 200, con los gastos que eso ahorra, sube el ROI de 4.98 % a 8.97 %. Con esa cifra la gerencia aprueba el proyecto de mejora de la planeación."
+    },
+    {
+      "sector": "Consumo masivo",
+      "ejemplo": "Una empresa reduce los días de materias primas y de producto terminado y negocia más plazo con proveedores. El capital de trabajo necesario baja de 150 a 65.6, dinero que queda libre para invertir."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1980",
+      "hecho": "Richards y Laughlin propusieron el ciclo de conversión del efectivo (días de inventario + días de cartera − días de pago) como medida de liquidez más útil que las razones estáticas del balance.",
+      "refs": [
+        "richards1980"
+      ]
+    },
+    {
+      "anio": "2004",
+      "hecho": "Ballou, en su texto de logística empresarial, trata el costo de mantener inventario, que incluye el costo del capital invertido, como uno de los costos centrales en las decisiones logísticas.",
+      "refs": [
+        "ballou2004"
+      ]
+    },
+    {
+      "anio": "2026",
+      "hecho": "Las diapositivas de gestión de inventarios del curso Taller de Producción y Logística de la Universidad Nacional de Colombia presentan el efecto del inventario en el ROI, la liquidez y el capital de trabajo con los ejercicios que IAQSB reproduce.",
+      "refs": [
+        "sarache2026inventarios"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Estado de resultados resumido (ROI)",
+      "para_que": "Ventas, costo de ventas, gastos fijos y variables (o gastos totales) e impuestos. Sale del estado de resultados del periodo."
+    },
+    {
+      "dato": "Balance resumido (ROI)",
+      "para_que": "Activo fijo, bancos, cuentas por cobrar e inventarios, para calcular el activo total."
+    },
+    {
+      "dato": "Reducción del inventario (ROI, opcional)",
+      "para_que": "El nuevo nivel de inventario, si los gastos bajan en la misma proporción y cuánto cambian los impuestos."
+    },
+    {
+      "dato": "Activo y pasivo corriente (liquidez)",
+      "para_que": "Bancos, cuentas por cobrar, valores negociables, inventarios y pasivo corriente. Para el obsoleto, su porcentaje y cuánto se recupera de su valor."
+    },
+    {
+      "dato": "Presupuestos y días del ciclo (capital de trabajo)",
+      "para_que": "Presupuesto anual de egresos y de ventas, días del año, días de materia prima, en proceso y terminado (o días de inventario total), días de cartera y días de pago. Los días salen de dividir cada saldo por su consumo diario."
+    }
+  ],
+  "supuestos": [
+    "Los estados financieros están resumidos: un solo periodo y partidas agregadas.",
+    "Si se marca «Los gastos bajan en la misma proporción», todos los gastos se reducen en el mismo porcentaje que el inventario; en la realidad solo algunos gastos dependen del inventario.",
+    "En el capital de trabajo, los egresos se reparten de forma pareja durante el año y el desfase se repite igual en cada ciclo."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y elige el tipo",
+      "texto": "Entra a «Finanzas del inventario» y pulsa «Nuevo problema». Elige «Rentabilidad (ROI)» (indica el número de «Escenarios»), «Liquidez» o «Capital de trabajo». Pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» tienes «Efecto de los inventarios en el ROI: escenarios A y B (clase)», «Cálculo del ROI: compañía manufacturera (clase)», «Efecto en el flujo de efectivo: almacén comercial (clase)», «Capital de trabajo: situación actual y reducción (clase)» y «Parcial: capital de trabajo (desfase que se repite 4 veces)»."
+    },
+    {
+      "titulo": "ROI: llena los escenarios",
+      "texto": "En la tabla «Escenarios» escribe «Ventas», «Costo de ventas», «Gastos fijos» y «Gastos variables» (o «o gastos totales»), «Impuestos», «Activo fijo», «Bancos», «Cuentas por cobrar» e «Inventarios». Si quieres simular una reducción, en «Reducción del inventario (opcional)» llena «Reducir el inventario a», marca «Los gastos bajan en la misma proporción» si aplica y escribe el «Cambio en impuestos (%)» (−10 = bajan 10 %)."
+    },
+    {
+      "titulo": "Liquidez: escribe el balance corriente",
+      "texto": "Llena «Bancos», «Cuentas por cobrar», «Valores negociables», «Inventarios» y «Pasivo corriente (cuentas por pagar y deudas de corto plazo)». Para el obsoleto, escribe «Inventario obsoleto (%)» y «Valor que se recupera del obsoleto (%)»."
+    },
+    {
+      "titulo": "Capital de trabajo: presupuestos y ciclos",
+      "texto": "En «Presupuestos» escribe el «Presupuesto anual de egresos (PAE)», el «Presupuesto anual de ventas (PAV)» y los «Días del año». En «Situaciones» agrega una fila por caso con «Días MP», «Días PP», «Días PT» (o «o días de inventario total»), «Días de cartera» y «Días de pago». Para problemas al revés usa «o veces al año del desfase»; para comparar con la primera fila, «o reducción del inventario (%)»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Revisa «Solución» y «Gráficos»; en capital de trabajo hay un diagrama del ciclo operativo que muestra el desfase. La pestaña «Paso a paso» muestra cada fórmula con tus números, en el orden en que se resuelve en clase."
+    }
+  ],
+  "como_resuelve": [
+    "No hay optimización: son cálculos financieros exactos, hechos con las fórmulas del curso y mostrados paso a paso.",
+    "ROI: utilidad bruta = ventas − costo de ventas; utilidad neta = utilidad bruta − gastos − impuestos; activo total = activo fijo + bancos + cuentas por cobrar + inventarios; ROI = utilidad neta / activo total. IAQSB también lo descompone en margen (utilidad neta / ventas) × rotación del activo (ventas / activo total). Con la reducción, recalcula el inventario, los gastos (si bajan en proporción) y los impuestos.",
+    "Liquidez: razón corriente = activo corriente / pasivo corriente; prueba ácida = (activo corriente − inventarios) / pasivo corriente. Con el obsoleto, el inventario se revalúa como la parte sana más lo que se recupera de la obsoleta; la pérdida reduce la razón corriente, pero no la prueba ácida, que ya excluía el inventario.",
+    "Capital de trabajo: ciclo operativo = días de inventario + días de cartera; desfase = ciclo − días de pago; veces al año = días del año / desfase; capital de trabajo = egresos anuales / veces. También calcula el ingreso y la utilidad por ciclo. Al revés, con las veces al año, despeja el desfase, el ciclo y los días de inventario."
+  ],
+  "interpretar": [
+    "En los escenarios A y B, bajar el inventario de 28 a 20 y los gastos fijos de 35 a 32 sube el ROI de 11.50 % a 15.24 %. El efecto viene por dos lados: más utilidad y menos activo.",
+    "En la compañía manufacturera, llevar el inventario de 800 a 200 con gastos proporcionales e impuestos 10 % menores sube el ROI de 4.98 % a 8.97 %. Revisa en «Paso a paso» cuánto aporta el margen y cuánto la rotación.",
+    "En el almacén comercial, la razón corriente es 1.4 y la prueba ácida 0.5667. Una prueba ácida menor que 1 dice que, sin vender inventario, la empresa no alcanza a pagar sus deudas de corto plazo. Con el 30 % obsoleto que se recupera a la mitad, la razón corriente baja a 1.275.",
+    "En el capital de trabajo de clase, la situación actual tiene un ciclo de 80 días y un desfase de 48 días: la empresa financia 150 con recursos propios. Con menos días de inventario y de cartera y más días de pago, el desfase baja a 21 días y el capital de trabajo a 65.625: se liberan 84.375."
+  ],
+  "industria": [
+    {
+      "nombre": "SAP S/4HANA Finance y Oracle NetSuite",
+      "tipo": "software",
+      "uso": "ERP que generan el balance y el estado de resultados de los que salen los datos, y reportan días de inventario, de cartera y de pago."
+    },
+    {
+      "nombre": "Microsoft Power BI y Excel",
+      "tipo": "software",
+      "uso": "Tableros e informes con ROI, razones de liquidez y ciclo de conversión del efectivo, las herramientas más usadas por las áreas financieras."
+    },
+    {
+      "nombre": "Ciclo de conversión del efectivo",
+      "tipo": "metodologia",
+      "uso": "Indicador estándar de gestión del capital de trabajo: días de inventario + días de cartera − días de pago."
+    },
+    {
+      "nombre": "Análisis DuPont",
+      "tipo": "metodologia",
+      "uso": "Descompone la rentabilidad en margen y rotación del activo, para ver qué parte de la mejora viene de reducir activos como el inventario."
+    }
+  ],
+  "alternativas": [
+    "Valor económico agregado (EVA): mide la utilidad después de cobrar el costo de todo el capital, incluido el que está en inventario. Conviene cuando se quiere comparar contra el costo de oportunidad.",
+    "Flujo de caja descontado: para proyectos de reducción de inventario con inversión inicial (un software, una bodega nueva), el valor presente neto es mejor criterio que el ROI de un año."
+  ],
+  "errores_comunes": [
+    "Restar los impuestos antes que los gastos o calcular el ROI con la utilidad bruta. El ROI usa la utilidad neta.",
+    "Suponer que todos los gastos bajan con el inventario. Solo bajan los que dependen de él (bodegaje, seguros, mermas); acláralo en el informe.",
+    "Confundir el ciclo operativo con el desfase. El ciclo cuenta todos los días del dinero; el desfase descuenta los días que financia el proveedor.",
+    "Pensar que una razón corriente alta siempre es buena: puede esconder inventario obsoleto. Mira también la prueba ácida."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Explicar por qué el inventario afecta la rentabilidad, la liquidez y la necesidad de capital.",
+      "Calcular el ROI y descomponerlo en margen y rotación.",
+      "Calcular la razón corriente y la prueba ácida, e interpretar el efecto del inventario obsoleto.",
+      "Calcular el ciclo operativo, el desfase y el capital de trabajo, también en problemas al revés."
+    ],
+    "actividades": [
+      "Con «Efecto de los inventarios en el ROI: escenarios A y B (clase)», pide calcular a mano y explicar cuánto de la mejora viene de la utilidad y cuánto del activo.",
+      "Con «Capital de trabajo: situación actual y reducción (clase)», pide proponer otra combinación de días que libere el mismo capital y discutir cuál es más realista.",
+      "Con «Parcial: capital de trabajo (desfase que se repite 4 veces)», trabaja el problema al revés en grupos y compara con IAQSB."
+    ],
+    "preguntas": [
+      "¿Por qué una reducción de inventario mejora el ROI aunque las ventas no cambien?",
+      "¿Por qué el inventario obsoleto afecta la razón corriente pero no la prueba ácida?",
+      "Si el proveedor amplía el plazo de pago de 30 a 45 días, ¿qué pasa con el capital de trabajo?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "ROI",
+      "definicion": "Rentabilidad sobre la inversión: utilidad neta dividida por el activo total."
+    },
+    {
+      "termino": "Razón corriente",
+      "definicion": "Activo corriente dividido por pasivo corriente."
+    },
+    {
+      "termino": "Prueba ácida",
+      "definicion": "Activo corriente sin inventarios dividido por pasivo corriente."
+    },
+    {
+      "termino": "Ciclo operativo",
+      "definicion": "Días de inventario más días de cartera: tiempo desde que se compra hasta que se cobra."
+    },
+    {
+      "termino": "Desfase",
+      "definicion": "Ciclo operativo menos días de pago: los días que la empresa financia con recursos propios."
+    },
+    {
+      "termino": "Capital de trabajo",
+      "definicion": "Dinero necesario para cubrir los egresos durante el desfase: egresos anuales divididos por las veces que se repite el desfase en el año."
+    }
+  ],
+  "referencias": [
+    "sarache2026inventarios",
+    "richards1980",
+    "ballou2004",
+    "ballou2004es",
+    "silver2017"
+  ]
+}

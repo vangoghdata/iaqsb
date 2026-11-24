@@ -1,0 +1,282 @@
+{
+  "modulo": "net",
+  "titulo": "Modelos de redes (NET)",
+  "resumen": "Resuelve los problemas de mover, conectar o asignar sobre una red de nodos y arcos: transporte, asignación, transbordo, ruta más corta, flujo máximo, árbol de expansión mínima y agente viajero. Es el corazón cuantitativo de la logística y de la planeación de la distribución.",
+  "que_es": [
+    "Una red es un conjunto de nodos (plantas, bodegas, ciudades, máquinas) unidos por arcos (vías, tuberías, enlaces) que tienen un costo, una distancia o una capacidad. Muchos problemas de operaciones se reducen a decidir cuánto flujo pasa por cada arco o qué arcos usar.",
+    "Los siete tipos del módulo comparten esa idea. Transporte: enviar la oferta de los orígenes a la demanda de los destinos al menor costo. Asignación: emparejar cada objeto con una tarea. Flujo en redes (transbordo): mover flujo pasando por nodos intermedios. Ruta más corta: el camino de menor distancia entre dos nodos. Flujo máximo: cuánto cabe de la fuente al sumidero. Árbol de expansión mínima: conectar todos los nodos con la menor longitud. Agente viajero: visitar todos los nodos una vez y volver al inicio.",
+    "Son casos especiales de programación lineal o entera, pero su estructura permite algoritmos propios, muy rápidos y fáciles de seguir a mano: el método de transporte con potenciales u-v, el método húngaro, Dijkstra, Ford-Fulkerson, Kruskal y Prim. Además, en los problemas de flujo con datos enteros la solución óptima del programa lineal sale entera."
+  ],
+  "analogia": "Piensa en el sistema de tuberías de un barrio. El agua sale de tanques (oferta), llega a las casas (demanda), pasa por cruces (transbordo) y cada tubo tiene un grosor (capacidad) y un costo de bombeo. Las preguntas son las de este módulo: por dónde mandar el agua más barato, cuánta cabe como máximo y qué tubos hacen falta para conectar a todos.",
+  "para_que_sirve": [
+    {
+      "sector": "Distribución y consumo masivo",
+      "ejemplo": "Asignar los despachos desde plantas y centros de distribución a las regiones al menor costo de flete, respetando capacidades. Base de los estudios de red logística."
+    },
+    {
+      "sector": "Servicios y manufactura",
+      "ejemplo": "Asignar operarios a máquinas o técnicos a órdenes de servicio según el tiempo o el costo de cada combinación."
+    },
+    {
+      "sector": "Telecomunicaciones y energía",
+      "ejemplo": "Árbol de expansión mínima para tender fibra óptica o redes eléctricas rurales conectando todos los puntos con el menor cableado."
+    },
+    {
+      "sector": "Ventas y reparto",
+      "ejemplo": "Agente viajero para ordenar las visitas de un vendedor o de un técnico y reducir kilómetros."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1941",
+      "hecho": "Frank Hitchcock formula el problema de transporte desde varios orígenes a numerosos destinos.",
+      "refs": [
+        "hitchcock1941"
+      ]
+    },
+    {
+      "anio": "1951",
+      "hecho": "George Dantzig aplica el método símplex al problema de transporte; de allí sale el método de potenciales que los textos llaman MODI.",
+      "refs": [
+        "dantzig1951"
+      ]
+    },
+    {
+      "anio": "1954",
+      "hecho": "Charnes y Cooper explican el método del salto de piedra en piedra; Dantzig, Fulkerson y Johnson resuelven un agente viajero de gran tamaño para su época con restricciones de eliminación de subciclos.",
+      "refs": [
+        "charnescooper1954",
+        "dantzig1954"
+      ]
+    },
+    {
+      "anio": "1955",
+      "hecho": "Harold Kuhn publica el método húngaro para el problema de asignación.",
+      "refs": [
+        "kuhn1955"
+      ]
+    },
+    {
+      "anio": "1956",
+      "hecho": "Ford y Fulkerson publican el flujo máximo por caminos de aumento y el teorema de flujo máximo y corte mínimo. Kruskal publica su algoritmo del árbol de expansión mínima.",
+      "refs": [
+        "fordfulkerson1956",
+        "kruskal1956"
+      ]
+    },
+    {
+      "anio": "1957",
+      "hecho": "Robert Prim publica otro algoritmo para el árbol de expansión mínima, que crece desde un nodo.",
+      "refs": [
+        "prim1957"
+      ]
+    },
+    {
+      "anio": "1958",
+      "hecho": "Reinfeld y Vogel difunden el método de aproximación de Vogel para la solución inicial del transporte.",
+      "refs": [
+        "reinfeldvogel1958"
+      ]
+    },
+    {
+      "anio": "1959",
+      "hecho": "Edsger Dijkstra publica su algoritmo de ruta más corta con costos no negativos.",
+      "refs": [
+        "dijkstra1959"
+      ]
+    },
+    {
+      "anio": "1960",
+      "hecho": "Miller, Tucker y Zemlin proponen las restricciones de orden (MTZ) que eliminan subciclos en el agente viajero.",
+      "refs": [
+        "miller1960"
+      ]
+    },
+    {
+      "anio": "1972",
+      "hecho": "Edmonds y Karp demuestran que usar siempre el camino de aumento más corto hace eficiente el flujo máximo.",
+      "refs": [
+        "edmondskarp1972"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Nodos",
+      "para_que": "Orígenes y destinos en transporte; objetos y tareas en asignación; nodos con oferta, demanda o de paso en los demás tipos."
+    },
+    {
+      "dato": "Oferta y demanda",
+      "para_que": "Capacidad de cada planta y requerimiento de cada cliente. Salen del plan de producción y del pronóstico de ventas."
+    },
+    {
+      "dato": "Costo, distancia o capacidad de cada arco",
+      "para_que": "Flete por unidad, kilómetros o capacidad máxima del tramo. Celda vacía significa que no hay conexión."
+    },
+    {
+      "dato": "Datos de nodo (opcional, flujo en redes)",
+      "para_que": "«Costo en el nodo», «Capacidad del nodo» y «Demanda máxima» para centros de transbordo con costo de manejo, capacidad limitada o clientes que compran entre un mínimo y un máximo."
+    },
+    {
+      "dato": "Nodo inicial y final",
+      "para_que": "Para la ruta más corta y el flujo máximo; vacío = el primero y el último."
+    }
+  ],
+  "supuestos": [
+    "Costos lineales: el costo de un arco es proporcional al flujo; no hay costos fijos por abrir un arco.",
+    "Datos determinísticos: ofertas, demandas y costos se conocen con certeza.",
+    "En transporte, si la oferta total no iguala la demanda total, se agrega un origen o un destino ficticio con costo cero."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y un ejemplo",
+      "texto": "En la barra lateral elige «Modelos de redes». En «Ejemplos» hay casos de los libros (Powerco de Winston, Parque Seervada de Hillier) y de clase (transbordo casos 1 a 3, ruta con programación binaria, agente viajero de 4 y 6 nodos)."
+    },
+    {
+      "titulo": "Elige el tipo de problema",
+      "texto": "Pulsa «Nuevo problema» y elige «Transporte», «Asignación», «Flujo en redes», «Ruta más corta», «Flujo máximo», «Árbol de expansión mínima» o «Agente viajero». Indica «Orígenes» y «Destinos», «Objetos» y «Tareas» o el «Número de nodos», y pulsa «Crear problema»."
+    },
+    {
+      "titulo": "Llena los datos",
+      "texto": "Elige el «Criterio» («Minimizar» o «Maximizar»). En transporte y asignación llena la matriz «Costes» y, en transporte, la «Oferta» de cada origen y la «Demanda» de cada destino. En los demás, la matriz «Desde» por «Hasta» con el «Coste por unidad», la «Distancia» o la «Capacidad»; deja vacía la celda si no hay arco. Marca «Red no dirigida (simétrica)» cuando corresponda."
+    },
+    {
+      "titulo": "Usa el editor visual si prefieres",
+      "texto": "Con el botón «Editor visual» dibujas la red: doble clic crea un nodo, arrastrar de un nodo a otro crea un arco y un clic edita sus valores. En la ruta más corta y el flujo máximo puedes marcar el «Nodo inicial» y el «Nodo final»."
+    },
+    {
+      "titulo": "Elige el método",
+      "texto": "Junto a las pestañas aparece la opción del método: «Solución inicial» del transporte (Vogel, Esquina noroeste, Costo mínimo o Russell), «Algoritmo» del árbol (Kruskal o Prim) o «Método» del agente viajero (Óptimo, Vecino más cercano, Inserción más barata o Vecino más cercano + 2-opt). En el agente viajero también eliges la «Relajación de subtours» (como en clase o como en libros)."
+    },
+    {
+      "titulo": "Resuelve, compara y revisa",
+      "texto": "Pulsa «Resolver». Revisa «Solución», «Red», «Análisis», «Modelo matemático» y «Paso a paso». El botón «Comparar» resuelve con cada método y muestra la diferencia. Cuando el informe trae el modelo matemático, el botón «Abrir como programa lineal» lleva el modelo al módulo LP-ILP o a un archivo .LPP de WinQSB."
+    }
+  ],
+  "como_resuelve": [
+    "Transporte: método de transporte con potenciales u(i) y v(j) (MODI) a partir de la solución inicial elegida. El paso a paso muestra la solución inicial, y en cada iteración los costos reducidos, el ciclo de mejora, el valor θ y la celda que sale. El óptimo se comprueba con HiGHS.",
+    "Asignación: método húngaro, exacto y didáctico (reducción de filas y columnas, cubrimiento de ceros con el menor número de líneas y ajuste), comprobado con HiGHS.",
+    "Flujo en redes: programa lineal con HiGHS. El paso a paso muestra la conservación del flujo en cada nodo. Si hay costo o capacidad en un nodo, se agrega su arco ficticio como en clase; si la oferta no alcanza, primero se entrega lo máximo posible y luego se minimiza el costo.",
+    "Ruta más corta con Dijkstra (o Bellman-Ford si hay distancias negativas, y camino más largo en redes acíclicas al maximizar); flujo máximo con Edmonds-Karp y corte mínimo; árbol de expansión con Kruskal o Prim, paso a paso.",
+    "Agente viajero: el óptimo se obtiene con HiGHS y cortes de subciclos de Dantzig, Fulkerson y Johnson. Las heurísticas de clase (vecino más cercano, inserción más barata y mejora 2-opt) se muestran paso a paso. El «Modelo matemático» presenta la formulación con restricciones MTZ."
+  ],
+  "interpretar": [
+    "Transporte: la tabla de envíos dice cuánto mandar de cada origen a cada destino. En Powerco el costo óptimo es 1020. Los valores duales u y v de «Análisis» permiten calcular el costo reducido de una ruta no usada: cuánto debería bajar su flete para que convenga.",
+    "Asignación: cada objeto queda con una tarea y el costo total es la suma de las celdas elegidas.",
+    "Ruta más corta: la distancia mínima y la secuencia de nodos. En el Parque Seervada, de O a T hay 13 unidades por O → A → B → D → T.",
+    "Flujo máximo: el valor máximo y el flujo por arco. Los arcos del corte mínimo son el cuello de botella: ampliarlos es la única forma de aumentar el flujo.",
+    "Árbol de expansión: los arcos elegidos y su longitud total. Agente viajero: el recorrido y su distancia; si usaste una heurística, compárala con el óptimo usando «Comparar» para medir la brecha."
+  ],
+  "industria": [
+    {
+      "nombre": "Google OR-Tools",
+      "tipo": "libreria",
+      "uso": "Incluye resolvedores de flujo de costo mínimo, flujo máximo, asignación lineal y ruteo de vehículos; se usa desde Python, C++, Java y C#."
+    },
+    {
+      "nombre": "NetworkX",
+      "tipo": "libreria",
+      "uso": "Librería de Python para análisis de redes con rutas más cortas, flujos, árboles de expansión y más; ideal para prototipos y docencia."
+    },
+    {
+      "nombre": "SciPy (linear_sum_assignment)",
+      "tipo": "libreria",
+      "uso": "Resuelve el problema de asignación en Python con un algoritmo de caminos de aumento (Jonker-Volgenant), pariente del método húngaro."
+    },
+    {
+      "nombre": "Concorde y LKH",
+      "tipo": "software",
+      "uso": "Concorde es el referente exacto para el agente viajero simétrico; LKH implementa la heurística de Lin-Kernighan para instancias muy grandes."
+    },
+    {
+      "nombre": "Diseño de redes de suministro",
+      "tipo": "metodologia",
+      "uso": "Herramientas comerciales de diseño de cadena de suministro combinan estos modelos de flujo con costos fijos de instalaciones para decidir la red logística."
+    }
+  ],
+  "alternativas": [
+    "Si hay costos fijos por abrir bodegas o usar rutas, el problema deja de ser de red pura y se modela como programa entero mixto en LP-ILP.",
+    "Si hay varios vehículos con capacidad, el agente viajero se convierte en ruteo de vehículos: usa el módulo VRP.",
+    "Si hay varios productos que comparten capacidad, el modelo es de flujo multiproducto y se resuelve como programa lineal.",
+    "Para proyectos (redes de actividades), usa PERT-CPM, que busca la ruta más larga."
+  ],
+  "errores_comunes": [
+    "Dejar desbalanceado un problema de transporte sin entender el origen o destino ficticio que se agrega; revisa a quién le falta producto.",
+    "Escribir cero en vez de dejar vacía una celda sin conexión: un cero es un arco gratis, no la ausencia de arco.",
+    "Olvidar marcar la red como no dirigida en el árbol de expansión o en el agente viajero, y obtener un resultado con arcos de un solo sentido.",
+    "Creer que la heurística del vecino más cercano da el óptimo. Compárala siempre con el método exacto."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Reconocer qué tipo de problema de red describe un enunciado.",
+      "Aplicar a mano los métodos de clase (Vogel y MODI, húngaro, Dijkstra, Kruskal o Prim, Ford-Fulkerson) y verificarlos con el paso a paso.",
+      "Escribir el modelo de programación lineal o entera equivalente a cada red.",
+      "Interpretar valores duales, cortes mínimos y brechas de las heurísticas."
+    ],
+    "actividades": [
+      "Resolver Powerco con las cuatro soluciones iniciales usando «Comparar» y discutir cuál arranca más cerca del óptimo.",
+      "Con los casos de transbordo 1 a 3, mostrar cómo se transforma un nodo con costo o capacidad en un arco ficticio.",
+      "Ejecutar el agente viajero de 6 nodos con y sin relajación de subtours y contar restricciones; abrir el modelo como programa lineal.",
+      "Taller con la red real de distribución de una empresa regional, dibujada en el «Editor visual», con informe exportado."
+    ],
+    "preguntas": [
+      "¿Por qué el problema de transporte con ofertas y demandas enteras tiene solución óptima entera?",
+      "¿Qué relación hay entre el flujo máximo y el corte mínimo?",
+      "¿Qué es un subciclo en el agente viajero y cómo lo eliminan las restricciones MTZ?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Nodo de transbordo",
+      "definicion": "Nodo que recibe y reenvía flujo sin producirlo ni consumirlo."
+    },
+    {
+      "termino": "Solución inicial",
+      "definicion": "Primera asignación factible del transporte, obtenida con esquina noroeste, costo mínimo, Vogel o Russell."
+    },
+    {
+      "termino": "MODI",
+      "definicion": "Método de transporte que usa potenciales u(i) y v(j) para calcular costos reducidos."
+    },
+    {
+      "termino": "Corte mínimo",
+      "definicion": "Conjunto de arcos de menor capacidad total cuya eliminación separa la fuente del sumidero."
+    },
+    {
+      "termino": "Subciclo",
+      "definicion": "Recorrido cerrado que no pasa por todos los nodos."
+    },
+    {
+      "termino": "2-opt",
+      "definicion": "Mejora de un recorrido que cambia dos arcos por otros dos cuando eso acorta la distancia."
+    }
+  ],
+  "referencias": [
+    "hitchcock1941",
+    "dantzig1951",
+    "charnescooper1954",
+    "reinfeldvogel1958",
+    "russell1969",
+    "orden1956",
+    "kuhn1955",
+    "dijkstra1959",
+    "bellman1958",
+    "fordfulkerson1956",
+    "edmondskarp1972",
+    "kruskal1956",
+    "prim1957",
+    "dantzig1954",
+    "miller1960",
+    "rosenkrantz1977",
+    "croes1958",
+    "ahuja1993",
+    "huangfuhall2018",
+    "hillier2015en",
+    "winston2004",
+    "taha2012",
+    "bronson1983",
+    "sarache2026redes",
+    "sarache2026ruteo",
+    "chang2003"
+  ]
+}

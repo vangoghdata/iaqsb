@@ -1,0 +1,114 @@
+{
+  "modulo": "nlp",
+  "titulo": "Programación no lineal (NLP)",
+  "resumen": "Encuentra el mejor valor de una función cualquiera (con raíces, potencias, logaritmos o exponenciales) sujeta a restricciones que también pueden ser no lineales. Sirve cuando los rendimientos, los costos o la física del proceso no son proporcionales.",
+  "que_es": [
+    "Un programa no lineal busca el máximo o el mínimo de una función f(X1, …, Xn) con restricciones de la forma g(X) <= b, g(X) >= b o g(X) = b, donde f o alguna g no son lineales. Ejemplos típicos son la función de producción Cobb-Douglas, costos con economías de escala o el área y el volumen en problemas de diseño.",
+    "La dificultad principal es que puede haber varios óptimos locales: puntos que son los mejores en su vecindario pero no en toda la región. Solo si el problema es convexo (función convexa al minimizar y región factible convexa) se garantiza que el óptimo local es global. Por eso IAQSB prueba varios puntos de partida y avisa cuando no puede asegurar que el resultado sea global.",
+    "Los métodos numéricos usan las derivadas para saber hacia dónde mejorar. En el óptimo se cumplen las condiciones de Karush-Kuhn-Tucker (KKT): el gradiente del objetivo se equilibra con los gradientes de las restricciones activas, ponderados por multiplicadores que hacen el papel de precios sombra."
+  ],
+  "analogia": "Es como buscar el punto más alto de una cordillera con niebla. Solo ves el terreno cerca de tus pies, así que subes por donde más empina. Puedes llegar a un pico que no es el más alto; por eso conviene empezar desde varios lugares y comparar las cumbres.",
+  "para_que_sirve": [
+    { "sector": "Economía de la empresa", "ejemplo": "Repartir un presupuesto entre capital y trabajo para maximizar la producción con una función Cobb-Douglas, y conocer el valor de un peso adicional de presupuesto." },
+    { "sector": "Ingeniería química y de procesos", "ejemplo": "Ajustar temperatura, presión y caudal de un reactor cuyo rendimiento sigue leyes no lineales, respetando límites de seguridad." },
+    { "sector": "Energía", "ejemplo": "Despacho económico de generadores con curvas de costo no lineales y pérdidas en la red." },
+    { "sector": "Mercadeo", "ejemplo": "Distribuir la inversión en medios cuando cada canal tiene rendimientos decrecientes." },
+    { "sector": "Inventarios y logística", "ejemplo": "Lote económico con varias referencias y una restricción de espacio o de presupuesto: el costo total tiene términos D/Q que no son lineales." },
+    { "sector": "Ciencia de datos", "ejemplo": "Ajuste de modelos por máxima verosimilitud o por mínimos cuadrados no lineales." }
+  ],
+  "historia": [
+    { "anio": "1928", "hecho": "Charles Cobb y Paul Douglas proponen la función de producción que lleva su nombre, hoy un ejemplo clásico de optimización no lineal.", "refs": ["cobbdouglas1928"] },
+    { "anio": "1939", "hecho": "William Karush escribe las condiciones de optimalidad con restricciones de desigualdad en su tesis de maestría.", "refs": ["karush1939"] },
+    { "anio": "1951", "hecho": "Harold Kuhn y Albert Tucker publican las condiciones de optimalidad de la programación no lineal, hoy llamadas KKT.", "refs": ["kuhntucker1951"] },
+    { "anio": "1960", "hecho": "Howard Rosenbrock publica la función de prueba con forma de valle curvo que todavía se usa para evaluar algoritmos.", "refs": ["rosenbrock1960"] },
+    { "anio": "1968", "hecho": "Anthony Fiacco y Garth McCormick sistematizan los métodos de penalización (minimización sin restricciones sucesiva), la familia que usa WinQSB.", "refs": ["fiaccomccormick1968"] },
+    { "anio": "1978", "hecho": "Michael Powell propone un algoritmo rápido de programación cuadrática sucesiva con actualización BFGS amortiguada, base del método de IAQSB.", "refs": ["powell1978"] },
+    { "anio": "2006", "hecho": "Andreas Wächter y Lorenz Biegler publican Ipopt, un método de punto interior con filtro para problemas no lineales de gran tamaño, hoy de uso libre y muy difundido.", "refs": ["wachter2006"] }
+  ],
+  "necesitas": [
+    { "dato": "Función objetivo", "para_que": "La expresión que se quiere maximizar o minimizar, escrita con los nombres de las variables. Sale de una ley física, de una función económica estimada o de un modelo de costos." },
+    { "dato": "Restricciones", "para_que": "Cada una con su relación: por ejemplo 4K + 2L <= 120 o X1^2 + X2 <= 10. Son presupuestos, capacidades, normas técnicas." },
+    { "dato": "Cotas de cada variable", "para_que": "Límites inferior y superior. Acotar bien ayuda mucho al método y evita valores sin sentido, como raíces de números negativos." },
+    { "dato": "Punto inicial (opcional)", "para_que": "Desde dónde empieza la búsqueda. Un buen punto inicial, tomado de la operación actual, acelera y orienta la solución." }
+  ],
+  "supuestos": [
+    "Las funciones son continuas y, salvo en puntos aislados, derivables. Funciones con saltos (INT, MOD) dificultan el método.",
+    "Sin convexidad, el resultado es el mejor óptimo local encontrado, no necesariamente el global.",
+    "Los datos se conocen con certeza.",
+    "Las variables son continuas; para decisiones enteras con funciones no lineales hace falta programación no lineal entera mixta, que este módulo no cubre."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo y un ejemplo", "texto": "En la barra lateral elige «Programación no lineal». En «Ejemplos» puedes cargar «Producción Cobb-Douglas», «Función de Rosenbrock» o «Wyndor no lineal (Hillier)»." },
+    { "titulo": "Crea el problema", "texto": "Pulsa «Nuevo problema». El tipo es «Programa no lineal». Elige el «Criterio», el «Número de variables» y el «Número de restricciones», y pulsa «Crear problema»." },
+    { "titulo": "Escribe la función objetivo", "texto": "En «Función objetivo» escribe la expresión, por ejemplo 10*K^0.5*L^0.5 o 100*(X2 - X1^2)^2 + (1 - X1)^2. Puedes usar EXP, LOG (logaritmo natural), SQR, SIN, COS, ATN, ABS y otras funciones de WinQSB." },
+    { "titulo": "Escribe restricciones y variables", "texto": "En «Restricciones» pon un «Nombre» y la «Restricción» completa con su relación (<=, >= o =). En «Variables» revisa el nombre, la «Cota inferior», la «Cota superior» y, si quieres, el «Punto inicial»." },
+    { "titulo": "Ajusta las opciones", "texto": "Debajo de los datos, en «Parámetros del análisis», puedes cambiar «Arranques» (puntos iniciales distintos; 8 por defecto) y usar «Analizar el punto» para evaluar una solución propuesta, por ejemplo «X1 = 1, X2 = 2»." },
+    { "titulo": "Resuelve y revisa", "texto": "Deja activo «Mostrar paso a paso» y pulsa «Resolver». Revisa «Solución», «Gráficos» (con dos variables verás curvas de nivel, restricciones y región factible) y «Paso a paso»." }
+  ],
+  "como_resuelve": [
+    "IAQSB usa programación cuadrática sucesiva (SQP). En cada iteración aproxima el problema con un programa cuadrático: el objetivo por un modelo de segundo orden y las restricciones por su aproximación lineal. Ese subproblema se resuelve con Clarabel, y el paso se ajusta con una búsqueda lineal sobre una función de mérito.",
+    "La curvatura se estima con la actualización BFGS amortiguada de Powell, y las derivadas son exactas porque se calculan por diferenciación automática de la expresión que escribiste, no por diferencias finitas.",
+    "Si el problema es convexo, basta un arranque y el óptimo es global. Si no lo es, IAQSB repite la búsqueda desde varios puntos iniciales y se queda con el mejor; el informe dice cuántos arranques fueron factibles.",
+    "El «Paso a paso» muestra tres cosas: las iteraciones del SQP del mejor arranque, el método de penalización exterior que usa WinQSB (minimizar f más r veces la violación al cuadrado, con r creciente) y la verificación de las condiciones KKT en el punto final."
+  ],
+  "interpretar": [
+    "El encabezado da el valor óptimo y las variables. En Cobb-Douglas, la producción máxima es 212.13 con K = 15 y L = 30.",
+    "«Violación máxima» debe ser cero o casi cero; si no, el punto no cumple todas las restricciones y conviene revisar el modelo o los arranques.",
+    "Si aparece el aviso de que el problema no es (o no se pudo comprobar que sea) convexo, trata la solución como el mejor óptimo local encontrado. Aumenta «Arranques» o da un «Punto inicial» distinto para confirmar.",
+    "La columna ∂f/∂x da la pendiente del objetivo en cada variable. En el óptimo se equilibra con las restricciones activas.",
+    "El «Precio sombra» es el multiplicador de Lagrange: cuánto cambia el óptimo por una unidad más de lado derecho. En Cobb-Douglas, un peso más de presupuesto aumenta la producción en cerca de 1.77 unidades. Vale para cambios pequeños, porque en un modelo no lineal la pendiente cambia."
+  ],
+  "industria": [
+    { "nombre": "Ipopt", "tipo": "libreria", "uso": "Motor libre de punto interior para programación no lineal de gran tamaño; se usa en ingeniería de procesos, energía y control óptimo." },
+    { "nombre": "Artelys Knitro", "tipo": "software", "uso": "Motor comercial para problemas no lineales continuos y enteros mixtos, con métodos de punto interior y de conjunto activo." },
+    { "nombre": "CONOPT y SNOPT", "tipo": "software", "uso": "Motores comerciales para problemas no lineales grandes y dispersos, disponibles en GAMS, AMPL y otros lenguajes de modelado." },
+    { "nombre": "BARON", "tipo": "software", "uso": "Motor de optimización global determinística para problemas no convexos, cuando se necesita certificar el óptimo global." },
+    { "nombre": "SciPy (scipy.optimize)", "tipo": "libreria", "uso": "En Python, minimize ofrece SLSQP, trust-constr y otros métodos para problemas no lineales pequeños y medianos." },
+    { "nombre": "Pyomo, JuMP y CasADi", "tipo": "libreria", "uso": "Lenguajes de modelado que calculan derivadas automáticamente y envían el modelo a Ipopt, Knitro u otros motores." },
+    { "nombre": "Solver de Excel (GRG no lineal)", "tipo": "software", "uso": "Método de gradiente reducido generalizado para modelos no lineales pequeños en hojas de cálculo; tiene opción de arranques múltiples." }
+  ],
+  "alternativas": [
+    "Si el objetivo es cuadrático y las restricciones son lineales, el módulo de programación cuadrática (QP) da óptimos globales y precios sombra exactos.",
+    "Si las funciones se pueden aproximar por tramos lineales, un modelo lineal o entero (LP-ILP) puede ser más robusto.",
+    "Para problemas con muchos óptimos locales, la optimización global determinística (ramificación espacial) o metaheurísticas como recocido simulado o algoritmos genéticos.",
+    "Si la función no tiene derivadas o es una simulación, métodos sin derivadas como Nelder-Mead o COBYLA."
+  ],
+  "errores_comunes": [
+    "Confiar en un solo arranque en un problema no convexo. Compara varios puntos iniciales.",
+    "Dejar cotas abiertas en funciones que no existen para valores negativos (raíces, logaritmos). Pon cota inferior cero o positiva.",
+    "Escribir mal la precedencia: 10*K^0.5*L^0.5 no es lo mismo que 10*K^(0.5*L^0.5). Usa paréntesis cuando dudes.",
+    "Leer el precio sombra como válido para cambios grandes; en modelos no lineales solo vale cerca del óptimo.",
+    "Usar unidades muy distintas entre variables (millones y décimas). Escalar el modelo mejora la convergencia."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Distinguir entre óptimos locales y globales y relacionarlos con la convexidad.",
+      "Plantear y verificar las condiciones KKT en un problema de dos variables.",
+      "Interpretar multiplicadores de Lagrange como precios sombra.",
+      "Explicar la idea de la penalización y la de la programación cuadrática sucesiva."
+    ],
+    "actividades": [
+      "Resolver Cobb-Douglas y verificar a mano con el método de Lagrange que K = 15 y L = 30.",
+      "Usar la función de Rosenbrock con «Arranques» = 1 y distintos puntos iniciales; comparar iteraciones y discutir el valle curvo en «Gráficos».",
+      "Comparar «Wyndor no lineal (Hillier)» con el Wyndor lineal del módulo LP-ILP: ¿por qué el óptimo ya no está en un vértice?",
+      "Con «Analizar el punto», pedir que evalúen una solución propuesta por un compañero y discutan qué condición KKT no se cumple."
+    ],
+    "preguntas": [
+      "¿Por qué un método basado en derivadas puede detenerse en un óptimo local?",
+      "¿Qué condición garantiza que un óptimo local sea global?",
+      "¿Qué representa el multiplicador de la restricción de presupuesto en Cobb-Douglas?",
+      "¿Qué ventaja tiene usar derivadas exactas frente a diferencias finitas?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Óptimo local", "definicion": "Punto que es el mejor en su vecindario, aunque pueda haber otro mejor lejos." },
+    { "termino": "Óptimo global", "definicion": "El mejor punto de toda la región factible." },
+    { "termino": "Gradiente", "definicion": "Vector de derivadas parciales que indica la dirección de mayor crecimiento de una función." },
+    { "termino": "Multiplicador de Lagrange", "definicion": "Peso de una restricción en las condiciones de optimalidad; mide su precio sombra." },
+    { "termino": "SQP", "definicion": "Programación cuadrática sucesiva: resolver una serie de aproximaciones cuadráticas del problema." },
+    { "termino": "BFGS", "definicion": "Fórmula que aproxima la matriz de segundas derivadas con la información de los gradientes." },
+    { "termino": "Penalización", "definicion": "Técnica que suma al objetivo un castigo por violar restricciones y lo aumenta poco a poco." },
+    { "termino": "Arranque", "definicion": "Punto inicial desde el que empieza una búsqueda local." }
+  ],
+  "referencias": ["karush1939", "kuhntucker1951", "fiaccomccormick1968", "powell1978", "nocedalwright2006", "goulartchen2024", "wachter2006", "rosenbrock1960", "cobbdouglas1928", "hillier2015en", "chang2003"]
+}

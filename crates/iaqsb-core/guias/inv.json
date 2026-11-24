@@ -1,0 +1,186 @@
+{
+  "modulo": "inv",
+  "titulo": "Gestión de inventarios: ABC, despejes, punto de reorden y política (Q, R)",
+  "resumen": "Reúne las herramientas de inventarios del curso y de la práctica diaria de una bodega: clasificar artículos por su importancia, resolver el EOQ y el POQ «al revés», fijar el punto de reorden con demanda variable y simular día a día una política (Q, R).",
+  "que_es": [
+    "Gestionar inventarios no es solo calcular un lote económico. Primero hay que decidir a qué artículos dedicar atención, porque en casi toda empresa pocos artículos concentran la mayor parte del valor. La clasificación ABC ordena los artículos por su valor de ventas (precio × cantidad) y los agrupa en A (pocos y muy valiosos), B (intermedios) y C (muchos y de poco valor). Los A merecen control estricto y pronóstico cuidadoso; los C, reglas simples.",
+    "Luego viene el cuánto y el cuándo. Si la demanda diaria varía, pedir cuando el inventario alcanza la demanda esperada durante el tiempo de entrega deja sin producto la mitad de las veces. Por eso se agrega un inventario de seguridad: con demanda diaria normal de media d y desviación σ, y tiempo de entrega L, el punto de reorden es R = d·L + Z·σ·√L, donde Z depende del nivel de servicio deseado.",
+    "IAQSB ofrece cuatro tipos de problema, que no existen en WinQSB y siguen el curso de inventarios: «EOQ y POQ al revés (despejes)», «Clasificación ABC (Pareto)», «Punto de reorden con demanda variable» y «Simulación de la política (Q, R)». Para el EOQ clásico, los descuentos, el vendedor de periódicos o el tamaño de lote, usa el módulo «Inventarios»."
+  ],
+  "analogia": "Piensa en el botiquín de tu casa. No llevas inventario de cada curita, pero sí revisas que no falte la insulina de un familiar: eso es ABC. Y no compras la insulina el día que se acaba; la compras cuando quedan suficientes dosis para cubrir los días que tarda la farmacia en entregarla, más unas de reserva por si acaso. Esa reserva es el inventario de seguridad, y el momento de comprar es el punto de reorden.",
+  "para_que_sirve": [
+    {
+      "sector": "Comercio minorista",
+      "ejemplo": "Una cadena de almacenes clasifica 5000 referencias con ABC y descubre que el 20 % de ellas genera la mayor parte de las ventas. Concentra en ellas el conteo cíclico y el pronóstico, y libera tiempo del equipo."
+    },
+    {
+      "sector": "Distribución de consumo masivo",
+      "ejemplo": "Un distribuidor fija el punto de reorden de cada producto con su demanda diaria, su desviación y el tiempo de entrega del proveedor, para cumplir un nivel de servicio del 95 % sin llenar la bodega."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1951",
+      "hecho": "H. Ford Dickie propuso el análisis ABC de inventarios con la idea de concentrar el control en los artículos de mayor valor.",
+      "refs": [
+        "dickie1951"
+      ]
+    },
+    {
+      "anio": "1963",
+      "hecho": "Hadley y Whitin sistematizaron el punto de reorden con demanda aleatoria, base del inventario de seguridad.",
+      "refs": [
+        "hadleywhitin1963"
+      ]
+    },
+    {
+      "anio": "2026",
+      "hecho": "Las diapositivas y el taller de gestión de inventarios del curso Taller de Producción y Logística de la Universidad Nacional de Colombia definen los problemas y la tabla diaria de la política (Q, R) que IAQSB reproduce.",
+      "refs": [
+        "sarache2026inventarios",
+        "sarache2026taller2"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Lo que se conoce del lote (despejes)",
+      "para_que": "Cualquier combinación de demanda anual o diaria, tasa de entrega, ritmo de crecimiento del inventario, tamaño del lote, inventario máximo, días de entrega, días de agotamiento, duración del ciclo, pedidos al año y costos. IAQSB despeja el resto."
+    },
+    {
+      "dato": "Artículos con precio y cantidad vendida (ABC)",
+      "para_que": "El valor de cada artículo en el periodo. Sale del sistema de ventas o del ERP; también puedes dar el valor directamente."
+    },
+    {
+      "dato": "Demanda diaria promedio y desviación estándar",
+      "para_que": "Para el punto de reorden y la política (Q, R). Si no las tienes, pega el histórico de ventas diarias y IAQSB las calcula como PROMEDIO y DESVEST de Excel."
+    },
+    {
+      "dato": "Tiempo de entrega y nivel de servicio",
+      "para_que": "Días que tarda el proveedor y probabilidad deseada de no quedarse sin producto durante ese tiempo."
+    },
+    {
+      "dato": "Pronóstico diario, inventario inicial y costos (Q, R)",
+      "para_que": "Las ventas esperadas de cada día, el inventario con que empiezas, el costo de almacenar por unidad y el costo por unidad faltante o pendiente."
+    }
+  ],
+  "supuestos": [
+    "En el punto de reorden la demanda diaria es normal, independiente de un día a otro, y el tiempo de entrega es constante.",
+    "En la simulación (Q, R), un pedido colocado el día t llega al inicio del día t + L, y la posición de inventario incluye lo que está en tránsito."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y elige el tipo",
+      "texto": "Entra a «Gestión de inventarios» y pulsa «Nuevo problema». Elige «EOQ y POQ al revés (despejes)», «Clasificación ABC (Pareto)» (indica el «Número de artículos»), «Punto de reorden con demanda variable» o «Simulación de la política (Q, R)» (indica los «Días del pronóstico»). Pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» tienes «POQ: tarea (problema inverso)», «Parcial: lote con entregas parciales (POQ al revés)», «Parcial: EOQ a partir de la gráfica», «Clasificación ABC: 15 artículos (clase)», «Sell-Rite Discount Stores: inventario de seguridad» y «Taller 2: política Q-R, Grupo 8»."
+    },
+    {
+      "titulo": "Despejes: escribe solo lo que conoces",
+      "texto": "En «Modelo» elige si «El lote» «Entra poco a poco (POQ, entregas parciales)» o «Llega completo (EOQ)», los «Días del año» y si «El lote es el óptimo». En «Lo que se conoce (deja vacío lo que no)» llena los datos del enunciado, por ejemplo «Inventario máximo (Imax)», «Días de agotamiento (Td)» y «Días de entregas (Tp)»."
+    },
+    {
+      "titulo": "ABC: lista los artículos",
+      "texto": "En la tabla «Artículos» escribe «Artículo», «Precio unitario» y «Cantidad vendida», o el «valor del período». En el menú de opciones elige los «Cortes»: «Por quiebre de pendiente» (como en clase) o «Por % acumulado»; con el segundo, escribe en el panel «A hasta» y «B hasta»."
+    },
+    {
+      "titulo": "Reorden y (Q, R): demanda, servicio y escenarios",
+      "texto": "En el punto de reorden elige el «Sistema» («Continuo (Q, R)» o «Periódico (T, I)»), la demanda, la desviación, el tiempo de entrega y el nivel de servicio. En la simulación llena «Datos», la tabla «Escenarios» (nivel de servicio, entrega y «Q = k × promedio» o «Q fijo») y el «Pronóstico de ventas». En opciones elige el «Valor Z»: «Exacto (como Excel)» o «De la tabla (dos decimales)»; puedes activar «Buscar la mejor combinación (Q, R)»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Revisa «Solución», «Gráficos» o «Pareto» y, en la simulación, «Escenarios» y «Mejor política». La pestaña «Paso a paso» muestra cada despeje con su fórmula, el orden y los cortes del ABC, o la tabla diaria de bodega, tránsito y posición."
+    }
+  ],
+  "como_resuelve": [
+    "Los despejes aplican en cadena las relaciones del modelo hasta tenerlo todo: d = D/días, N = D/Q, T = días/N, Q = d·T, H = i·C y, en el POQ, Tp = Q/p, Imax = (p − d)·Tp = d·Td y T = Tp + Td. Si el lote es óptimo agrega S·N = H·Imax/2. Cada despeje es un paso, y al final se comprueban todas las relaciones con los valores encontrados.",
+    "El ABC calcula el valor de cada artículo, ordena de mayor a menor y acumula el porcentaje. Con «Por quiebre de pendiente» corta en las dos mayores caídas relativas entre artículos consecutivos; con «Por % acumulado» corta en los porcentajes que indiques.",
+    "El punto de reorden usa R = d·L + Z·σ·√L en el sistema continuo y el inventario objetivo I = d(T + L) + Z·σ·√(T + L) en el periódico, donde al revisar con e unidades se pide I − e. Z sale de la normal estándar con la librería statrs, exacto como NORM.S.INV de Excel o redondeado a dos decimales como en la tabla impresa.",
+    "La simulación (Q, R) recorre el pronóstico día a día: bodega al inicio = bodega de ayer − lo vendido ayer + lo que llega hoy; posición = bodega + tránsito; si la posición es menor o igual que R se pide Q. Las ventas que no se atienden se pierden o quedan pendientes, según elijas. Suma el costo de almacenar sobre el inventario promedio y el de faltantes, y la búsqueda prueba combinaciones de Q y R para encontrar la de menor costo."
+  ],
+  "interpretar": [
+    "En «POQ: tarea (problema inverso)», con inventario máximo de 600, 12 días de agotamiento y 3 de entregas, IAQSB despeja d = 50 por día, un lote de 750 y un costo total de 1395 por año con 360 días. Revisa los supuestos del enunciado: con 365 días el costo cambia.",
+    "En el ABC de 15 artículos, los artículos 4, 14 y 3 forman el grupo A con el 60.6 % del valor. La gráfica de Pareto muestra dónde se quiebra la curva acumulada.",
+    "En Sell-Rite, con demanda de 1250 por día, σ = 375, 10 días de entrega y 90 % de servicio, el inventario de seguridad es 1519.73 y el punto de reorden 14 019.73 (con Z = 1.2816). Con Z = 1.28 de la tabla da 14 017.89: la diferencia viene solo del redondeo de Z.",
+    "En el taller (Q, R), compara los escenarios por costo total y por unidades perdidas. Un nivel de servicio alto con entrega corta puede ser más barato que uno bajo con entrega larga, porque reduce los faltantes."
+  ],
+  "industria": [
+    {
+      "nombre": "SAP S/4HANA y Microsoft Dynamics 365 Supply Chain",
+      "tipo": "software",
+      "uso": "ERP que clasifican materiales por ABC y calculan stock de seguridad y punto de pedido para la reposición automática."
+    },
+    {
+      "nombre": "Odoo Inventario",
+      "tipo": "software",
+      "uso": "ERP de código abierto con reglas de reabastecimiento mínimo y máximo, usado por muchas pymes en la región."
+    },
+    {
+      "nombre": "Microsoft Excel",
+      "tipo": "software",
+      "uso": "La herramienta más usada para ABC, puntos de reorden y simulaciones diarias como la del taller (PROMEDIO, DESVEST y NORM.S.INV)."
+    },
+    {
+      "nombre": "Conteo cíclico",
+      "tipo": "metodologia",
+      "uso": "Programa de conteos que revisa los artículos A con más frecuencia que los B y los C, apoyado en la clasificación ABC."
+    }
+  ],
+  "alternativas": [
+    "ABC multicriterio y XYZ: combinan valor con variabilidad de la demanda o criticidad, útiles cuando un artículo barato puede parar una línea.",
+    "Modelos con tiempo de entrega variable: si el proveedor es irregular, el inventario de seguridad debe incluir la variación del tiempo de entrega, no solo la de la demanda."
+  ],
+  "errores_comunes": [
+    "Usar la desviación estándar anual o mensual en la fórmula diaria. La σ debe estar en la misma unidad que el tiempo de entrega.",
+    "Multiplicar σ por L en lugar de por √L. La variación se acumula con la raíz del tiempo cuando los días son independientes.",
+    "Interpretar «el inventario crece 100 por día» como la tasa de entrega p, cuando es p − d. El ejemplo del parcial muestra cuánto cambia el resultado."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Plantear y resolver problemas inversos del EOQ y del POQ a partir de datos parciales o de una gráfica.",
+      "Clasificar artículos con ABC y proponer políticas de control diferentes para cada grupo.",
+      "Calcular el inventario de seguridad y el punto de reorden, y explicar el efecto del nivel de servicio."
+    ],
+    "actividades": [
+      "Con «Parcial: lote con entregas parciales (POQ al revés)», pide resolver a mano y luego comparar paso a paso con IAQSB, discutiendo la lectura de «crece 100 por día».",
+      "Con «Clasificación ABC: 15 artículos (clase)», compara los cortes por quiebre de pendiente y por porcentaje acumulado con el botón «Comparar».",
+      "Con «Taller 2: política Q-R, Grupo 8», cada grupo usa su propio histórico y pronóstico, y presenta el mejor escenario y la mejor política encontrada por la búsqueda."
+    ],
+    "preguntas": [
+      "¿Por qué pasar de 95 % a 99 % de nivel de servicio cuesta mucho más que pasar de 90 % a 95 %?",
+      "Si el tiempo de entrega se reduce de 9 a 4 días, ¿en qué proporción baja el inventario de seguridad?",
+      "¿Qué cambia en la tabla diaria cuando se aceptan pedidos pendientes en lugar de perder las ventas?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Clasificación ABC",
+      "definicion": "Agrupación de los artículos por su participación en el valor total: A pocos y valiosos, C muchos y de poco valor."
+    },
+    {
+      "termino": "Inventario de seguridad",
+      "definicion": "Existencias adicionales para cubrir la variación de la demanda durante el tiempo de entrega: Z·σ·√L."
+    },
+    {
+      "termino": "Punto de reorden (R)",
+      "definicion": "Nivel de la posición de inventario en el que se lanza un pedido: d·L más el inventario de seguridad."
+    },
+    {
+      "termino": "Nivel de servicio",
+      "definicion": "Probabilidad de no quedarse sin producto durante el tiempo de entrega."
+    }
+  ],
+  "referencias": [
+    "sarache2026inventarios",
+    "sarache2026taller2",
+    "harris1913",
+    "taft1918",
+    "dickie1951",
+    "hadleywhitin1963",
+    "silver2017",
+    "gaither2000",
+    "statrs"
+  ]
+}

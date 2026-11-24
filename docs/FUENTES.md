@@ -8,7 +8,7 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
 - **Material de clase:** las diapositivas y los talleres del curso Taller de Producción y Logística de la carrera de Ingeniería Industrial de la Universidad Nacional de Colombia se citan por su profesor: Sarache (2026a, b, c…) en logística y Arango Marín (2020, 2021) en programa maestro y MRP II, aunque la diapositiva a su vez cite un libro; si la diapositiva nombra la fuente original (Bronson, Ballou, Taha), se cita también. El año de las diapositivas de Arango Marín sale de los metadatos de los archivos y queda por verificar.
 - **Métodos:** cada informe cita los métodos que usó. Los módulos de logística lo hacen desde su código y los demás con las reglas de `crates/iaqsb-core/fuentes/metodos.json` (resumidas abajo).
 
-## Referencias (163, 21 por verificar)
+## Referencias (182, 24 por verificar)
 
 - Ahuja, R. K., Magnanti, T. L. y Orlin, J. B. (1993). *Network flows: Theory, algorithms, and applications*. Prentice Hall.  
   `ahuja1993` · Flujo en redes; transformación de nodos con costo o capacidad en arcos (división del nodo).
@@ -42,6 +42,10 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `ballou2004` · Selección del servicio de transporte por costo total (transporte frente a inventarios).
 - Ballou, R. H. (2004b). *Logística: Administración de la cadena de suministro* (5.ª ed.). Pearson Educación. — _Lectura obligatoria del curso (caps. 3 y 6)._  
   `ballou2004es` · Edición en español de Ballou (2004).
+- Baumol, W. J. y Vinod, H. D. (1970). An inventory theoretic model of freight transport demand. *Management Science*, *16*(7), 413–421. https://doi.org/10.1287/mnsc.16.7.413 — _Título, autores, revista, volumen, número, páginas y año (marzo de 1970) confirmados en Crossref (api.crossref.org/works/10.1287/mnsc.16.7.413)._  
+  `baumolvinod1970` · Elección del modo de transporte por costo total: flete más costos de inventario en tránsito y en las bodegas.
+- Bayes, T. (1763). An essay towards solving a problem in the doctrine of chances. *Philosophical Transactions of the Royal Society of London*, *53*, 370–418. https://doi.org/10.1098/rstl.1763.0053 — _Datos confirmados en Crossref (DOI). Publicado después de la muerte de Bayes; lo comunicó Richard Price._  
+  `bayes1763` · Origen del teorema de Bayes (probabilidades a posteriori).
 - Bellman, R. (1957). *Dynamic programming*. Princeton University Press. — _No se pone DOI: el de Princeton (10.1515/9781400835386) es de la reedición de 2010, no de la de 1957. El ISBN 069107951X del catálogo es de reimpresiones posteriores._  
   `bellman1957` · Programación dinámica (principio de optimalidad).
 - Bellman, R. (1958). On a routing problem. *Quarterly of Applied Mathematics*, *16*(1), 87–90. https://doi.org/10.1090/qam/102435  
@@ -52,6 +56,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `blanktarquin` · Factor de recuperación de capital (A/P, i, n).
 - Bowman, E. H. (1956). Production scheduling by the transportation method of linear programming. *Operations Research*, *4*(1), 100–103. https://doi.org/10.1287/opre.4.1.100  
   `bowman1956` · Planificación agregada mediante el método de transporte de la programación lineal.
+- Box, G. E. P. y Jenkins, G. M. (1970). *Time series analysis: Forecasting and control*. Holden-Day. — _Primera edición, San Francisco, Holden-Day, 1970, xix + 553 p., confirmada en Open Library y en catálogos de bibliotecas. Las ediciones posteriores (desde 1976) tienen otros coautores y, desde 1994, otras editoriales._  
+  `boxjenkins1970` · Metodología de Box y Jenkins: identificación, estimación y diagnóstico de modelos ARIMA.
 - Bronson, R. (1983). *Teoría y problemas de investigación de operaciones*. McGraw-Hill. — _Edición en español del original en inglés de 1982. Las diapositivas lo citan como Bronson (1982) y Bronson (1983); el capítulo 15 trata el análisis de redes._  
   `bronson1983` · Algoritmos de clase para ruta más corta, árbol de expansión mínima y flujo máximo.
 - Brown, R. G. (1959). *Statistical forecasting for inventory control*. McGraw-Hill. — _Obra anterior al ISBN; el catálogo de Texas A&M registra McGraw-Hill, Nueva York, 1959._  
@@ -118,6 +124,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `fordfulkerson1956` · Flujo máximo por caminos de aumento; teorema de flujo máximo y corte mínimo.
 - Francis, R. L., McGinnis, L. F., Jr. y White, J. A. (1992). *Facility layout and location: An analytical approach* (2.ª ed.). Prentice Hall. — _Autores, edición, editorial y año también en https://library.herts.ac.uk/bib/14178 (allí sin 'Jr.'). Lugar: Englewood Cliffs, N.J. No se encontró ISBN en un catálogo._  
   `francis1992` · Localización de instalaciones con distancia rectilínea, euclidiana y euclidiana al cuadrado.
+- Frank, M. y Wolfe, P. (1956). An algorithm for quadratic programming. *Naval Research Logistics Quarterly*, *3*(1–2), 95–110. https://doi.org/10.1002/nav.3800030109 — _Datos confirmados en Crossref (DOI)._  
+  `frankwolfe1956` · Algoritmo de Frank-Wolfe para programación cuadrática.
 - Frazelle, E. H. y Sojo Quirós, R. (2007). *Logística de almacenamiento y manejo de materiales de clase mundial*. Grupo Editorial Norma.  
   `frazelle2007` · Diseño de almacenes, unidades de carga y manejo de materiales.
 - Gaither, N. y Frazier, G. (2000). *Administración de producción y operaciones* (8.ª ed.). International Thomson Editores.  
@@ -128,6 +136,10 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `gifflerthompson1960` · Generación de programas activos en el taller de trabajos (job shop) con reglas de despacho.
 - Gillett, B. E. y Miller, L. R. (1974). A heuristic algorithm for the vehicle-dispatch problem. *Operations Research*, *22*(2), 340–349. https://doi.org/10.1287/opre.22.2.340  
   `gillettmiller1974` · Método del barrido (sweep).
+- Gomory, R. E. (1958). Outline of an algorithm for integer solutions to linear programs. *Bulletin of the American Mathematical Society*, *64*(5), 275–278. https://doi.org/10.1090/S0002-9904-1958-10224-4 — _Datos confirmados en Crossref (DOI)._  
+  `gomory1958` · Planos de corte para programación entera.
+- Gordon, G. (1961). A general purpose systems simulation program. En *Proceedings of the December 12–14, 1961, Eastern Joint Computer Conference: Computers—Key to total systems control* (pp. 87–104). Association for Computing Machinery. https://doi.org/10.1145/1460764.1460768 — _Título, autor, actas, páginas, editorial y DOI confirmados en Crossref (AFIPS '61 Eastern, publicado por ACM). Gordon trabajaba entonces en IBM, según la reseña de la IEEE Computer Society (https://history.computer.org/pioneers/gordon.html); el programa que describe se convirtió en GPSS._  
+  `gordon1961` · Origen de GPSS, lenguaje de simulación de eventos discretos para sistemas con colas.
 - Goulart, P. J. y Chen, Y. (2024). Clarabel: An interior-point solver for conic programs with quadratic objectives. *arXiv*. https://doi.org/10.48550/arXiv.2405.12762 — _Preprint (arXiv:2405.12762 [math.OC], v1 del 21 de mayo de 2024); en APA lleva [Preprint]. El artículo ya salió en revista: Mathematical Programming Computation (Springer, 2026, doi 10.1007/s12532-026-00320-7, publicado en línea el 21 de mayo de 2026 según el repositorio ORA de Oxford). No se pudieron confirmar el volumen ni las páginas porque Springer y Crossref respondieron con límite de solicitudes. Conviene pasar a la versión de revista cuando se confirmen._  
   `goulartchen2024` · Solver Clarabel (programación cuadrática y subproblemas SQP).
 - Gupta, J. N. D. (1971). A functional heuristic algorithm for the flowshop scheduling problem. *Operational Research Quarterly*, *22*(1), 39–47. https://doi.org/10.1057/jors.1971.18 — _Se usa el DOI del editor (10.1057/jors.1971.18). No se pudo consultar el registro del DOI de JSTOR 10.2307/3008015 (límite de peticiones), por lo que no se incluye. El editor registra hoy la revista como Journal of the Operational Research Society; en 1971 se llamaba Operational Research Quarterly._  
@@ -172,12 +184,20 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `hyndman2002ets` · Modelos ETS en espacio de estados con innovaciones y selección automática.
 - Instituto Colombiano de Normas Técnicas y Certificación. (1999). *Estiba intercambiable de madera, no reversible, de cuatro entradas (NTC 4680)*. ICONTEC.  
   `ntc4680` · Estiba estándar colombiana de 1200 × 1000 mm.
+- Jacobs, F. R. y Weston, F. C., Jr. (2007). Enterprise resource planning (ERP)—A brief history. *Journal of Operations Management*, *25*(2), 357–363. https://doi.org/10.1016/j.jom.2006.11.005 — _Título, autores, revista, volumen, número, páginas y DOI confirmados en Crossref (publicado en línea el 12 de diciembre de 2006; número impreso de marzo de 2007). El segundo autor figura como F. C. «Ted» Weston, Jr._  
+  `jacobsweston2007` · Historia de los sistemas ERP y su origen en MRP y MRP II.
 - Johnson, S. M. (1954). Optimal two- and three-stage production schedules with setup times included. *Naval Research Logistics Quarterly*, *1*(1), 61–68. https://doi.org/10.1002/nav.3800010110  
   `johnson1954` · Regla de Johnson para secuenciar trabajos en dos (y tres) máquinas.
+- Jones, D. y Tamiz, M. (2010). *Practical goal programming*. Springer. https://doi.org/10.1007/978-1-4419-5771-9 — _Datos confirmados en Crossref (DOI e ISBN). Serie International Series in Operations Research & Management Science; no se confirmó el número de volumen de la serie._  
+  `jonestamiz2010` · Variantes de la programación por metas: lexicográfica, ponderada y de Chebyshev.
 - Juran, J. M. (Ed.). (1951). *Quality-control handbook*. McGraw-Hill. — _El título de la 1.ª ed. lleva guion: "Quality-control handbook" (New York, McGraw-Hill, 1951, viii, 800 p.; serie McGraw-Hill industrial organization and management). Confirmado también en https://catalogosiidca.csuca.org/Record/UCR.000321809._  
   `juran1951` · Análisis de Pareto de los defectos.
 - Kane, V. E. (1986). Process capability indices. *Journal of Quality Technology*, *18*(1), 41–52. https://doi.org/10.1080/00224065.1986.11978984  
   `kane1986` · Índices de capacidad de proceso Cp y Cpk.
+- Kantorovich, L. V. (1960). Mathematical methods of organizing and planning production. *Management Science*, *6*(4), 366–422. https://doi.org/10.1287/mnsc.6.4.366 — _Datos confirmados en Crossref (DOI). Es la traducción al inglés de la monografía rusa de 1939._  
+  `kantorovich1960` · Origen de la programación lineal para planear la producción (1939).
+- Karmarkar, N. (1984). A new polynomial-time algorithm for linear programming. *Combinatorica*, *4*(4), 373–395. https://doi.org/10.1007/BF02579150 — _Datos confirmados en Crossref (DOI)._  
+  `karmarkar1984` · Método de punto interior de tiempo polinomial para programación lineal.
 - Karush, W. (1939). *Minima of functions of several variables with inequalities as side conditions* [Tesis de maestría, University of Chicago]. — _Corrección del título: es «...as side conditions», no «...as side constraints». Así lo dan la reimpresión de Springer (Giorgi y Kjeldsen, Eds., Traces and emergence of nonlinear programming, 2014, pp. 217–245, doi 10.1007/978-3-0348-0439-4_10) y Cottle (2012, Documenta Mathematica, Extra Volume ISMP). Es una tesis de maestría del Department of Mathematics de la University of Chicago (diciembre de 1939). En APA: [Tesis de maestría, University of Chicago]. No se vio el registro en un catálogo de biblioteca._  
   `karush1939` · Condiciones de Karush-Kuhn-Tucker.
 - Kelley, J. E., Jr. (1961). Critical-path planning and scheduling: Mathematical basis. *Operations Research*, *9*(3), 296–320. https://doi.org/10.1287/opre.9.3.296  
@@ -208,6 +228,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `long2003` · Importancia económica del transporte; unitarización de la carga.
 - Malcolm, D. G., Roseboom, J. H., Clark, C. E. y Fazar, W. (1959). Application of a technique for research and development program evaluation. *Operations Research*, *7*(5), 646–669. https://doi.org/10.1287/opre.7.5.646  
   `malcolm1959` · Técnica PERT: tres estimaciones de duración y media y varianza de la distribución beta.
+- Markov, A. A. (1906). Rasprostranenie zakona bol'shikh chisel na velichiny, zavisyashchie drug ot druga [Extensión de la ley de los grandes números a magnitudes que dependen unas de otras]. *Izvestiya Fiziko-matematicheskogo obshchestva pri Kazanskom universitete*. **[Por verificar: Confirmar en una fuente primaria (el fascículo original, zbMATH o MathSciNet) la serie (2.ª), el volumen (15) y las páginas (135–156), que solo aparecen en citas secundarias. La Encyclopaedia of Mathematics y Seneta (2006) confirman el trabajo de 1906 en el boletín de la Sociedad Físico-Matemática de Kazán y que en él aparecen por primera vez las cadenas de Markov.]** — _Hay una traducción al inglés reimpresa en el Journal Électronique d'Histoire des Probabilités et de la Statistique, 2(1b), 2006 (EuDML 128778), que no se pudo consultar._  
+  `markov1906` · Origen de las cadenas de Markov.
 - Markowitz, H. (1952). Portfolio selection. *The Journal of Finance*, *7*(1), 77–91. https://doi.org/10.1111/j.1540-6261.1952.tb01525.x  
   `markowitz1952` · Cartera de mínimo riesgo (modelo media-varianza).
 - Miller, C. E., Tucker, A. W. y Zemlin, R. A. (1960). Integer programming formulation of traveling salesman problems. *Journal of the ACM*, *7*(4), 326–329. https://doi.org/10.1145/321043.321046  
@@ -224,6 +246,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `neh1983` · Heurística NEH para el taller de flujo.
 - Nocedal, J. y Wright, S. J. (2006). *Numerical optimization* (2.ª ed.). Springer. https://doi.org/10.1007/978-0-387-40065-5  
   `nocedalwright2006` · Programación cuadrática sucesiva (SQP) y actualización BFGS.
+- Olhager, J. (2013). Evolution of operations planning and control: From production to supply chains. *International Journal of Production Research*, *51*(23–24), 6836–6843. https://doi.org/10.1080/00207543.2012.761363 — _Datos confirmados en Crossref y en el repositorio de la Universidad de Lund (https://lup.lub.lu.se/record/4196156). El artículo tiene una sección titulada «The MRP crusade» sobre la campaña de APICS en los años setenta._  
+  `olhager2013` · Evolución de la planeación y el control de operaciones: control de taller, MRP, programa maestro, S&OP y planeación de la cadena de suministro.
 - Orden, A. (1956). The transhipment problem. *Management Science*, *2*(3), 276–285. https://doi.org/10.1287/mnsc.2.3.276  
   `orden1956` · Problema de transbordo.
 - Orlicky, J. (1975). *Material requirements planning: The new way of life in production and inventory management*. McGraw-Hill.  
@@ -244,6 +268,12 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `powell1994` · COBYLA (punto de partida sin derivadas).
 - Prim, R. C. (1957). Shortest connection networks and some generalizations. *Bell System Technical Journal*, *36*(6), 1389–1401. https://doi.org/10.1002/j.1538-7305.1957.tb01515.x  
   `prim1957` · Árbol de expansión mínima: algoritmo de Prim.
+- Ptak, C. A. y Smith, C. (2011). *Orlicky's material requirements planning* (3.ª ed.). McGraw-Hill. — _Edición, año, editorial e ISBN confirmados en Open Library y en catálogos de bibliotecas (East Carolina University, Texas A&M). Es la tercera edición del libro de Orlicky (1975); presenta el MRP impulsado por la demanda (DDMRP)._  
+  `ptaksmith2011` · MRP clásico actualizado y origen del MRP impulsado por la demanda (DDMRP).
+- Ptak, C. y Smith, C. (2016). *Demand driven material requirements planning (DDMRP)*. Industrial Press. — _Autores, año, editorial (South Norwalk, CT) e ISBN confirmados en Open Library y en el catálogo de Texas A&M. Hay versiones posteriores (versión 2, 2018; versión 3, 2019) con otros ISBN._  
+  `ptaksmith2016` · DDMRP: amortiguadores de inventario desacoplados, perfiles de amortiguador y planeación por ecuación de flujo neto.
+- Raiffa, H. (1968). *Decision analysis: Introductory lectures on choices under uncertainty*. Addison-Wesley. — _Autor, año, título, subtítulo y editorial según Open Library (registros de 1968; el ISBN 0-201-05750-6 es de Addison-Wesley)._  
+  `raiffa1968` · Análisis de decisiones y árboles de decisión.
 - Raiffa, H. y Schlaifer, R. (1961). *Applied statistical decision theory*. Harvard University, Graduate School of Business Administration, Division of Research. — _Catálogo: Boston, Division of Research, Graduate School of Business Administration, Harvard University, c1961._  
   `raiffaschlaifer1961` · Teorema de Bayes en decisiones y valor esperado de la información.
 - Reinfeld, N. V. y Vogel, W. R. (1958). *Mathematical programming*. Prentice-Hall.  
@@ -298,6 +328,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `silver2017` · Inventario de seguridad, sistemas (s, Q), simulación de políticas y clasificación ABC.
 - Sinnott, R. W. (1984). Virtues of the haversine. *Sky and Telescope*, *68*(2), 159.  
   `sinnott1984` · Distancia del gran círculo entre dos puntos dados por latitud y longitud (fórmula del haversine).
+- Stigler, G. J. (1945). The cost of subsistence. *Journal of Farm Economics*, *27*(2), 303–314. https://doi.org/10.2307/1231810 **[Por verificar: Confirmar el rango de páginas (303–314) en el catálogo de la revista; Crossref solo da la primera página.]** — _Volumen, número, año y DOI según Crossref (que solo da la página inicial); páginas 303–314 según la ficha de la revista (mayo de 1945)._  
+  `stigler1945` · Problema de la dieta de costo mínimo.
 - Taft, E. W. (1918). The most economical production lot. *The Iron Age*, *101*(18), 1410–1412. — _Datos de fuente secundaria; el título completo lleva un subtítulo sobre fórmulas exactas y aproximadas._  
   `taft1918` · Origen del lote económico de producción (POQ/EPQ) con tasa finita.
 - Taha, H. A. (2012). *Investigación de operaciones* (9.ª ed.). Pearson Educación. — _Las diapositivas citan Taha (2011), que corresponde a la 9.ª edición en inglés._  
@@ -314,6 +346,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `vidal2022` · Estado del arte en metaheurísticas para el CVRP (HGS).
 - Vollmann, T. E., Berry, W. L., Whybark, D. C. y Jacobs, F. R. (2005). *Manufacturing planning and control systems for supply chain management* (5.ª ed.). McGraw-Hill. — _Edición, año, editorial e ISBN confirmados en el catálogo de la biblioteca de East Carolina University (LCCN 2004275109). Hay impresiones con otros ISBN (0-07-112133-1, internacional; 0-07-229990-8, con el título corto Manufacturing planning and control for supply chain management)._  
   `vollmann2005` · Programa maestro, barreras de tiempo, disponible para promesa, plan aproximado de capacidad y MRP.
+- von Neumann, J. (1928). Zur Theorie der Gesellschaftsspiele. *Mathematische Annalen*, *100*(1), 295–320. https://doi.org/10.1007/BF01448847 — _Datos confirmados en Crossref (DOI)._  
+  `vonneumann1928` · Teorema minimax de los juegos de suma cero.
 - von Neumann, J. y Morgenstern, O. (1944). *Theory of games and economic behavior*. Princeton University Press.  
   `vonneumann1944` · Juegos de suma cero y estrategias mixtas.
 - Wagner, H. M. y Whitin, T. M. (1958). Dynamic version of the economic lot size model. *Management Science*, *5*(1), 89–96. https://doi.org/10.1287/mnsc.5.1.89  
@@ -328,6 +362,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `welch1947` · Prueba t con varianzas distintas.
 - Western Electric Company. (1956). *Statistical quality control handbook*. Western Electric. — _Google Books: Western Electric Company, 1956, 328 p. (OCLC 33858387). HathiTrust (https://catalog.hathitrust.org/Record/007049271) registra una 2.ª ed. de 1958, ©1956, New York, xii, 328 p.; se cita la de 1956._  
   `westernelectric1956` · Reglas de corridas (reglas de Western Electric) para detectar puntos fuera de control.
+- Wight, O. W. (1981). *MRP II: Unlocking America's productivity potential*. Oliver Wight Limited Publications; CBI Publishing. **[Por verificar: Autor, título, año (©1981) y editorial aparecen en los catálogos de Texas A&M y East Carolina University (Williston, VT: Oliver Wight Limited Publications; Boston: CBI Publishing). Falta confirmar el ISBN de la edición de 1981: los catálogos dan 0-8436-0820-X, pero Open Library asocia ese número a la edición revisada de 1984 («Manufacturing resource planning: MRP II»).]**  
+  `wight1981` · Planeación de recursos de manufactura (MRP II): el MRP de circuito cerrado unido a la capacidad y a las finanzas.
 - Winston, W. L. (2004). *Operations research: Applications and algorithms* (4.ª ed.). Brooks/Cole–Thomson Learning.  
   `winston2004` · Ejemplo Powerco (transporte) y formulación del agente viajero con u_i − u_j + N·x_ij ≤ N − 1.
 - Winters, P. R. (1960). Forecasting sales by exponentially weighted moving averages. *Management Science*, *6*(3), 324–342. https://doi.org/10.1287/mnsc.6.3.324  
@@ -336,6 +372,8 @@ Todo método, fórmula, paso y ejemplo de IAQSB dice de dónde sale. Este docume
   `wolfe1959` · Método de Wolfe para programación cuadrática.
 - Wren, A. y Holliday, A. (1972). Computer scheduling of vehicles from one or more depots to a number of delivery points. *Operational Research Quarterly*, *23*(3), 333–344. https://doi.org/10.1057/jors.1972.53  
   `wrenholliday1972` · Antecedente del barrido: agrupación de clientes por ángulo polar.
+- Wächter, A. y Biegler, L. T. (2006). On the implementation of an interior-point filter line-search algorithm for large-scale nonlinear programming. *Mathematical Programming*, *106*(1), 25–57. https://doi.org/10.1007/s10107-004-0559-y — _Datos confirmados en Crossref: publicado en línea en 2005 y en el número impreso de marzo de 2006._  
+  `wachter2006` · Ipopt: punto interior con filtro para programación no lineal de gran tamaño.
 
 ## Origen de los datos de cada ejemplo
 

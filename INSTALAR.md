@@ -4,18 +4,18 @@ Descarga el instalador de tu sistema en la [página de versiones (*Releases*)](h
 
 | Sistema | Archivo |
 | --- | --- |
-| Windows 10 u 11 | `IAQSB_0.2.2_x64-setup.exe` |
-| macOS con chip Apple (M1, M2, M3, M4…) | `IAQSB_0.2.2_aarch64.dmg` |
-| macOS con procesador Intel | `IAQSB_0.2.2_x64.dmg` |
-| Ubuntu, Debian, Linux Mint, Pop!_OS | `IAQSB_0.2.2_amd64.deb` |
-| Fedora, openSUSE | `IAQSB-0.2.2-1.x86_64.rpm` |
-| Cualquier otra distribución de Linux | `IAQSB_0.2.2_amd64.AppImage` |
+| Windows 10 u 11 | `IAQSB_0.2.3_x64-setup.exe` |
+| macOS con chip Apple (M1, M2, M3, M4…) | `IAQSB_0.2.3_aarch64.dmg` |
+| macOS con procesador Intel | `IAQSB_0.2.3_x64.dmg` |
+| Ubuntu, Debian, Linux Mint, Pop!_OS | `IAQSB_0.2.3_amd64.deb` |
+| Fedora, openSUSE | `IAQSB-0.2.3-1.x86_64.rpm` |
+| Cualquier otra distribución de Linux | `IAQSB_0.2.3_amd64.AppImage` |
 
 ¿Qué chip tiene mi Mac? Menú Apple  → **Acerca de esta Mac**. Si dice «Chip Apple M…», es el de chip Apple; si dice «Procesador Intel…», es el de Intel.
 
 ## Windows
 
-1. Abre `IAQSB_0.2.2_x64-setup.exe` y elige el idioma.
+1. Abre `IAQSB_0.2.3_x64-setup.exe` y elige el idioma.
 2. Si aparece «Windows protegió su PC», pulsa **Más información** → **Ejecutar de todas formas**. Aparece porque el instalador todavía no tiene firma de código.
 3. La instalación es solo para tu usuario, así que no pide permisos de administrador. Sirve también en las salas de cómputo.
 
@@ -35,9 +35,9 @@ xattr -dr com.apple.quarantine /Applications/IAQSB.app
 
 ## Linux
 
-- **Ubuntu, Debian y derivados:** `sudo apt install ./IAQSB_0.2.2_amd64.deb`
-- **Fedora y openSUSE:** `sudo dnf install ./IAQSB-0.2.2-1.x86_64.rpm` (o `sudo zypper install …`)
-- **AppImage (cualquier distribución):** `chmod +x IAQSB_0.2.2_amd64.AppImage` y ábrelo con doble clic. Si no abre, instala `libfuse2` (en Ubuntu 24.04: `sudo apt install libfuse2t64`).
+- **Ubuntu, Debian y derivados:** `sudo apt install ./IAQSB_0.2.3_amd64.deb`
+- **Fedora y openSUSE:** `sudo dnf install ./IAQSB-0.2.3-1.x86_64.rpm` (o `sudo zypper install …`)
+- **AppImage (cualquier distribución):** `chmod +x IAQSB_0.2.3_amd64.AppImage` y ábrelo con doble clic. Si no abre, instala `libfuse2` (en Ubuntu 24.04: `sudo apt install libfuse2t64`).
 
 ## Conectar con Claude
 

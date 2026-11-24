@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Nativo from './chat/Nativo.svelte';
+  import { guia } from '../lib/guia.svelte';
   // Barra de arriba: módulo activo, ejemplos y tema.
   import Icon from './Icon.svelte';
   import SelectorTemaCompacto from './tema/SelectorTemaCompacto.svelte';
@@ -74,6 +76,10 @@
   </div>
 
   <div class="der">
+    <button class="btn ghost guiame" class:nueva={!guia.vistas.includes(shell.module)} title={t('Guíame: qué es este módulo, para qué sirve en la vida real, su historia, cómo usarlo y qué se usa hoy en la industria')} onclick={() => guia.abrir(shell.module)}>
+      <Icon name="info" size={17} />
+      <span class="txt">{t('Guíame')}</span>
+    </button>
     <div class="ejemplos" bind:this={caja}>
       <button class="btn ghost" aria-haspopup="menu" aria-expanded={abierto} onclick={() => (abierto = !abierto)} disabled={!examples.length}>
         <Icon name="libro" size={17} />
@@ -98,7 +104,7 @@
     <MotorMenu />
 
     <button class="btn ghost asistente" class:on={chat.abierto} aria-pressed={chat.abierto} title={t('Asistente IA: conversa con el modelo que conectes sobre tu problema')} onclick={() => chat.alternar()}>
-      <Icon name="chat" size={17} />
+      <Nativo toma="saludo" tam={22} circulo fijo />
       <span class="txt">{t('Asistente')}</span>
     </button>
 
@@ -115,6 +121,27 @@
 </header>
 
 <style>
+  .guiame {
+    position: relative;
+  }
+  .guiame.nueva::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--solver);
+    animation: latido 1.8s ease-in-out infinite;
+  }
+  @keyframes latido {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .guiame.nueva::after { animation: none; }
+  }
   .barra {
     position: relative;
     z-index: 20;

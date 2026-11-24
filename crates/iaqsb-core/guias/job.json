@@ -1,0 +1,251 @@
+{
+  "modulo": "job",
+  "titulo": "Programación de trabajos (JOB)",
+  "resumen": "Decide en qué orden procesar los trabajos en las máquinas de un taller o de una línea para terminar antes, entregar a tiempo o reducir costos. Es la herramienta del jefe de producción o del programador de planta que convierte las órdenes del MRP en una secuencia diaria.",
+  "que_es": [
+    "La programación de trabajos (scheduling) es el nivel más detallado de la planeación de la producción. Ya se sabe qué órdenes hay que fabricar; falta decidir en qué orden pasan por cada máquina y a qué hora empieza cada operación. El módulo trabaja los dos casos clásicos. En el taller (job shop), cada trabajo tiene su propia ruta: un trabajo va de torno a fresa y otro de fresa a taladro. En el flujo (flow shop), todos los trabajos pasan por las máquinas en el mismo orden, como en una línea.",
+    "No existe una secuencia mejor en general: depende del criterio. Minimizar el tiempo total (Cmax o makespan) libera la planta antes; minimizar la tardanza protege las fechas de entrega; minimizar el flujo medio reduce el inventario en proceso. Para dos máquinas en flujo, la regla de Johnson da el óptimo de Cmax. Para más máquinas, o en un taller, el problema crece de forma explosiva y se usan reglas de despacho y heurísticas. El módulo calcula las 18 medidas de desempeño de WinQSB y dibuja los diagramas de Gantt."
+  ],
+  "analogia": "Es como organizar el uso del baño en una casa con varias personas que salen a la misma hora: si entra primero quien se demora menos (SPT), el promedio de espera baja; si entra primero quien sale más temprano (EDD), menos personas llegan tarde. Cambiar el criterio cambia la mejor secuencia.",
+  "para_que_sirve": [
+    {
+      "sector": "Talleres metalmecánicos",
+      "ejemplo": "Un taller de mecanizado con tornos, fresadoras y rectificadoras decide cada mañana qué orden montar en cada máquina para cumplir las fechas prometidas a sus clientes."
+    },
+    {
+      "sector": "Artes gráficas",
+      "ejemplo": "Una imprenta en la que todos los trabajos pasan por preprensa, impresión y acabado usa CDS o NEH para reducir el tiempo total de la jornada."
+    },
+    {
+      "sector": "Servicios técnicos",
+      "ejemplo": "Un taller de mantenimiento de vehículos con diagnóstico y reparación (dos estaciones) aplica la regla de Johnson para despachar todos los carros del día lo antes posible."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1954",
+      "hecho": "Selmer Johnson publica la regla que da la secuencia óptima para minimizar el tiempo total en dos máquinas, y un caso especial en tres.",
+      "refs": [
+        "johnson1954"
+      ]
+    },
+    {
+      "anio": "1960",
+      "hecho": "Giffler y Thompson proponen algoritmos para generar programas activos en el taller, la base de la programación por reglas de despacho.",
+      "refs": [
+        "gifflerthompson1960"
+      ]
+    },
+    {
+      "anio": "1965",
+      "hecho": "Palmer propone un índice de pendiente para ordenar rápidamente los trabajos en un flujo de m máquinas.",
+      "refs": [
+        "palmer1965"
+      ]
+    },
+    {
+      "anio": "1970",
+      "hecho": "Campbell, Dudek y Smith (CDS) aplican la regla de Johnson a m − 1 problemas de dos máquinas ficticias y se quedan con el mejor.",
+      "refs": [
+        "campbell1970"
+      ]
+    },
+    {
+      "anio": "1977",
+      "hecho": "Panwalkar e Iskander publican una revisión de más de cien reglas de despacho; ese mismo año Dannenbring evalúa heurísticas para el flujo y propone la suya.",
+      "refs": [
+        "panwalkar1977",
+        "dannenbring1977"
+      ]
+    },
+    {
+      "anio": "1983",
+      "hecho": "Nawaz, Enscore y Ham presentan NEH, que ordena los trabajos por tiempo total y los inserta uno a uno en la posición que menos alarga el programa.",
+      "refs": [
+        "neh1983"
+      ]
+    },
+    {
+      "anio": "1991",
+      "hecho": "Ho y Chang proponen una heurística de mejora por intercambios para el flujo de n trabajos y M máquinas; Chang es también coautor de WinQSB.",
+      "refs": [
+        "hochang1991",
+        "chang2003"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Trabajos y sus tiempos de proceso",
+      "para_que": "En el taller, la ruta de cada trabajo como operaciones tiempo/máquina en orden; en el flujo, una matriz de tiempos trabajo × máquina. Salen de las hojas de ruta y los estándares de tiempo."
+    },
+    {
+      "dato": "Máquinas",
+      "para_que": "Su nombre y desde cuándo están disponibles (por ejemplo, si terminan un trabajo anterior)."
+    },
+    {
+      "dato": "Fechas de entrega y disponibilidad de los trabajos",
+      "para_que": "Necesarias para medir retraso, tardanza y adelanto, y para las reglas EDD, CR y holgura."
+    },
+    {
+      "dato": "Pesos y prioridades (opcional)",
+      "para_que": "Para dar más importancia a un cliente o trabajo en las medidas ponderadas y en la regla WSPT o el índice de prioridad."
+    },
+    {
+      "dato": "Costos (opcional)",
+      "para_que": "Costo por unidad de tiempo esperando, en proceso, por retraso y por adelanto de cada trabajo; costo de máquina ociosa u ocupada."
+    }
+  ],
+  "supuestos": [
+    "Los tiempos de proceso son conocidos y determinísticos, e incluyen la preparación.",
+    "Cada máquina procesa un trabajo a la vez y una operación iniciada no se interrumpe.",
+    "En el flujo, todos los trabajos siguen el mismo orden de máquinas y se programa una permutación (la misma secuencia en todas las máquinas).",
+    "No hay averías ni llegadas nuevas durante el horizonte; si llegan, se vuelve a programar."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo",
+      "texto": "En la barra lateral elige «Programación de trabajos». Pulsa «Nuevo problema» o abre un ejemplo: taller_cuatro_trabajos, flujo_johnson (Heizer y Render) o flujo_cinco_maquinas. También abre archivos .JOB de WinQSB."
+    },
+    {
+      "titulo": "Elige el tipo de problema",
+      "texto": "«Taller (job shop)» o «Flujo (flow shop)», con el «Número de trabajos» y el «Número de máquinas». Escribe la «Unidad de tiempo»."
+    },
+    {
+      "titulo": "Datos del taller",
+      "texto": "En «Trabajos» escribe para cada uno las «Operaciones (tiempo/máquina)» en orden, por ejemplo 12/1, 5/3 o 12/Torno, y si aplica «Disponible desde», «Fecha de entrega», «Peso», «Índice de prioridad» y los costos. En «Máquinas» escribe su nombre, «Disponible desde», «Costo ociosa» y «Costo ocupada»."
+    },
+    {
+      "titulo": "Datos del flujo",
+      "texto": "Llena la matriz «Tiempos de proceso (trabajo × máquina)». Las columnas extra de cada trabajo y de cada máquina tienen las fechas de entrega, pesos y costos."
+    },
+    {
+      "titulo": "Elige el criterio y el método",
+      "texto": "En «Criterio» elige la medida que quieres optimizar (por defecto «Cmax: tiempo total (makespan)»). En el taller, «Método»: «Regla de despacho», «Todas las reglas» o «Generación aleatoria», con la «Regla principal» (FCFS, SPT, EDD, CR, holgura, MWKR, WSPT y otras hasta 15) y el «Desempate». En el flujo, «Método»: CDS, Johnson, Palmer, Gupta, Dannenbring, Hundal y Rajgopal, Ho y Chang, NEH, «Todas las heurísticas», «Generación aleatoria» o «Enumeración completa»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver». Revisa las pestañas «Solución», «Gantt» y «Comparación». El «Paso a paso» muestra las decisiones de despacho en el taller o los subproblemas de CDS en el flujo. Con «Comparar» resuelves con cada regla o heurística."
+    }
+  ],
+  "como_resuelve": [
+    "En el taller, IAQSB programa por despacho sin retrasos innecesarios: en cada momento busca la máquina que puede empezar más temprano, reúne las operaciones que ya están disponibles para ella y elige una con la regla principal; si hay empate, usa la regla de desempate. Repite hasta programar todas las operaciones. Con «Todas las reglas» lo hace con las quince y compara; con «Generación aleatoria» crea muchos programas con prioridades al azar (con la «Semilla» dada) y se queda con el mejor según el criterio.",
+    "En el flujo, Johnson ordena primero los trabajos cuyo menor tiempo está en la primera máquina, de menor a mayor, y al final los que lo tienen en la segunda, de mayor a menor. CDS aplica Johnson a m − 1 problemas de dos máquinas ficticias. Palmer, Gupta, Dannenbring y Hundal-Rajgopal ordenan por índices. NEH inserta trabajos en la mejor posición. Ho y Chang mejora una secuencia por intercambios. La enumeración completa prueba todas las permutaciones y garantiza el óptimo, pero solo es práctica con pocos trabajos.",
+    "Con la secuencia calcula, en Rust, el inicio y fin de cada operación y las 18 medidas de WinQSB: Cmax, terminación media, flujo medio y máximo, espera media y máxima, retraso medio y máximo, tardanza media y máxima, adelanto medio y máximo, número de trabajos tardíos, utilización de las máquinas, trabajo en proceso medio y costos de trabajos, de máquinas y total."
+  ],
+  "interpretar": [
+    "La métrica principal es el criterio elegido. En el ejemplo flujo_johnson (cinco trabajos, dos centros), la secuencia B → E → D → C → A termina en 35 horas, el óptimo para dos máquinas.",
+    "La tabla «Programa de los trabajos» da, por operación, la máquina, el inicio, el fin y el retraso frente a la fecha de entrega. Es la hoja que se entrega al supervisor de planta.",
+    "El Gantt por máquina muestra los tiempos ociosos y el cuello de botella; el Gantt por trabajo muestra cuánto espera cada orden.",
+    "La «Comparación de las reglas» o «de las heurísticas» presenta Cmax, flujo medio, tardanza media y máxima y trabajos tardíos de cada método. Elige con el criterio que importa al negocio: una regla que gana en Cmax puede dejar más pedidos tardíos.",
+    "Los resultados de las heurísticas son buenos pero no garantizan el óptimo; el informe lo indica en el estado. Para pocos trabajos en flujo, la enumeración completa da la referencia exacta."
+  ],
+  "industria": [
+    {
+      "nombre": "Siemens Opcenter APS (antes Preactor)",
+      "tipo": "software",
+      "uso": "Programación de planta con capacidad finita, reglas de despacho y diagrama de Gantt interactivo, muy usado en manufactura."
+    },
+    {
+      "nombre": "SAP S/4HANA PP/DS y sistemas MES",
+      "tipo": "software",
+      "uso": "Secuenciación detallada de órdenes y despacho a las máquinas, conectados al ERP y a la planta."
+    },
+    {
+      "nombre": "Google OR-Tools (CP-SAT)",
+      "tipo": "libreria",
+      "uso": "Programación con restricciones en Python, C++, Java o C#; resuelve el job shop clásico y variantes con turnos y preparaciones."
+    },
+    {
+      "nombre": "IBM ILOG CPLEX CP Optimizer y Timefold Solver",
+      "tipo": "libreria",
+      "uso": "Motores comerciales y de código abierto para programar tareas con restricciones complejas de recursos y calendarios."
+    },
+    {
+      "nombre": "Teoría de restricciones (tambor-amortiguador-cuerda)",
+      "tipo": "metodologia",
+      "uso": "Programa el cuello de botella y subordina el resto de la planta a su ritmo."
+    }
+  ],
+  "alternativas": [
+    "Programación entera mixta o con restricciones (módulo LP-ILP o el lenguaje algebraico de IAQSB) para encontrar el óptimo exacto en problemas pequeños o con restricciones especiales.",
+    "Metaheurísticas (búsqueda tabú, recocido simulado, algoritmos genéticos) para talleres grandes donde las reglas de despacho se quedan cortas.",
+    "Secuenciación en una sola máquina con reglas SPT, EDD o el algoritmo de Moore cuando hay un único cuello de botella.",
+    "Balanceo de líneas (módulo FLL) cuando el problema no es secuenciar órdenes sino repartir tareas entre estaciones de una línea."
+  ],
+  "errores_comunes": [
+    "Escribir las operaciones fuera de orden en el taller. El orden de la lista es la ruta del trabajo.",
+    "Usar la regla de Johnson con tres o más máquinas como si diera el óptimo. Para m máquinas es una heurística (CDS la usa como subproblema).",
+    "Elegir la regla por costumbre (FCFS) sin mirar la comparación: con fechas de entrega exigentes, EDD o CR suelen reducir mucho los trabajos tardíos.",
+    "Olvidar las fechas de entrega y luego leer tardanzas en cero como buen desempeño.",
+    "Confiar en la enumeración completa con muchos trabajos: con 10 trabajos ya son más de 3.6 millones de secuencias."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Aplicar a mano la regla de Johnson y las reglas de despacho SPT, EDD y CR.",
+      "Calcular e interpretar Cmax, flujo medio, tardanza y utilización con un diagrama de Gantt.",
+      "Comparar heurísticas de flujo (CDS, Palmer, NEH) y explicar por qué no garantizan el óptimo.",
+      "Elegir el criterio de programación según la estrategia de la empresa."
+    ],
+    "actividades": [
+      "Con flujo_johnson, aplicar la regla de Johnson a mano, dibujar el Gantt y verificar el Cmax de 35 con IAQSB.",
+      "Con taller_cuatro_trabajos, resolver con «Todas las reglas» y discutir por qué SPT y EDD ganan en criterios distintos.",
+      "Con flujo_cinco_maquinas, comparar «Todas las heurísticas» con la «Enumeración completa» y medir la brecha de cada heurística frente al óptimo."
+    ],
+    "preguntas": [
+      "¿Por qué SPT minimiza el flujo medio en una máquina y no necesariamente la tardanza máxima?",
+      "¿Qué condición debe cumplir un flujo de tres máquinas para que Johnson sea óptimo?",
+      "Si dos reglas dan el mismo Cmax, ¿con qué otra medida decidirías?",
+      "¿Qué pasa con el programa si una máquina se daña a la mitad del día?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Taller (job shop)",
+      "definicion": "Planta en la que cada trabajo tiene su propia ruta por las máquinas."
+    },
+    {
+      "termino": "Flujo (flow shop)",
+      "definicion": "Planta en la que todos los trabajos pasan por las máquinas en el mismo orden."
+    },
+    {
+      "termino": "Cmax (makespan)",
+      "definicion": "Tiempo en que termina el último trabajo."
+    },
+    {
+      "termino": "Tiempo de flujo",
+      "definicion": "Tiempo desde que un trabajo está disponible hasta que termina."
+    },
+    {
+      "termino": "Tardanza",
+      "definicion": "Retraso positivo de un trabajo frente a su fecha de entrega; cero si llega a tiempo."
+    },
+    {
+      "termino": "Regla de despacho",
+      "definicion": "Criterio para elegir qué trabajo procesar cuando una máquina queda libre, como SPT o EDD."
+    },
+    {
+      "termino": "Razón crítica (CR)",
+      "definicion": "Tiempo que falta para la entrega dividido por el trabajo que falta; menor que 1 indica atraso."
+    },
+    {
+      "termino": "Diagrama de Gantt",
+      "definicion": "Gráfico de barras en el tiempo que muestra cuándo se procesa cada operación en cada máquina."
+    }
+  ],
+  "referencias": [
+    "johnson1954",
+    "campbell1970",
+    "palmer1965",
+    "gupta1971",
+    "dannenbring1977",
+    "neh1983",
+    "hundalrajgopal1988",
+    "hochang1991",
+    "panwalkar1977",
+    "gifflerthompson1960",
+    "pinedo2016",
+    "heizerrender2014",
+    "chang2003"
+  ]
+}

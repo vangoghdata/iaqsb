@@ -2569,6 +2569,315 @@
       "pendiente": "El año sale de los metadatos del archivo (creado en 2020, última modificación en 2021); confirmar la versión usada en el curso.",
       "tema": "Gráficos de series de tiempo, gráficos estacionales, autocorrelación y ruido blanco, con el ejemplo de utilidades trimestrales en R.",
       "nota": "Diapositivas y hojas de cálculo del curso Taller de Producción y Logística de Ingeniería Industrial de la Universidad Nacional de Colombia, entregadas por un estudiante del curso. Autor según los metadatos de los archivos (Jaime Antero Arango Marín) y el pie de las diapositivas."
+    },
+    {
+      "id": "kantorovich1960",
+      "tipo": "articulo",
+      "autores": [
+        "Kantorovich, L. V."
+      ],
+      "anio": "1960",
+      "titulo": "Mathematical methods of organizing and planning production",
+      "revista": "Management Science",
+      "volumen": "6",
+      "numero": "4",
+      "paginas": "366–422",
+      "doi": "10.1287/mnsc.6.4.366",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI). Es la traducción al inglés de la monografía rusa de 1939.",
+      "tema": "Origen de la programación lineal para planear la producción (1939)."
+    },
+    {
+      "id": "stigler1945",
+      "tipo": "articulo",
+      "autores": [
+        "Stigler, G. J."
+      ],
+      "anio": "1945",
+      "titulo": "The cost of subsistence",
+      "revista": "Journal of Farm Economics",
+      "volumen": "27",
+      "numero": "2",
+      "paginas": "303–314",
+      "doi": "10.2307/1231810",
+      "estado": "por_verificar",
+      "nota": "Volumen, número, año y DOI según Crossref (que solo da la página inicial); páginas 303–314 según la ficha de la revista (mayo de 1945).",
+      "tema": "Problema de la dieta de costo mínimo.",
+      "pendiente": "Confirmar el rango de páginas (303–314) en el catálogo de la revista; Crossref solo da la primera página."
+    },
+    {
+      "id": "gomory1958",
+      "tipo": "articulo",
+      "autores": [
+        "Gomory, R. E."
+      ],
+      "anio": "1958",
+      "titulo": "Outline of an algorithm for integer solutions to linear programs",
+      "revista": "Bulletin of the American Mathematical Society",
+      "volumen": "64",
+      "numero": "5",
+      "paginas": "275–278",
+      "doi": "10.1090/S0002-9904-1958-10224-4",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI).",
+      "tema": "Planos de corte para programación entera."
+    },
+    {
+      "id": "karmarkar1984",
+      "tipo": "articulo",
+      "autores": [
+        "Karmarkar, N."
+      ],
+      "anio": "1984",
+      "titulo": "A new polynomial-time algorithm for linear programming",
+      "revista": "Combinatorica",
+      "volumen": "4",
+      "numero": "4",
+      "paginas": "373–395",
+      "doi": "10.1007/BF02579150",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI).",
+      "tema": "Método de punto interior de tiempo polinomial para programación lineal."
+    },
+    {
+      "id": "frankwolfe1956",
+      "tipo": "articulo",
+      "autores": [
+        "Frank, M.",
+        "Wolfe, P."
+      ],
+      "anio": "1956",
+      "titulo": "An algorithm for quadratic programming",
+      "revista": "Naval Research Logistics Quarterly",
+      "volumen": "3",
+      "numero": "1–2",
+      "paginas": "95–110",
+      "doi": "10.1002/nav.3800030109",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI).",
+      "tema": "Algoritmo de Frank-Wolfe para programación cuadrática."
+    },
+    {
+      "id": "wachter2006",
+      "tipo": "articulo",
+      "autores": [
+        "Wächter, A.",
+        "Biegler, L. T."
+      ],
+      "anio": "2006",
+      "titulo": "On the implementation of an interior-point filter line-search algorithm for large-scale nonlinear programming",
+      "revista": "Mathematical Programming",
+      "volumen": "106",
+      "numero": "1",
+      "paginas": "25–57",
+      "doi": "10.1007/s10107-004-0559-y",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref: publicado en línea en 2005 y en el número impreso de marzo de 2006.",
+      "tema": "Ipopt: punto interior con filtro para programación no lineal de gran tamaño."
+    },
+    {
+      "id": "jonestamiz2010",
+      "tipo": "libro",
+      "autores": [
+        "Jones, D.",
+        "Tamiz, M."
+      ],
+      "anio": "2010",
+      "titulo": "Practical goal programming",
+      "editorial": "Springer",
+      "isbn": "978-1-4419-5770-2",
+      "doi": "10.1007/978-1-4419-5771-9",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI e ISBN). Serie International Series in Operations Research & Management Science; no se confirmó el número de volumen de la serie.",
+      "tema": "Variantes de la programación por metas: lexicográfica, ponderada y de Chebyshev."
+    },
+    {
+      "id": "vonneumann1928",
+      "tipo": "articulo",
+      "autores": [
+        "von Neumann, J."
+      ],
+      "anio": "1928",
+      "titulo": "Zur Theorie der Gesellschaftsspiele",
+      "revista": "Mathematische Annalen",
+      "volumen": "100",
+      "numero": "1",
+      "paginas": "295–320",
+      "doi": "10.1007/BF01448847",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI).",
+      "tema": "Teorema minimax de los juegos de suma cero."
+    },
+    {
+      "id": "bayes1763",
+      "tipo": "articulo",
+      "autores": [
+        "Bayes, T."
+      ],
+      "anio": "1763",
+      "titulo": "An essay towards solving a problem in the doctrine of chances",
+      "revista": "Philosophical Transactions of the Royal Society of London",
+      "volumen": "53",
+      "paginas": "370–418",
+      "doi": "10.1098/rstl.1763.0053",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref (DOI). Publicado después de la muerte de Bayes; lo comunicó Richard Price.",
+      "tema": "Origen del teorema de Bayes (probabilidades a posteriori)."
+    },
+    {
+      "id": "raiffa1968",
+      "tipo": "libro",
+      "autores": [
+        "Raiffa, H."
+      ],
+      "anio": "1968",
+      "titulo": "Decision analysis: Introductory lectures on choices under uncertainty",
+      "editorial": "Addison-Wesley",
+      "isbn": "0-201-05750-6",
+      "estado": "verificada",
+      "nota": "Autor, año, título, subtítulo y editorial según Open Library (registros de 1968; el ISBN 0-201-05750-6 es de Addison-Wesley).",
+      "tema": "Análisis de decisiones y árboles de decisión."
+    },
+    {
+      "id": "gordon1961",
+      "tipo": "capitulo",
+      "autores": [
+        "Gordon, G."
+      ],
+      "anio": "1961",
+      "titulo": "A general purpose systems simulation program",
+      "libro": "Proceedings of the December 12–14, 1961, Eastern Joint Computer Conference: Computers—Key to total systems control",
+      "paginas": "87–104",
+      "editorial": "Association for Computing Machinery",
+      "doi": "10.1145/1460764.1460768",
+      "estado": "verificada",
+      "nota": "Título, autor, actas, páginas, editorial y DOI confirmados en Crossref (AFIPS '61 Eastern, publicado por ACM). Gordon trabajaba entonces en IBM, según la reseña de la IEEE Computer Society (https://history.computer.org/pioneers/gordon.html); el programa que describe se convirtió en GPSS.",
+      "tema": "Origen de GPSS, lenguaje de simulación de eventos discretos para sistemas con colas."
+    },
+    {
+      "id": "markov1906",
+      "tipo": "articulo",
+      "autores": [
+        "Markov, A. A."
+      ],
+      "anio": "1906",
+      "titulo": "Rasprostranenie zakona bol'shikh chisel na velichiny, zavisyashchie drug ot druga [Extensión de la ley de los grandes números a magnitudes que dependen unas de otras]",
+      "revista": "Izvestiya Fiziko-matematicheskogo obshchestva pri Kazanskom universitete",
+      "estado": "por_verificar",
+      "pendiente": "Confirmar en una fuente primaria (el fascículo original, zbMATH o MathSciNet) la serie (2.ª), el volumen (15) y las páginas (135–156), que solo aparecen en citas secundarias. La Encyclopaedia of Mathematics y Seneta (2006) confirman el trabajo de 1906 en el boletín de la Sociedad Físico-Matemática de Kazán y que en él aparecen por primera vez las cadenas de Markov.",
+      "nota": "Hay una traducción al inglés reimpresa en el Journal Électronique d'Histoire des Probabilités et de la Statistique, 2(1b), 2006 (EuDML 128778), que no se pudo consultar.",
+      "tema": "Origen de las cadenas de Markov."
+    },
+    {
+      "id": "jacobsweston2007",
+      "tipo": "articulo",
+      "autores": [
+        "Jacobs, F. R.",
+        "Weston, F. C., Jr."
+      ],
+      "anio": "2007",
+      "titulo": "Enterprise resource planning (ERP)—A brief history",
+      "revista": "Journal of Operations Management",
+      "volumen": "25",
+      "numero": "2",
+      "paginas": "357–363",
+      "doi": "10.1016/j.jom.2006.11.005",
+      "estado": "verificada",
+      "nota": "Título, autores, revista, volumen, número, páginas y DOI confirmados en Crossref (publicado en línea el 12 de diciembre de 2006; número impreso de marzo de 2007). El segundo autor figura como F. C. «Ted» Weston, Jr.",
+      "tema": "Historia de los sistemas ERP y su origen en MRP y MRP II."
+    },
+    {
+      "id": "olhager2013",
+      "tipo": "articulo",
+      "autores": [
+        "Olhager, J."
+      ],
+      "anio": "2013",
+      "titulo": "Evolution of operations planning and control: From production to supply chains",
+      "revista": "International Journal of Production Research",
+      "volumen": "51",
+      "numero": "23–24",
+      "paginas": "6836–6843",
+      "doi": "10.1080/00207543.2012.761363",
+      "estado": "verificada",
+      "nota": "Datos confirmados en Crossref y en el repositorio de la Universidad de Lund (https://lup.lub.lu.se/record/4196156). El artículo tiene una sección titulada «The MRP crusade» sobre la campaña de APICS en los años setenta.",
+      "tema": "Evolución de la planeación y el control de operaciones: control de taller, MRP, programa maestro, S&OP y planeación de la cadena de suministro."
+    },
+    {
+      "id": "wight1981",
+      "tipo": "libro",
+      "autores": [
+        "Wight, O. W."
+      ],
+      "anio": "1981",
+      "titulo": "MRP II: Unlocking America's productivity potential",
+      "editorial": "Oliver Wight Limited Publications; CBI Publishing",
+      "estado": "por_verificar",
+      "pendiente": "Autor, título, año (©1981) y editorial aparecen en los catálogos de Texas A&M y East Carolina University (Williston, VT: Oliver Wight Limited Publications; Boston: CBI Publishing). Falta confirmar el ISBN de la edición de 1981: los catálogos dan 0-8436-0820-X, pero Open Library asocia ese número a la edición revisada de 1984 («Manufacturing resource planning: MRP II»).",
+      "tema": "Planeación de recursos de manufactura (MRP II): el MRP de circuito cerrado unido a la capacidad y a las finanzas."
+    },
+    {
+      "id": "ptaksmith2011",
+      "tipo": "libro",
+      "autores": [
+        "Ptak, C. A.",
+        "Smith, C."
+      ],
+      "anio": "2011",
+      "titulo": "Orlicky's material requirements planning",
+      "edicion": "3",
+      "editorial": "McGraw-Hill",
+      "isbn": "978-0-07-175563-4",
+      "estado": "verificada",
+      "nota": "Edición, año, editorial e ISBN confirmados en Open Library y en catálogos de bibliotecas (East Carolina University, Texas A&M). Es la tercera edición del libro de Orlicky (1975); presenta el MRP impulsado por la demanda (DDMRP).",
+      "tema": "MRP clásico actualizado y origen del MRP impulsado por la demanda (DDMRP)."
+    },
+    {
+      "id": "ptaksmith2016",
+      "tipo": "libro",
+      "autores": [
+        "Ptak, C.",
+        "Smith, C."
+      ],
+      "anio": "2016",
+      "titulo": "Demand driven material requirements planning (DDMRP)",
+      "editorial": "Industrial Press",
+      "isbn": "978-0-8311-3598-0",
+      "estado": "verificada",
+      "nota": "Autores, año, editorial (South Norwalk, CT) e ISBN confirmados en Open Library y en el catálogo de Texas A&M. Hay versiones posteriores (versión 2, 2018; versión 3, 2019) con otros ISBN.",
+      "tema": "DDMRP: amortiguadores de inventario desacoplados, perfiles de amortiguador y planeación por ecuación de flujo neto."
+    },
+    {
+      "id": "boxjenkins1970",
+      "tipo": "libro",
+      "autores": [
+        "Box, G. E. P.",
+        "Jenkins, G. M."
+      ],
+      "anio": "1970",
+      "titulo": "Time series analysis: Forecasting and control",
+      "editorial": "Holden-Day",
+      "estado": "verificada",
+      "nota": "Primera edición, San Francisco, Holden-Day, 1970, xix + 553 p., confirmada en Open Library y en catálogos de bibliotecas. Las ediciones posteriores (desde 1976) tienen otros coautores y, desde 1994, otras editoriales.",
+      "tema": "Metodología de Box y Jenkins: identificación, estimación y diagnóstico de modelos ARIMA."
+    },
+    {
+      "id": "baumolvinod1970",
+      "tipo": "articulo",
+      "autores": [
+        "Baumol, W. J.",
+        "Vinod, H. D."
+      ],
+      "anio": "1970",
+      "titulo": "An inventory theoretic model of freight transport demand",
+      "revista": "Management Science",
+      "volumen": "16",
+      "numero": "7",
+      "paginas": "413–421",
+      "doi": "10.1287/mnsc.16.7.413",
+      "estado": "verificada",
+      "nota": "Título, autores, revista, volumen, número, páginas y año (marzo de 1970) confirmados en Crossref (api.crossref.org/works/10.1287/mnsc.16.7.413).",
+      "tema": "Elección del modo de transporte por costo total: flete más costos de inventario en tránsito y en las bodegas."
     }
   ]
 }

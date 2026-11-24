@@ -1,0 +1,250 @@
+{
+  "modulo": "fll",
+  "titulo": "Localización y distribución de instalaciones (FLL)",
+  "resumen": "Decide dónde ubicar una instalación nueva, cómo acomodar los departamentos de una planta y cómo repartir las tareas de una línea de ensamble entre estaciones. Es para jefes de planta, de logística y de ingeniería de métodos.",
+  "que_es": [
+    "El módulo reúne tres problemas clásicos del diseño de instalaciones. La localización busca las coordenadas de una o varias instalaciones nuevas (un almacén, una planta, una máquina) que minimizan el costo de mover material hacia las instalaciones que ya existen. La distribución funcional acomoda departamentos en una cuadrícula para que los que intercambian mucho material queden cerca. El balanceo de líneas agrupa las tareas de un ensamble en estaciones de trabajo sin pasar el tiempo de ciclo y sin romper el orden de precedencia.",
+    "Los tres comparten una idea: el costo de una decisión de espacio es flujo × costo unitario × distancia. Si dos puntos se mandan mucho material, alejarlos sale caro. En el balanceo la lógica cambia de forma pero no de fondo: cada estación tiene un tiempo de ciclo como capacidad, y el objetivo es usar el menor número de estaciones con el menor tiempo ocioso. Son decisiones de largo plazo: una planta mal distribuida paga ese costo todos los días durante años."
+  ],
+  "analogia": "Piensa en la cocina de tu casa. Pones la nevera, el lavaplatos y la estufa cerca porque vas de una a otra muchas veces al día; la licuadora que usas poco puede quedar en un rincón. Eso es distribución funcional. Decidir en qué barrio vivir para estar cerca del trabajo, de la universidad y de la familia, ponderando cuántas veces vas a cada sitio, es localización.",
+  "para_que_sirve": [
+    {
+      "sector": "Distribución minorista",
+      "ejemplo": "Una cadena de droguerías decide dónde poner un centro de distribución que atiende tiendas con distinta frecuencia de despacho. La mediana ponderada da el punto que minimiza los kilómetros-carga recorridos."
+    },
+    {
+      "sector": "Manufactura metalmecánica",
+      "ejemplo": "Un taller reubica corte, soldadura, pintura y bodega. Con la matriz de flujos entre áreas, el intercambio de departamentos reduce los recorridos de montacargas y libera tiempo de operarios."
+    },
+    {
+      "sector": "Ensamble de electrodomésticos o motos",
+      "ejemplo": "Una línea debe sacar 40 unidades por turno. El balanceo define cuántas estaciones abrir y qué tareas lleva cada una, lo que fija cuántos operarios contratar."
+    },
+    {
+      "sector": "Hospitales",
+      "ejemplo": "Se ubican urgencias, imágenes diagnósticas, laboratorio y quirófanos según el número de traslados de pacientes entre áreas, para acortar tiempos críticos."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1937",
+      "hecho": "Endre Weiszfeld publica un método iterativo para hallar el punto que minimiza la suma de distancias euclidianas a varios puntos dados. Es la base de la localización con distancia en línea recta.",
+      "refs": [
+        "weiszfeld1937"
+      ]
+    },
+    {
+      "anio": "1961",
+      "hecho": "Helgeson y Birnie proponen el método del peso posicional (RPW) para balancear líneas de ensamble: priorizar las tareas que tienen más trabajo por delante.",
+      "refs": [
+        "helgesonbirnie1961"
+      ]
+    },
+    {
+      "anio": "1963",
+      "hecho": "Armour y Buffa presentan CRAFT, el algoritmo que mejora una distribución en planta intercambiando departamentos mientras baje el costo de flujo × distancia.",
+      "refs": [
+        "armourbuffa1963"
+      ]
+    },
+    {
+      "anio": "1965",
+      "hecho": "Arcus publica COMSOAL, un método que genera muchas secuencias aleatorias factibles de tareas y se queda con la que usa menos estaciones.",
+      "refs": [
+        "arcus1966"
+      ]
+    },
+    {
+      "anio": "1992",
+      "hecho": "Francis, McGinnis y White consolidan en un texto analítico los modelos de localización con distancia rectilínea, euclidiana y euclidiana al cuadrado, y los de distribución en planta.",
+      "refs": [
+        "francis1992"
+      ]
+    },
+    {
+      "anio": "2003",
+      "hecho": "WinQSB 2.0 incluye el módulo FLL con estos tres problemas; IAQSB lo reproduce y lee sus archivos.",
+      "refs": [
+        "chang2003"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Instalaciones existentes y sus coordenadas",
+      "para_que": "Son los puntos fijos (clientes, proveedores, máquinas) respecto de los cuales se ubica lo nuevo. Salen de un plano, de un mapa o de un sistema de información geográfica."
+    },
+    {
+      "dato": "Flujo × costo unitario entre instalaciones",
+      "para_que": "Es el peso de cada par. Se obtiene multiplicando viajes o toneladas al año por el costo de mover una unidad una unidad de distancia. Sale de los registros de despacho o de transporte interno."
+    },
+    {
+      "dato": "Cuadrícula del área y celdas de cada departamento",
+      "para_que": "En la distribución funcional, cada departamento ocupa celdas de igual tamaño. La distribución inicial es el plano actual de la planta."
+    },
+    {
+      "dato": "Tareas, tiempos y sucesores inmediatos",
+      "para_que": "En el balanceo, salen del estudio de métodos y tiempos y del diagrama de precedencias del producto."
+    },
+    {
+      "dato": "Tiempo de ciclo, o tiempo disponible y producción deseada",
+      "para_que": "El ciclo es el tiempo máximo por estación. Si no lo conoces, IAQSB lo calcula como tiempo disponible dividido por la producción deseada."
+    }
+  ],
+  "supuestos": [
+    "La localización supone que la instalación nueva puede ir en cualquier punto del plano; no revisa terrenos disponibles, vías ni normas de uso del suelo.",
+    "Las distancias son geométricas (rectilínea, euclidiana o euclidiana al cuadrado), no distancias reales por carretera.",
+    "En la distribución funcional todas las celdas son iguales y la distancia se mide entre los centros de los departamentos.",
+    "El intercambio de departamentos es una heurística: llega a un óptimo local que depende de la distribución inicial.",
+    "En el balanceo los tiempos de las tareas son fijos y conocidos, y se fabrica un solo modelo de producto."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y elige el tipo de problema",
+      "texto": "En la barra lateral entra a «Localización y distribución de instalaciones». Con «Problema nuevo» elige «Localización de instalaciones», «Distribución funcional» o «Balanceo de líneas». También puedes cargar un ejemplo desde «Ejemplos»: almacen_nuevo, dos_plantas_nuevas, distribucion_oficinas o balanceo_linea."
+    },
+    {
+      "titulo": "Define las dimensiones",
+      "texto": "En localización indica «Instalaciones existentes», «Instalaciones nuevas» y «Dimensiones (2 o 3)». En distribución, «Departamentos», «Filas del área» y «Columnas del área». En balanceo, «Número de tareas»."
+    },
+    {
+      "titulo": "Localización: llena instalaciones y flujos",
+      "texto": "En la tabla «Instalaciones» escribe el nombre, el «Tipo» (Existente o Nueva) y las coordenadas X, Y de las existentes. En la matriz «Flujo × costo unitario (desde × hacia)» pon el peso de cada par. Marca «Maximizar (instalación indeseable)» solo si quieres alejar la instalación, como un relleno sanitario."
+    },
+    {
+      "titulo": "Distribución: llena flujos y celdas",
+      "texto": "En la matriz «Departamentos: flujo × costo unitario y distribución inicial» escribe los flujos y, para cada departamento, las «Celdas iniciales» con el formato (fila,col) o rangos como (1,1)-(2,4). Marca «Fijo» en los departamentos que no se pueden mover, como un muelle de carga."
+    },
+    {
+      "titulo": "Balanceo: llena la línea y las tareas",
+      "texto": "En «Línea» escribe la «Unidad de tiempo» y el «Tiempo de ciclo», o bien «Tiempo disponible» y «Producción deseada». En «Tareas» pon el nombre, el «Tiempo», los «Sucesores inmediatos» separados por comas y marca «Aislada» si la tarea debe ir sola en su estación."
+    },
+    {
+      "titulo": "Ajusta las opciones",
+      "texto": "En localización y distribución elige la «Distancia»: Rectilínea, Euclidiana o Euclidiana al cuadrado. En distribución elige los «Intercambios»: De 2, De 3, De 2 y luego de 3, o De 3 y luego de 2. En balanceo elige el «Método» (Regla heurística, Búsqueda del mejor o COMSOAL), la «Regla» y el «Desempate»; con COMSOAL fija «Soluciones generadas» y la «Semilla»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl + Intro). Revisa las pestañas «Solución», «Mapa» o «Iteraciones» y «Paso a paso». En balanceo, el botón «Comparar» resuelve con todas las reglas y muestra cuál da menos estaciones."
+    }
+  ],
+  "como_resuelve": [
+    "Localización con distancia rectilínea: el costo |Δx| + |Δy| se separa por ejes. En cada eje IAQSB plantea un programa lineal y lo resuelve con HiGHS. Con una sola instalación nueva, el paso a paso muestra la mediana ponderada: se ordenan las existentes por coordenada y se elige la primera donde el peso acumulado alcanza la mitad del total.",
+    "Localización con distancia euclidiana al cuadrado: derivar e igualar a cero da un promedio ponderado de las coordenadas (el centro de gravedad). Con varias instalaciones nuevas se resuelve un sistema lineal.",
+    "Localización con distancia euclidiana: el problema es convexo pero no lineal. El paso a paso explica la idea de Weiszfeld, y IAQSB lo resuelve de forma exacta como programa cónico de segundo orden con el solver Clarabel; Weiszfeld queda como respaldo.",
+    "Distribución funcional: se calcula el costo de la distribución inicial (flujo × costo × distancia entre centros) y se prueban intercambios de dos o de tres departamentos. Se aplica el que más baja el costo y se repite hasta que ningún intercambio mejora, al estilo de CRAFT. La pestaña «Iteraciones» registra cada cambio.",
+    "Balanceo de líneas: con una regla heurística se abre una estación y se le asigna, entre las tareas disponibles que caben en el tiempo libre, la de mayor prioridad. La búsqueda del mejor es una ramificación y acotamiento que descarta ramas cuya cota no mejora la mejor solución. COMSOAL genera muchas secuencias al azar y se queda con la mejor."
+  ],
+  "interpretar": [
+    "En localización, la tabla «Ubicación óptima» da las coordenadas de cada instalación nueva y el «Costo total». En el ejemplo almacen_nuevo el almacén queda en (2, 2) con costo 67. Usa ese punto como zona de búsqueda de terrenos, no como dirección exacta.",
+    "En distribución, compara el «Costo inicial» con el «Costo final». En el ejemplo distribucion_oficinas baja de 237.5 a 201.5 en dos intercambios. Revisa que el plano final sea práctico: que los departamentos no queden partidos ni con formas imposibles de construir.",
+    "En balanceo, mira «Estaciones», «Mínimo teórico», «Eficiencia (%)» y «Retraso de balance (%)». En el ejemplo de Heizer y Render, con ciclo 12 se logran 6 estaciones y 91.67 % de eficiencia, igual al mínimo teórico: no se puede hacer mejor con ese ciclo.",
+    "Si el estado dice «factible (no se garantiza el óptimo)», la solución viene de una heurística. Prueba otra regla o la búsqueda del mejor para confirmar."
+  ],
+  "industria": [
+    {
+      "nombre": "Coupa Supply Chain Design (antes LLamasoft)",
+      "tipo": "software",
+      "uso": "Diseño de redes logísticas: dónde abrir plantas y centros de distribución con costos, capacidades y niveles de servicio reales."
+    },
+    {
+      "nombre": "anyLogistix",
+      "tipo": "software",
+      "uso": "Análisis de centro de gravedad (greenfield), optimización y simulación de redes de suministro."
+    },
+    {
+      "nombre": "Siemens Tecnomatix Plant Simulation",
+      "tipo": "software",
+      "uso": "Simulación de plantas y líneas para validar distribuciones y balanceos antes de construir."
+    },
+    {
+      "nombre": "Google OR-Tools",
+      "tipo": "libreria",
+      "uso": "Modelos de asignación y programación con restricciones en Python, C++, Java o C#; sirve para balanceo de líneas con muchas restricciones."
+    },
+    {
+      "nombre": "Pyomo o JuMP",
+      "tipo": "libreria",
+      "uso": "Lenguajes de modelado en Python y Julia para escribir modelos de localización con instalaciones candidatas y resolverlos con HiGHS, Gurobi o CPLEX."
+    },
+    {
+      "nombre": "Lean manufacturing y diagrama de espagueti",
+      "tipo": "metodologia",
+      "uso": "Herramientas de campo para medir recorridos reales y balancear con el takt time antes de modelar."
+    }
+  ],
+  "alternativas": [
+    "Localización con sitios candidatos: cuando solo hay unos terrenos posibles, conviene un modelo entero (p-mediana o localización con costos fijos) en el módulo LP-ILP.",
+    "Planeación sistemática de la distribución (SLP) de Muther: usa relaciones cualitativas de cercanía (A, E, I, O, U, X) cuando no hay datos de flujo.",
+    "Distribución por algoritmos constructivos o metaheurísticas (recocido simulado, búsqueda tabú) para plantas grandes donde el intercambio de pares se queda en óptimos locales pobres."
+  ],
+  "errores_comunes": [
+    "Poner solo el número de viajes en la matriz de flujos y olvidar el costo unitario. Si mover una tonelada cuesta distinto entre áreas, el resultado cambia.",
+    "Usar distancia euclidiana en una ciudad con cuadrícula de calles. Ahí la rectilínea representa mejor el recorrido.",
+    "Escribir los sucesores con nombres que no coinciden con los de las tareas, o crear un ciclo de precedencias. IAQSB avisa, pero conviene dibujar primero el diagrama.",
+    "Tomar el tiempo de ciclo mayor que la tarea más larga como garantía de factibilidad y olvidar que el ciclo lo fija la demanda, no la comodidad de la línea.",
+    "Creer que la distribución final es el óptimo global. Es un óptimo local: prueba otra distribución inicial u otro tipo de intercambio."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Calcular la ubicación óptima de una instalación con las tres distancias y explicar por qué difieren.",
+      "Construir la matriz de flujo × costo y evaluar el costo de una distribución.",
+      "Balancear una línea con varias reglas, calcular eficiencia y retraso de balance, y justificar la mejor."
+    ],
+    "actividades": [
+      "Con el ejemplo almacen_nuevo, resolver con distancia rectilínea, euclidiana y euclidiana al cuadrado y discutir cuál usaría una empresa de reparto en Bogotá.",
+      "Medir con un plano real de un laboratorio o taller de la universidad los flujos entre áreas y proponer una nueva distribución con el tipo «Distribución funcional».",
+      "Con el ejemplo balanceo_linea, usar «Comparar» para ver las diez reglas; luego cambiar la producción deseada y observar cómo cambian el ciclo y las estaciones."
+    ],
+    "preguntas": [
+      "¿Por qué con distancia rectilínea la solución es una mediana y con distancia al cuadrado es un promedio?",
+      "¿Qué pasa con la eficiencia de la línea si la demanda sube 20 % y el ciclo baja?",
+      "¿En qué casos conviene fijar un departamento en la distribución funcional?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Distancia rectilínea",
+      "definicion": "Suma de las diferencias absolutas en cada eje; también se llama distancia de Manhattan."
+    },
+    {
+      "termino": "Mediana ponderada",
+      "definicion": "Coordenada donde el peso acumulado de las instalaciones ordenadas alcanza la mitad del peso total."
+    },
+    {
+      "termino": "Centro de gravedad",
+      "definicion": "Promedio de las coordenadas ponderado por el flujo; es la solución con distancia euclidiana al cuadrado."
+    },
+    {
+      "termino": "Tiempo de ciclo",
+      "definicion": "Tiempo máximo que una unidad puede pasar en cada estación; tiempo disponible dividido por la producción deseada."
+    },
+    {
+      "termino": "Mínimo teórico de estaciones",
+      "definicion": "Suma de los tiempos de las tareas dividida por el tiempo de ciclo, redondeada hacia arriba."
+    },
+    {
+      "termino": "Eficiencia de la línea",
+      "definicion": "Suma de los tiempos de las tareas dividida por el número de estaciones por el tiempo de ciclo."
+    },
+    {
+      "termino": "Retraso de balance",
+      "definicion": "Porcentaje de tiempo ocioso de la línea: 100 % menos la eficiencia."
+    },
+    {
+      "termino": "Peso posicional",
+      "definicion": "Tiempo de una tarea más el de todas las que la siguen en el diagrama de precedencias."
+    }
+  ],
+  "referencias": [
+    "francis1992",
+    "weiszfeld1937",
+    "armourbuffa1963",
+    "helgesonbirnie1961",
+    "arcus1966",
+    "heizerrender2014",
+    "goulartchen2024",
+    "huangfuhall2018",
+    "chang2003"
+  ]
+}

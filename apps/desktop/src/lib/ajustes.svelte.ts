@@ -32,6 +32,8 @@ interface Datos {
   razonamiento: Razonamiento;
   /** Al resolver, mostrar el paso a paso cuando el método lo tiene. */
   pasos: boolean;
+  /** Animaciones de Nativo (el robot del asistente). */
+  nativo: boolean;
   /** Autor, curso e institución para la portada de los informes. */
   autor: string;
   curso: string;
@@ -49,6 +51,7 @@ const DEF: Datos = {
   urls: {},
   razonamiento: 'auto',
   pasos: true,
+  nativo: true,
   autor: '',
   curso: '',
   institucion: ''
@@ -82,6 +85,7 @@ class Ajustes {
   urls = $state<Record<string, string>>(this.d.urls);
   razonamiento = $state<Razonamiento>(this.d.razonamiento);
   pasos = $state(this.d.pasos);
+  nativo = $state(this.d.nativo);
   autor = $state(this.d.autor);
   curso = $state(this.d.curso);
   institucion = $state(this.d.institucion);
@@ -102,6 +106,7 @@ class Ajustes {
       urls: $state.snapshot(this.urls),
       razonamiento: this.razonamiento,
       pasos: this.pasos,
+      nativo: this.nativo,
       autor: this.autor,
       curso: this.curso,
       institucion: this.institucion

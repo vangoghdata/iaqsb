@@ -1,0 +1,226 @@
+{
+  "modulo": "qss",
+  "titulo": "Simulación de sistemas de colas",
+  "resumen": "Simula por eventos discretos sistemas de atención o de producción con varias etapas, colas con capacidad, reprocesos, desechos, prioridades y ensambles, para medir tiempos, filas y utilización cuando las fórmulas de colas no alcanzan. Lo usan ingenieros de procesos, logística y servicios.",
+  "que_es": [
+    "La simulación de eventos discretos imita en el computador lo que pasa en un sistema real, cliente por cliente. Cada vez que ocurre un evento (llega un cliente, un servidor termina, una pieza pasa a la siguiente estación) el reloj salta a ese instante y se actualiza el estado del sistema. Los tiempos de llegada y de servicio se sortean de sus distribuciones de probabilidad. Al final se promedian las medidas de desempeño.",
+    "La teoría de colas da fórmulas exactas para sistemas sencillos. Pero en la práctica una pieza pasa por un torno, luego por una fresadora con poco espacio de espera, una parte vuelve a reproceso y otra se desecha. Para eso no hay fórmula cerrada. La simulación responde preguntas como cuánto tarda una pieza en salir, dónde está el cuello de botella o qué pasa si se agrega un servidor, sin tocar el sistema real.",
+    "En IAQSB el sistema se arma, como en WinQSB, con cuatro tipos de componentes: poblaciones de clientes (C), servidores (S), colas (Q) y recolectores de desechos (G). Cada componente dice a quién envía a los clientes, con qué probabilidad y con qué tiempo de traslado. Un servidor sin seguidores es la salida del sistema. Hay un solo tipo de problema: «Sistema de colas»."
+  ],
+  "analogia": "Simular es como ensayar una obra de teatro antes del estreno. No sabes con certeza cómo reaccionará el público real, pero si ensayas muchas veces con públicos imaginarios que se comportan como el real, aprendes dónde se traban las escenas. Cada corrida de la simulación es un ensayo; cuantos más ensayos hagas, más confiable es lo que concluyes.",
+  "para_que_sirve": [
+    {
+      "sector": "Manufactura",
+      "ejemplo": "Una planta metalmecánica simula una línea con torno y fresadora, con reproceso del 10 % y espacio para solo dos piezas entre máquinas. Descubre que el bloqueo, no la velocidad de las máquinas, limita la producción, y decide ampliar el espacio de espera en lugar de comprar otra máquina."
+    },
+    {
+      "sector": "Banca y servicios",
+      "ejemplo": "Un banco compara una sola fila para dos cajeros con dos filas separadas antes de remodelar la oficina, y mide la espera media y la máxima en cada caso."
+    },
+    {
+      "sector": "Ensamble",
+      "ejemplo": "Un fabricante de muebles simula dos líneas que alimentan una estación de ensamble que necesita una pieza de cada línea. Ve cuánto inventario en proceso se acumula y qué línea debe tener prioridad."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1961",
+      "hecho": "Geoffrey Gordon, de IBM, presentó un programa general de simulación de sistemas que se convirtió en GPSS, uno de los primeros lenguajes para simular sistemas con colas y recursos por eventos discretos.",
+      "refs": [
+        "gordon1961"
+      ]
+    },
+    {
+      "anio": "1961",
+      "hecho": "John Little demostró la ley L = λW, que hoy se usa para verificar la coherencia de los resultados de cualquier simulación de colas.",
+      "refs": [
+        "little1961"
+      ]
+    },
+    {
+      "anio": "2003",
+      "hecho": "El manual de WinQSB 2.0 documenta el módulo QSS, con sus componentes C, S, Q y G y sus reglas de entrada, salida y disciplina. IAQSB reproduce ese modelo y lee sus archivos de ejemplo.",
+      "refs": [
+        "chang2003"
+      ]
+    },
+    {
+      "anio": "2008",
+      "hecho": "Daniel Bernstein publicó ChaCha, una familia de cifrados de flujo. IAQSB usa un generador de números aleatorios basado en ChaCha8, de modo que la misma semilla da siempre la misma simulación.",
+      "refs": [
+        "bernstein2008"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Componentes del sistema",
+      "para_que": "Las fuentes de clientes, las colas, los servidores y los puntos de desecho. Salen de un diagrama de flujo del proceso real."
+    },
+    {
+      "dato": "Seguidores",
+      "para_que": "A dónde va cada cliente después de cada componente, con probabilidad y tiempo de traslado («Nombre/Probabilidad/Traslado»). Las probabilidades de reproceso o desecho salen de los registros de calidad."
+    },
+    {
+      "dato": "Tiempo entre llegadas y tamaño del lote",
+      "para_que": "La distribución con la que llegan los clientes, por ejemplo «Exp/0/2» (exponencial de media 2). Se ajusta con datos de llegadas."
+    },
+    {
+      "dato": "Tiempo de servicio",
+      "para_que": "La distribución del tiempo de cada servidor, por ejemplo «Uniform/5/9» o «Triangular/4/6/9». Puede variar por tipo de cliente."
+    },
+    {
+      "dato": "Capacidad y disciplina de las colas",
+      "para_que": "Cuántos caben (M = ilimitada, 0 = sin espera) y en qué orden se atienden: FIFO, LIFO, prioridad, menor tiempo de proceso, entre otras."
+    },
+    {
+      "dato": "Tiempo simulado, calentamiento y semilla",
+      "para_que": "Cuánto tiempo simular, desde cuándo recolectar datos y con qué semilla, para que el resultado sea repetible."
+    }
+  ],
+  "supuestos": [
+    "Las distribuciones de entrada representan bien el sistema real. Si están mal ajustadas, la simulación da resultados precisos pero equivocados.",
+    "Los resultados son estimaciones con error aleatorio: dos semillas distintas dan números distintos.",
+    "El periodo de calentamiento elimina el efecto de empezar con el sistema vacío; si es muy corto, las medidas quedan sesgadas.",
+    "Una cola llena bloquea al servidor que la alimenta; el bloqueo se mide como porcentaje del tiempo."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y crea el problema",
+      "texto": "Entra a «Simulación de colas» y pulsa «Nuevo problema». El tipo es «Sistema de colas». Indica el «Número de componentes» y pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» tienes «Banco con dos cajeros y una fila (M/M/2)», «Taller en serie con reproceso y bloqueo», «M/M/1 para comprobar (W = 20)» y «Ensamble de dos líneas con prioridad»."
+    },
+    {
+      "titulo": "Define los componentes",
+      "texto": "En la tabla «Componentes» escribe el nombre en «Componente» y elige el «Tipo»: «C · Población de clientes», «S · Servidor», «Q · Cola» o «G · Recolector de desechos». Las columnas cambian según el tipo. Con «Añadir componente» agregas filas."
+    },
+    {
+      "titulo": "Conecta el sistema",
+      "texto": "En «Seguidores» escribe a dónde va cada cliente, separados por comas, con el formato Nombre/Probabilidad/Traslado; por ejemplo «Cola despacho/0.85, Cola torno/0.1, Desechos/0.05». Si un componente tiene varios seguidores, elige la «Regla de salida»; si un servidor toma de varias colas, la «Regla de entrada» (por ejemplo «Ensamble (uno de cada cola)»)."
+    },
+    {
+      "titulo": "Escribe tiempos, colas y prioridades",
+      "texto": "En poblaciones llena «Tiempo entre llegadas» (p. ej. Exp/0/2), «Tamaño del lote» y «Atributo». En servidores, «Tiempo de servicio». En colas, «Disciplina» y «Capacidad» (vacía = 50; M = ilimitada; 0 = sin espera)."
+    },
+    {
+      "titulo": "Ajusta la simulación",
+      "texto": "En «Parámetros del análisis» define «Tiempo simulado», «Inicio de la recolección de datos» (calentamiento), «Máximo de observaciones», «Semilla» y «Eventos en el paso a paso»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Revisa «Solución» y «Red». La pestaña «Paso a paso» muestra la traza de los primeros eventos: qué ocurrió, en qué instante y cómo cambiaron colas y servidores."
+    }
+  ],
+  "como_resuelve": [
+    "IAQSB usa un motor propio de simulación por eventos discretos escrito en Rust. Mantiene una lista de eventos futuros ordenada por tiempo; en cada paso toma el más próximo, adelanta el reloj y aplica sus consecuencias: un cliente entra a una cola o a un servidor libre, un servidor termina y envía al cliente a su seguidor, o una cola llena bloquea al servidor anterior.",
+    "Respeta las reglas de WinQSB: ocho reglas de entrada (incluido el ensamble, que toma un cliente de cada cola), ocho de salida (incluido el desensamble), diez disciplinas de cola, capacidades con bloqueo, lotes de llegada, tiempos de traslado, atributos de prioridad y tiempos de servicio por tipo de cliente.",
+    "Los números aleatorios vienen de un generador ChaCha8 con la semilla indicada (27437 por omisión, la de WinQSB), y cada tiempo se sortea de su distribución. Con la misma semilla y los mismos datos, el resultado es idéntico.",
+    "Las estadísticas se acumulan desde el «Inicio de la recolección de datos»: promedios ponderados por tiempo para longitudes de cola y ocupación de servidores, y promedios por cliente para tiempos de espera y de permanencia."
+  ],
+  "interpretar": [
+    "En «Solución», la métrica principal es el tiempo medio en el sistema. La tabla de poblaciones dice cuántos clientes llegaron, cuántos no entraron (cola llena), cuántos terminaron y cuántos fueron a desechos.",
+    "En «Análisis de servidores», una utilización alta con bloqueo alto indica que el problema está aguas abajo: la cola siguiente es pequeña. Una utilización alta sin bloqueo indica que ese servidor es el cuello de botella.",
+    "En el ejemplo «M/M/1 para comprobar (W = 20)», la fórmula da W = 20 minutos. Con 1000 minutos simulados IAQSB da 35.46, porque solo terminan unos 200 clientes y con utilización de 0.8 la variabilidad es enorme. Con 100 000 minutos da 19.76 y con 1 000 000 da 20.07. La lección: una corrida corta puede engañar.",
+    "En el banco con dos cajeros, con 200 000 minutos simulados el tiempo medio en el sistema es 6.87 minutos, muy cerca de los 6.86 de la fórmula de M/M/2. Comparar con un caso que tiene fórmula es la mejor forma de validar el modelo.",
+    "Antes de decidir, corre con varias semillas y mira cuánto cambian los resultados. Si la diferencia entre dos alternativas es menor que esa variación, no puedes concluir que una sea mejor."
+  ],
+  "industria": [
+    {
+      "nombre": "Arena (Rockwell Automation)",
+      "tipo": "software",
+      "uso": "Simulación de eventos discretos de procesos de manufactura, logística y servicios, muy usada en la enseñanza y en la industria."
+    },
+    {
+      "nombre": "Simio",
+      "tipo": "software",
+      "uso": "Simulación orientada a objetos con animación 3D, usada para diseñar plantas y para programación de producción basada en simulación."
+    },
+    {
+      "nombre": "AnyLogic",
+      "tipo": "software",
+      "uso": "Combina eventos discretos, agentes y dinámica de sistemas; se usa en cadenas de suministro, puertos, hospitales y gemelos digitales."
+    },
+    {
+      "nombre": "SimPy",
+      "tipo": "libreria",
+      "uso": "Simulación de eventos discretos en Python, basada en procesos; libre y muy usada en investigación."
+    },
+    {
+      "nombre": "R: paquete simmer",
+      "tipo": "libreria",
+      "uso": "Simulación de eventos discretos en R con trayectorias y recursos, cómoda para análisis estadístico de los resultados."
+    }
+  ],
+  "alternativas": [
+    "Teoría de colas analítica (módulo «Teoría de colas»): si el sistema es de una sola etapa y se ajusta a un modelo conocido, la fórmula es exacta e instantánea.",
+    "Redes de colas de Jackson: para varias estaciones con servicio exponencial y enrutamiento probabilístico, dan resultados exactos sin simular.",
+    "Simulación basada en agentes: cuando los clientes toman decisiones propias (cambiar de fila, abandonar), como en AnyLogic."
+  ],
+  "errores_comunes": [
+    "Sacar conclusiones de una sola corrida corta. Aumenta el «Tiempo simulado» y repite con varias semillas.",
+    "Olvidar el calentamiento. Si el sistema empieza vacío, las primeras horas subestiman las colas.",
+    "Confundir la media de la exponencial con su tasa: en «Exp/0/2», 2 es el tiempo medio entre llegadas, no las llegadas por minuto.",
+    "No validar el modelo. Antes de simular el sistema completo, simula un caso con fórmula conocida y compara."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Traducir un proceso real a componentes de simulación: fuentes, colas, servidores y desechos.",
+      "Explicar cómo avanza el reloj en una simulación de eventos discretos.",
+      "Validar una simulación contra un resultado analítico y entender el error de muestreo.",
+      "Usar la simulación para encontrar el cuello de botella y comparar alternativas."
+    ],
+    "actividades": [
+      "Con «M/M/1 para comprobar (W = 20)», pide correr con 1000, 10 000 y 100 000 minutos y con tres semillas distintas, y graficar cómo se acerca W a 20.",
+      "Con «Taller en serie con reproceso y bloqueo», pide identificar el cuello de botella y probar qué pasa si la «Cola fresa» tiene capacidad 5.",
+      "Con «Banco con dos cajeros y una fila (M/M/2)», compara una fila común con dos filas separadas, cada una con su cajero.",
+      "Proyecto: modelar un proceso de la universidad (matrículas, biblioteca, laboratorio) con datos medidos por los estudiantes."
+    ],
+    "preguntas": [
+      "¿Por qué una simulación de 1000 minutos de una M/M/1 con utilización 0.8 puede dar un W muy lejano del teórico?",
+      "¿Qué indica un servidor con 60 % de utilización y 30 % de tiempo bloqueado?",
+      "¿Para qué sirve fijar la semilla y cuándo conviene cambiarla?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Evento discreto",
+      "definicion": "Cambio instantáneo del estado del sistema, como una llegada o el fin de un servicio."
+    },
+    {
+      "termino": "Reloj de simulación",
+      "definicion": "Variable que salta de evento en evento y marca el tiempo simulado."
+    },
+    {
+      "termino": "Calentamiento",
+      "definicion": "Periodo inicial que se descarta para que las estadísticas no dependan del arranque vacío."
+    },
+    {
+      "termino": "Semilla",
+      "definicion": "Número que inicia el generador aleatorio; la misma semilla repite la misma simulación."
+    },
+    {
+      "termino": "Bloqueo",
+      "definicion": "Situación en que un servidor terminó pero no puede soltar al cliente porque la cola siguiente está llena."
+    },
+    {
+      "termino": "Ensamble",
+      "definicion": "Regla en que el servidor necesita un cliente de cada cola de entrada para empezar."
+    },
+    {
+      "termino": "Disciplina de cola",
+      "definicion": "Orden en que se atiende a los clientes que esperan: FIFO, LIFO, por prioridad, entre otras."
+    }
+  ],
+  "referencias": [
+    "law2015",
+    "gordon1961",
+    "little1961",
+    "kendall1953",
+    "gross2018",
+    "bernstein2008",
+    "chang2003"
+  ]
+}

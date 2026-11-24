@@ -952,6 +952,12 @@ fn call_es(op: &str, args: Value, lang: Lang) -> Result<Value> {
     match op {
         "list_modules" => Ok(list_modules()),
         "describe_module" => describe_module(&module()),
+        "guide" => {
+            let id = module_id(&module()).unwrap_or_else(module);
+            let g = iaqsb_core::guias::guia(&id, lang).ok_or_else(|| ApiError::BadInput(format!("el módulo «{id}» no tiene guía (hay de: {})", iaqsb_core::guias::modulos().join(", "))))?;
+            let md = iaqsb_core::guias::markdown(&g);
+            Ok(json!({"module": id, "guide": g, "markdown": md}))
+        }
         "spec" => spec(&module()),
         "template" => template(&module(), &s("problem_type").unwrap_or_default(), args.get("dims").unwrap_or(&Value::Null)),
         "solve" => solve(&module(), need("model")?, args.get("options").cloned()),

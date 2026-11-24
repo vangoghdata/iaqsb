@@ -1,0 +1,117 @@
+{
+  "modulo": "da",
+  "titulo": "Análisis de decisiones (DA)",
+  "resumen": "Ayuda a elegir entre alternativas cuando el resultado depende de hechos inciertos: compara criterios de decisión, calcula cuánto vale conseguir más información, actualiza probabilidades con el teorema de Bayes, resuelve árboles de decisión y juegos de suma cero. Sirve a gerentes, analistas de riesgo y estrategas.",
+  "que_es": [
+    "Un problema de decisión tiene alternativas que controlas (perforar o vender, lanzar o no un producto), estados de la naturaleza que no controlas (hay petróleo o no, la demanda es alta o baja) y un pago para cada combinación. La tabla de pagos reúne esos valores.",
+    "Si no conoces las probabilidades de los estados, usas criterios de decisión bajo incertidumbre: pesimista (maximin), optimista (maximax), Hurwicz, mínimo arrepentimiento de Savage e igual verosimilitud de Laplace. Si las conoces, eliges por valor esperado. El valor de la información perfecta (VEIP) dice cuánto, como máximo, vale saber el estado antes de decidir.",
+    "La información muestral (un estudio sísmico, una encuesta, una prueba piloto) no elimina la incertidumbre, pero la reduce. Con el teorema de Bayes se pasa de las probabilidades a priori a las probabilidades a posteriori de cada estado según el resultado observado. Los árboles de decisión ordenan en el tiempo decisiones y eventos de azar. Los juegos de suma cero modelan a dos competidores donde lo que gana uno lo pierde el otro."
+  ],
+  "analogia": "Es como decidir si llevar paraguas. No sabes si lloverá, pero puedes mirar el pronóstico. Si el pronóstico casi nunca acierta, no vale la pena pagarlo; si acierta mucho, cambia tu decisión. El análisis de decisiones pone números a esa intuición: cuánto pierdes si te equivocas y cuánto vale el pronóstico.",
+  "para_que_sirve": [
+    { "sector": "Petróleo y minería", "ejemplo": "Decidir si perforar un pozo, venderlo o pagar antes un estudio sísmico. El análisis dice si el estudio vale lo que cuesta." },
+    { "sector": "Desarrollo de productos", "ejemplo": "Lanzar un producto, hacer una prueba de mercado o abandonar el proyecto, según la demanda posible y la confiabilidad de la prueba." },
+    { "sector": "Salud", "ejemplo": "Comparar tratamientos o decidir si hacer un examen diagnóstico antes de tratar, considerando la sensibilidad y la especificidad del examen." },
+    { "sector": "Construcción e infraestructura", "ejemplo": "Elegir el tamaño de una obra con incertidumbre sobre la demanda futura o el clima, usando árboles con varias etapas de decisión." },
+    { "sector": "Estrategia comercial", "ejemplo": "Planear campañas o precios frente a un competidor como un juego de suma cero, con estrategias mixtas cuando no hay una respuesta dominante." },
+    { "sector": "Seguros y finanzas", "ejemplo": "Evaluar coberturas y contratos comparando el valor esperado con el peor caso y con el arrepentimiento." }
+  ],
+  "historia": [
+    { "anio": "1763", "hecho": "Se publica de forma póstuma el ensayo de Thomas Bayes, comunicado por Richard Price, origen del teorema que actualiza probabilidades con nueva evidencia.", "refs": ["bayes1763"] },
+    { "anio": "1928", "hecho": "John von Neumann demuestra el teorema minimax para juegos de suma cero de dos jugadores.", "refs": ["vonneumann1928"] },
+    { "anio": "1944", "hecho": "Von Neumann y Oskar Morgenstern publican «Theory of games and economic behavior», que funda la teoría de juegos y la teoría de la utilidad esperada.", "refs": ["vonneumann1944"] },
+    { "anio": "1951", "hecho": "Leonard Savage propone el criterio de mínimo arrepentimiento. Ese mismo año Leonid Hurwicz plantea su criterio con coeficiente de optimismo.", "refs": ["savage1951", "hurwicz1951"] },
+    { "anio": "1961", "hecho": "Howard Raiffa y Robert Schlaifer desarrollan la teoría de decisión estadística aplicada, con el análisis bayesiano y el valor de la información muestral.", "refs": ["raiffaschlaifer1961"] },
+    { "anio": "1968", "hecho": "Raiffa publica «Decision analysis», que difunde los árboles de decisión como herramienta gerencial.", "refs": ["raiffa1968"] }
+  ],
+  "necesitas": [
+    { "dato": "Alternativas de decisión", "para_que": "Las opciones reales que tiene la empresa. Deben ser excluyentes." },
+    { "dato": "Estados de la naturaleza", "para_que": "Los escenarios posibles que no dependen de ti. Deben cubrir todos los casos sin solaparse." },
+    { "dato": "Pagos", "para_que": "Utilidad o costo de cada alternativa en cada estado. Salen de proyecciones financieras; usa la misma unidad en toda la tabla." },
+    { "dato": "Probabilidades a priori", "para_que": "Probabilidad de cada estado antes de cualquier estudio. Vienen de datos históricos o del juicio de expertos." },
+    { "dato": "Verosimilitudes P(indicador | estado)", "para_que": "Qué tan confiable es la información muestral: con qué probabilidad el estudio da cada resultado en cada estado real. Salen del historial del proveedor del estudio." },
+    { "dato": "Matriz del juego o nodos del árbol", "para_que": "En juegos, lo que gana el jugador 1 en cada par de estrategias. En árboles, cada nodo con su tipo, sus sucesores, su pago y su probabilidad." }
+  ],
+  "supuestos": [
+    "Las alternativas y los estados son finitos y están bien definidos.",
+    "El decisor es neutral al riesgo cuando se usa el valor esperado; si no lo es, hay que trabajar con utilidades en lugar de dinero.",
+    "Las probabilidades de cada nodo de azar suman uno.",
+    "En el juego de suma cero, los dos jugadores son racionales, conocen la matriz y lo que gana uno lo pierde el otro."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo y un ejemplo", "texto": "En la barra lateral elige «Análisis de decisiones». En «Ejemplos» puedes cargar «Goferbroke (Hillier)», «Sondeo sismico», «Campana politica (Hillier, variante 3)» o «Goferbroke con sondeo»." },
+    { "titulo": "Elige el tipo de problema", "texto": "Pulsa «Nuevo problema» y elige «Tabla de pagos», «Análisis bayesiano», «Juego de suma cero» o «Árbol de decisión». Indica las dimensiones (decisiones, estados, indicadores, estrategias o nodos) y pulsa «Crear problema»." },
+    { "titulo": "Tabla de pagos", "texto": "En «Pagos (decisión × estado)» escribe el pago de cada alternativa en cada estado y la «Probabilidad a priori» de cada estado. Si hay un estudio, llena «Información muestral: P(indicador | estado) (opcional)». En «Parámetros del análisis» ajusta el «Coeficiente de Hurwicz» (optimismo de 0 a 1)." },
+    { "titulo": "Análisis bayesiano y juego", "texto": "En el bayesiano escribe las probabilidades a priori y la matriz de verosimilitudes. En el juego escribe la «Ganancia» del jugador 1 para cada estrategia propia y del rival; puedes pedir «Partidas simuladas» con una «Semilla» para ver el juego en acción." },
+    { "titulo": "Árbol de decisión", "texto": "Para cada «Nodo» indica el «Tipo» («Decisión», «Azar» o «Final»), los «Nodos siguientes» separados por comas, el «Pago (+ ganancia, − costo)» y la «Probabilidad» si sale de un nodo de azar." },
+    { "titulo": "Resuelve y revisa", "texto": "Deja activo «Mostrar paso a paso» y pulsa «Resolver». Revisa «Solución», «Información muestral», «Árbol» y «Paso a paso», donde cada criterio y cada cálculo bayesiano aparece por separado." }
+  ],
+  "como_resuelve": [
+    "Tabla de pagos: IAQSB calcula los siete criterios de WinQSB (maximin, maximax, Hurwicz, mínimo arrepentimiento, igual verosimilitud, valor esperado y arrepentimiento esperado), la tabla de arrepentimiento y el valor de la información perfecta. Si hay información muestral, calcula la mejor decisión para cada indicador, el valor esperado con información muestral, el VEIM y la eficiencia VEIM / VEIP, y dibuja el árbol de la tabla.",
+    "Análisis bayesiano: multiplica a priori por verosimilitud para obtener las probabilidades conjuntas, las suma para obtener la probabilidad de cada indicador y divide para obtener las probabilidades a posteriori.",
+    "Juego de suma cero: busca primero un punto de silla (maximin igual a minimax). Si no lo hay, elimina estrategias dominadas y resuelve un programa lineal con HiGHS para hallar las estrategias mixtas óptimas y el valor del juego. Si lo pides, simula partidas con un generador aleatorio con semilla.",
+    "Árbol de decisión: recorre el árbol hacia atrás. En cada nodo de azar calcula el valor esperado de sus ramas; en cada nodo de decisión elige la rama de mayor valor. Los pagos de cada nodo se suman a lo largo del camino."
+  ],
+  "interpretar": [
+    "La tabla de criterios muestra qué decisión elige cada uno. En Goferbroke, el pesimista elige vender (90), pero el valor esperado elige perforar (100). Si los criterios no coinciden, la decisión depende de la actitud ante el riesgo de la gerencia.",
+    "El VEIP es el techo de lo que vale cualquier estudio. En Goferbroke es 142.5: un estudio que cueste más no se justifica nunca.",
+    "El VEIM es lo que vale el estudio real. En Goferbroke es 53 con eficiencia del 37 %. Como el sondeo cuesta 30, conviene hacerlo; el árbol «Goferbroke con sondeo» da un valor esperado de 123 y recomienda sondear.",
+    "La tabla «Decisión según el indicador» es el plan de acción: perforar si el sondeo es favorable y vender si es desfavorable.",
+    "En el juego, el valor del juego es la ganancia esperada del jugador 1 si ambos juegan bien. Las probabilidades de las estrategias mixtas dicen con qué frecuencia usar cada una, sin que el rival pueda anticiparla."
+  ],
+  "industria": [
+    { "nombre": "TreeAge Pro", "tipo": "software", "uso": "Software de árboles de decisión y modelos de Markov muy usado en evaluación económica de tecnologías en salud." },
+    { "nombre": "PrecisionTree y @RISK", "tipo": "software", "uso": "Complementos de Excel (de Palisade, hoy parte de Lumivero) para árboles de decisión y simulación de Monte Carlo en análisis de riesgo." },
+    { "nombre": "Analytica", "tipo": "software", "uso": "Herramienta de modelado con diagramas de influencia para decisiones con incertidumbre en energía, política pública y negocios." },
+    { "nombre": "Gambit", "tipo": "libreria", "uso": "Conjunto libre de herramientas para teoría de juegos, con interfaz en Python, que calcula equilibrios de juegos finitos." },
+    { "nombre": "Nashpy", "tipo": "libreria", "uso": "Librería de Python para calcular equilibrios de juegos de dos jugadores, útil en docencia e investigación." },
+    { "nombre": "Análisis de decisiones con diagramas de influencia", "tipo": "metodologia", "uso": "Práctica de consultoría en grandes proyectos de capital, petróleo y farmacéutica que estructura decisiones, incertidumbres y valor de la información." }
+  ],
+  "alternativas": [
+    "Teoría de la utilidad esperada cuando el decisor no es neutral al riesgo: reemplaza los pagos por utilidades.",
+    "Simulación de Monte Carlo cuando las incertidumbres son continuas y numerosas; el módulo QSS de IAQSB sirve para simular.",
+    "Cadenas de Markov y procesos de decisión de Markov cuando la decisión se repite en el tiempo y los estados cambian.",
+    "Métodos multicriterio (AHP, TOPSIS) cuando hay varios objetivos y no solo un pago monetario.",
+    "Opciones reales para valorar la flexibilidad de esperar, ampliar o abandonar un proyecto."
+  ],
+  "errores_comunes": [
+    "Usar probabilidades a priori que no suman uno, o verosimilitudes que no suman uno por estado.",
+    "Confundir P(indicador | estado) con P(estado | indicador). La primera es un dato del estudio; la segunda se calcula con Bayes.",
+    "Restar dos veces el costo del estudio: si ya va como pago en el nodo del árbol, no lo descuentes también de los pagos finales.",
+    "Elegir siempre por valor esperado en una decisión única y de alto riesgo, sin mirar el peor caso.",
+    "En juegos, escribir la matriz desde el punto de vista del jugador 2. Los valores son lo que gana el jugador 1.",
+    "Creer que la información muestral puede valer más que la perfecta; si pasa, hay un error en los datos."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Construir una tabla de pagos y aplicar los criterios de decisión con y sin probabilidades.",
+      "Calcular e interpretar el VEIP, el VEIM y la eficiencia de la información muestral.",
+      "Aplicar el teorema de Bayes y resolver un árbol de decisión hacia atrás.",
+      "Resolver un juego de suma cero con punto de silla, dominancia y programación lineal."
+    ],
+    "actividades": [
+      "Resolver Goferbroke a mano y comparar cada criterio con el «Paso a paso».",
+      "Con «Goferbroke con sondeo», variar el costo del sondeo con «¿Qué pasa si…?» y hallar el costo máximo que se justificaría pagar.",
+      "Resolver el juego de la campaña política, simular 1000 partidas y comparar el promedio con el valor del juego.",
+      "Plantear con los estudiantes una decisión real de una empresa de la región (por ejemplo, ampliar o no una planta) como árbol de decisión."
+    ],
+    "preguntas": [
+      "¿Por qué el VEIP es una cota superior del valor de cualquier estudio?",
+      "¿Qué significa una eficiencia de la información muestral del 37 %?",
+      "¿Cuándo un juego de suma cero tiene solución en estrategias puras?",
+      "¿Qué cambia si el decisor tiene aversión al riesgo?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Estado de la naturaleza", "definicion": "Escenario posible que no depende del decisor." },
+    { "termino": "Maximin", "definicion": "Criterio pesimista: elegir la alternativa con el mejor de los peores pagos." },
+    { "termino": "Arrepentimiento", "definicion": "Diferencia entre el mejor pago posible en un estado y el pago obtenido con la alternativa elegida." },
+    { "termino": "Valor esperado", "definicion": "Promedio de los pagos ponderado por las probabilidades." },
+    { "termino": "VEIP", "definicion": "Valor esperado de la información perfecta: lo máximo que vale conocer el estado antes de decidir." },
+    { "termino": "VEIM", "definicion": "Valor esperado de la información muestral: lo que vale un estudio imperfecto." },
+    { "termino": "Probabilidad a posteriori", "definicion": "Probabilidad de un estado después de observar un indicador, calculada con Bayes." },
+    { "termino": "Punto de silla", "definicion": "Celda del juego que es a la vez el mínimo de su fila y el máximo de su columna." },
+    { "termino": "Estrategia mixta", "definicion": "Uso aleatorio de varias estrategias con probabilidades fijas." }
+  ],
+  "referencias": ["raiffaschlaifer1961", "raiffa1968", "bayes1763", "savage1951", "hurwicz1951", "vonneumann1928", "vonneumann1944", "hillier2015en", "render2018", "taha2012", "huangfuhall2018", "bernstein2008", "chang2003"]
+}

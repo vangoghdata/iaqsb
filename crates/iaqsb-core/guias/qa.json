@@ -1,0 +1,223 @@
+{
+  "modulo": "qa",
+  "titulo": "Teoría de colas",
+  "resumen": "Calcula cuántos clientes esperan, cuánto tiempo esperan y qué tan ocupados están los servidores en un sistema de atención, y cuántos servidores conviene tener según el costo del servicio y el de la espera. Sirve a quienes dimensionan cajas, centros de llamadas, talleres, urgencias o muelles de carga.",
+  "que_es": [
+    "Una cola se forma cuando llegan clientes a un servicio con capacidad limitada. Los clientes pueden ser personas, llamadas, camiones, órdenes de trabajo o paquetes de datos. La teoría de colas estudia ese sistema con probabilidad: los clientes llegan al azar con una tasa λ (clientes por unidad de tiempo), cada servidor atiende con una tasa μ y hay s servidores. Con esos datos se calculan las medidas de desempeño en estado estable.",
+    "Las cuatro medidas clave son L (clientes en el sistema), Lq (clientes en la cola), W (tiempo en el sistema) y Wq (tiempo en la cola). Se relacionan por la ley de Little, L = λ·W. La utilización ρ = λ/(s·μ) debe ser menor que 1: si llegan más clientes de los que se pueden atender, la cola crece sin límite. Un dato que sorprende a muchos: una utilización del 90 % produce colas mucho más largas que una del 70 %, porque la espera crece muy rápido cuando ρ se acerca a 1.",
+    "IAQSB tiene dos tipos de problema. El «Modelo simple (M/M/s)» supone llegadas de Poisson y servicio exponencial, con capacidad de la cola y población finitas o infinitas. El «Modelo general» acepta cualquier distribución de llegadas y de servicio, llegadas en lotes, servicio presionado y llegadas desalentadas. Ambos calculan costos, analizan la capacidad y hacen análisis de sensibilidad."
+  ],
+  "analogia": "Piensa en la fila de un banco el día de pago de la quincena. Si hay dos cajeros y cada uno atiende a un cliente cada tres minutos, pero llega un cliente por minuto, la fila crece toda la mañana. Abrir un tercer cajero no reduce la fila en un tercio: la hace desaparecer casi por completo. La teoría de colas cuantifica exactamente cuánto se gana con cada cajero adicional.",
+  "para_que_sirve": [
+    {
+      "sector": "Centros de contacto",
+      "ejemplo": "Un centro de llamadas decide cuántos asesores programar en cada franja para que el 80 % de las llamadas se contesten en menos de 20 segundos sin pagar asesores ociosos."
+    },
+    {
+      "sector": "Salud",
+      "ejemplo": "Un hospital compara uno o dos médicos de turno en urgencias. Pone un costo a la hora de espera del paciente y otro a la hora médica, y elige el número que minimiza el costo total."
+    },
+    {
+      "sector": "Mantenimiento industrial",
+      "ejemplo": "Una planta con cinco máquinas y un técnico usa el modelo de población finita para saber cuántas máquinas estarán paradas en promedio y si vale la pena contratar un segundo técnico."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1909",
+      "hecho": "Agner Krarup Erlang publicó un estudio de probabilidad aplicado a las conversaciones telefónicas, con el que se inicia la teoría de colas: llegadas de Poisson y tiempos exponenciales para dimensionar centrales telefónicas.",
+      "refs": [
+        "erlang1909",
+        "gross2018"
+      ]
+    },
+    {
+      "anio": "1953",
+      "hecho": "David Kendall propuso la notación A/B/s (por ejemplo M/M/1 o M/G/1) que todavía se usa, y analizó la cola M/G/1 con una cadena de Markov inmersa.",
+      "refs": [
+        "kendall1953"
+      ]
+    },
+    {
+      "anio": "1961",
+      "hecho": "John Little publicó la demostración general de L = λW, válida para casi cualquier sistema de colas en estado estable.",
+      "refs": [
+        "little1961"
+      ]
+    },
+    {
+      "anio": "2003",
+      "hecho": "El manual de WinQSB 2.0 documenta el módulo QA, con modelo simple y general, costos y análisis de capacidad. IAQSB reproduce sus fórmulas y lee y guarda sus archivos.",
+      "refs": [
+        "chang2003"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Tasa de llegada (λ)",
+      "para_que": "Clientes que llegan por unidad de tiempo. Se mide contando llegadas en franjas comparables, por ejemplo cuántos clientes llegan entre 10 y 11 de la mañana."
+    },
+    {
+      "dato": "Tasa de servicio por servidor (μ)",
+      "para_que": "Clientes que un servidor atiende por unidad de tiempo; es el inverso del tiempo medio de servicio. Sale de cronometrar atenciones."
+    },
+    {
+      "dato": "Número de servidores",
+      "para_que": "Cajeros, médicos, muelles o técnicos que atienden en paralelo."
+    },
+    {
+      "dato": "Capacidad de la cola y población",
+      "para_que": "Cuántos clientes caben esperando (M = ilimitada) y cuántos clientes potenciales hay (M = infinita). La población finita se usa cuando los clientes son, por ejemplo, las máquinas de una planta."
+    },
+    {
+      "dato": "Distribuciones (modelo general)",
+      "para_que": "Tiempo entre llegadas, tiempo de servicio y tamaño del lote, con sus parámetros. Salen de ajustar una distribución a los datos medidos."
+    },
+    {
+      "dato": "Costos (opcionales)",
+      "para_que": "Costo de un servidor ocupado y ocioso, de un cliente esperando o atendido, por cliente rechazado y por lugar en la cola. Permiten comparar alternativas en dinero."
+    }
+  ],
+  "supuestos": [
+    "El sistema está en estado estable: las tasas no cambian durante el periodo analizado. Analiza por separado la hora pico y la hora valle.",
+    "En el modelo simple las llegadas son de Poisson y el servicio exponencial.",
+    "Sin límite de capacidad, la utilización debe ser menor que 1 para que exista estado estable.",
+    "Las fórmulas de G/G/s con varios servidores son aproximadas; la simulación permite comprobarlas."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y crea el problema",
+      "texto": "Entra a «Teoría de colas» y pulsa «Nuevo problema». Elige «Modelo simple (M/M/s)» o «Modelo general» y pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» tienes «Sala de emergencias (Hillier)» (M/M/1 con costos), «Reparacion de 5 maquinas (poblacion finita)», «Barberia con 3 sillas de espera», «Reciclaje Garcia-Golding, servicio constante (Render)» (M/D/1), «Llegadas en lotes (M^X/M/2, lotes de 1 a 3)» y «Ventanilla con servicio presionado y clientes desalentados»."
+    },
+    {
+      "titulo": "Escribe el sistema",
+      "texto": "En el bloque «Sistema» llena «Unidad de tiempo», «Tasa de servicio por servidor (μ)», «Tasa de llegada (λ)», «Número de servidores», «Capacidad de la cola» y «Población de clientes». Escribe M cuando la capacidad sea ilimitada o la población infinita."
+    },
+    {
+      "titulo": "En el modelo general, elige las distribuciones",
+      "texto": "En «Tiempo de servicio», «Tiempo entre llegadas» y «Tamaño del lote de llegada» elige la «Distribución» y sus parámetros. Ojo: aquí se escriben tiempos, no tasas. En la exponencial, «Media (b)» es el tiempo medio. En «Presión y desaliento» escribe los coeficientes (a) y (b), o deja 0."
+    },
+    {
+      "titulo": "Agrega costos y análisis",
+      "texto": "Llena «Costos (opcionales)». En «Parámetros del análisis» define el rango de «Capacidad: servidores desde» y «hasta», y si quieres, la capacidad de la cola. En el menú de opciones elige «Sensibilidad respecto a» un parámetro, y en el panel escribe «Sensibilidad desde», «Sensibilidad hasta» y «Pasos». «Tiempo simulado» en 0 solo simula si no hay fórmula exacta."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Revisa «Solución», «Probabilidades» y «Capacidad». La pestaña «Paso a paso» muestra la fórmula usada, el cálculo de P0 y de cada medida, y cómo se obtienen las demás con la ley de Little."
+    }
+  ],
+  "como_resuelve": [
+    "Para M/M/s sin límites usa las fórmulas cerradas: P0, la probabilidad de esperar (fórmula de Erlang C), Lq, y luego Wq = Lq/λ, W = Wq + 1/μ y L = λW.",
+    "Con capacidad o población finitas, lotes, presión o desaliento, y servicio exponencial, IAQSB arma la cadena de Markov de nacimiento y muerte del número de clientes y la resuelve de forma exacta por balance de cortes: el flujo que sube del estado n al n + 1 iguala al que baja. Con capacidad finita usa la tasa efectiva de llegada λₑ, que descuenta a los clientes rechazados.",
+    "Para M/G/1 aplica la fórmula de Pollaczek-Khinchine, que solo necesita la media y la varianza del servicio. Para G/G/s con varios servidores usa la aproximación de Allen-Cunneen, la misma de WinQSB, y avisa que el resultado es aproximado.",
+    "Cuando no hay fórmula, o si lo pides con «Tiempo simulado», hace una simulación de eventos discretos de la estación de servicio, con la «Semilla» indicada y descartando el periodo de calentamiento.",
+    "El costo por unidad de tiempo suma servidores ocupados Cs·(L − Lq), ociosos Ci·(s − L + Lq), espera Cw·Wq·λₑ, atención Cu·(W − Wq)·λₑ, rechazos y lugares de cola. El análisis de capacidad resuelve el sistema para cada número de servidores y recomienda el de menor costo."
+  ],
+  "interpretar": [
+    "Empieza por la utilización. Por encima del 85 %, pequeños aumentos de la demanda disparan la espera; por debajo del 50 %, probablemente sobran servidores.",
+    "En la sala de emergencias (λ = 2, μ = 3 por hora, un médico) L = 2, Lq = 1.33, W = 1 hora y Wq = 0.67 horas. Con 40 por hora médica y 100 por hora de espera, el costo es 173.33 por hora.",
+    "En «Capacidad» del mismo ejemplo, con dos médicos el costo baja a 88.33 por hora y la espera media cae a unos 2.5 minutos. Con tres médicos el costo sube otra vez a 120.93: el tercero cuesta más de lo que ahorra en espera.",
+    "«Probabilidades» muestra la probabilidad de que haya n clientes. Úsala para dimensionar salas de espera: busca el n que cubre el 95 % de los casos.",
+    "Si el informe dice que el resultado es una aproximación de G/G/s, compáralo con la simulación antes de tomar una decisión costosa."
+  ],
+  "industria": [
+    {
+      "nombre": "Gestión de la fuerza laboral en centros de contacto (NICE, Genesys, Verint)",
+      "tipo": "software",
+      "uso": "Pronostican llamadas y calculan cuántos asesores programar por franja con modelos de Erlang C y simulación."
+    },
+    {
+      "nombre": "Calculadoras de Erlang C",
+      "tipo": "metodologia",
+      "uso": "Fórmula estándar para dimensionar centros de llamadas, mesas de ayuda y ventanillas con nivel de servicio objetivo."
+    },
+    {
+      "nombre": "R: paquete queueing",
+      "tipo": "libreria",
+      "uso": "Calcula las medidas de desempeño de los modelos clásicos de colas (M/M/1, M/M/c, población finita, redes de Jackson)."
+    },
+    {
+      "nombre": "Ciw",
+      "tipo": "libreria",
+      "uso": "Librería de Python para simular redes de colas cuando las fórmulas no alcanzan."
+    },
+    {
+      "nombre": "SimPy",
+      "tipo": "libreria",
+      "uso": "Simulación de eventos discretos en Python, útil para validar resultados aproximados."
+    }
+  ],
+  "alternativas": [
+    "Simulación de eventos discretos (módulo «Simulación de colas»): conviene cuando hay varias etapas, prioridades, reprocesos o tasas que cambian durante el día.",
+    "Redes de colas de Jackson: cuando el cliente pasa por varias estaciones en serie o con enrutamiento probabilístico y las distribuciones son exponenciales."
+  ],
+  "errores_comunes": [
+    "Confundir tasa con tiempo. Si un cajero tarda 4 minutos, μ = 15 por hora, no 4. En el modelo general, en cambio, se escriben tiempos.",
+    "Calcular con la demanda promedio del día cuando la cola se forma en la hora pico. Analiza la hora más cargada.",
+    "Creer que duplicar servidores reduce la espera a la mitad. La relación no es lineal: puede reducirla mucho más.",
+    "Usar M/M/s cuando el servicio es casi constante (por ejemplo, una máquina automática). Con servicio constante la cola es la mitad que con exponencial; usa el modelo general."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Identificar el modelo de colas de un enunciado con la notación de Kendall.",
+      "Calcular L, Lq, W, Wq y la utilización, y verificar la ley de Little.",
+      "Dimensionar el número de servidores con un criterio de costo total o de nivel de servicio.",
+      "Reconocer cuándo una fórmula es exacta, aproximada o requiere simulación."
+    ],
+    "actividades": [
+      "Con «Sala de emergencias (Hillier)», resuelve a mano M/M/1 y compara con la pestaña «Paso a paso». Luego usa el análisis de capacidad para decidir el número de médicos.",
+      "Con «Reciclaje Garcia-Golding, servicio constante (Render)», compara Lq con el de un servicio exponencial de la misma media y discute por qué se reduce a la mitad.",
+      "Trabajo de campo: los estudiantes miden llegadas y tiempos de servicio en la cafetería de la universidad y proponen el número de cajas para la hora del almuerzo."
+    ],
+    "preguntas": [
+      "¿Por qué la espera crece tan rápido cuando la utilización se acerca a 1?",
+      "Un taller tiene cinco máquinas y un técnico. ¿Por qué no sirve el modelo de población infinita?",
+      "¿Qué pasa con L y W si la cola tiene capacidad limitada y algunos clientes son rechazados?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Tasa de llegada (λ)",
+      "definicion": "Número promedio de clientes que llegan por unidad de tiempo."
+    },
+    {
+      "termino": "Tasa de servicio (μ)",
+      "definicion": "Número promedio de clientes que atiende un servidor por unidad de tiempo."
+    },
+    {
+      "termino": "Utilización (ρ)",
+      "definicion": "Fracción del tiempo que los servidores están ocupados: λ/(s·μ)."
+    },
+    {
+      "termino": "L, Lq",
+      "definicion": "Número promedio de clientes en el sistema y en la cola."
+    },
+    {
+      "termino": "W, Wq",
+      "definicion": "Tiempo promedio de un cliente en el sistema y en la cola."
+    },
+    {
+      "termino": "Ley de Little",
+      "definicion": "L = λ·W; también Lq = λ·Wq."
+    },
+    {
+      "termino": "Notación de Kendall",
+      "definicion": "A/B/s: distribución de llegadas, de servicio y número de servidores (M = exponencial, D = constante, G = general)."
+    }
+  ],
+  "referencias": [
+    "erlang1909",
+    "kendall1953",
+    "little1961",
+    "gross2018",
+    "hillier2015en",
+    "render2018",
+    "law2015",
+    "chang2003"
+  ]
+}

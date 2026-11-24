@@ -13,6 +13,7 @@
   import { tick } from 'svelte';
   import { ACEPTA, tamano } from '../../lib/adjuntos';
   import { motoresWeb } from '../../lib/motores_web.svelte';
+  import Nativo from './Nativo.svelte';
 
   let lista: HTMLElement | undefined = $state();
   let entrada: HTMLTextAreaElement | undefined = $state();
@@ -56,10 +57,34 @@
   const sugerencias = $derived(
     [
       resuelto ? t('Explícame el resultado del problema abierto') : t('¿Cómo planteo el problema que tengo abierto?'),
-      t('¿Qué módulo uso para decidir cuántas unidades pedir de cada producto?'),
+      t('Nativo, enséñame el método símplex con un ejemplo pequeño'),
       t('Plantea un problema de transporte pequeño, resuélvelo y explícamelo'),
-      resuelto ? t('¿Qué pasa con el resultado si cambia uno de los datos?') : t('¿Qué diferencia hay entre el símplex y branch and bound?')
+      resuelto ? t('¿Qué pasa con el resultado si cambia uno de los datos?') : t('¿Cómo se pronostica la demanda con suavización exponencial?')
     ]
+  );
+  /** Temas para aprender con Nativo (ejemplo resuelto con el motor, paso a paso). */
+  const TEMAS = $derived([
+    t('el método símplex'),
+    t('el problema de transporte'),
+    t('PERT y la ruta crítica'),
+    t('el modelo EOQ de inventarios'),
+    t('el programa maestro y el MRP'),
+    t('los pronósticos con suavización exponencial'),
+    t('la programación entera (branch and bound)'),
+    t('la teoría de colas')
+  ]);
+  /** Lo que dice debajo del nombre, según lo que hace Nativo. */
+  const estadoNativo = $derived(
+    {
+      pensando: t('Pensando…'),
+      calculando: motoresWeb.detalle || t('Calculando con el motor…'),
+      explicando: t('Explicando…'),
+      celebrando: t('¡Listo!'),
+      confundido: t('Algo salió mal'),
+      saludo: t('¡Hola!'),
+      chat: t('¡Hola!'),
+      reposo: ''
+    }[chat.nativo]
   );
 
   // los avisos de la app se corren a la izquierda del panel (ver el estilo global de abajo)
@@ -197,9 +222,12 @@
     ></div>
 
     <header class="cab">
-      <span class="logo"><Icon name="chispa" size={15} /></span>
+      <Nativo toma={chat.nativo} tam={38} circulo titulo="Nativo" />
       <div class="ctit">
-        <strong>{t('Asistente IA')}</strong>
+        <div class="nombre">
+          <strong>Nativo</strong>
+          <span class="estado" aria-live="polite">{estadoNativo || t('Asistente IA')}</span>
+        </div>
         <button class="modelo" title={t('Cambiar el proveedor o el modelo')} onclick={() => ajustes.abrir('ia')}>
           {ajustes.iaLista ? ajustes.iaNombre : t('Sin conectar')}<Icon name="abajo" size={11} />
         </button>
@@ -254,12 +282,18 @@
 
       {#if !chat.mensajes.length && chat.tieneClave && !conectando}
         <div class="vacio">
-          <span class="grande"><Icon name="chispa" size={26} stroke={1.5} /></span>
-          <h3>{t('¿En qué te ayudo?')}</h3>
+          <Nativo toma={chat.nativo} tam={136} titulo="Nativo" />
+          <h3>{t('¡Hola! Soy Nativo. ¿En qué te ayudo?')}</h3>
           <p class="muted">{t('Pregunta por el problema abierto, pide que plantee uno nuevo o que compare métodos. Con los modelos que usan herramientas, el asistente resuelve con el motor de IAQSB, así que los números son los del programa.')}</p>
           <div class="sug">
             {#each sugerencias as s (s)}
               <button class="opc" onclick={() => enviar(s)}>{s}</button>
+            {/each}
+          </div>
+          <p class="aprender">{t('Aprende un tema con Nativo')}</p>
+          <div class="temas">
+            {#each TEMAS as tema (tema)}
+              <button class="tema" onclick={() => enviar(t('Nativo, enséñame {0} con un ejemplo pequeño resuelto con IAQSB', tema))}>{tema}</button>
             {/each}
           </div>
         </div>
@@ -528,17 +562,6 @@
   .cab :global(.btn.ghost) {
     color: var(--barra-fg-2);
   }
-  .logo {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    color: #fff;
-    background: linear-gradient(135deg, var(--solver), var(--accent-2));
-    flex: none;
-    margin-right: 6px;
-  }
   .ctit {
     display: flex;
     align-items: center;
@@ -549,6 +572,20 @@
   .ctit strong {
     font-size: 13.5px;
     white-space: nowrap;
+  }
+  .nombre {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    min-width: 0;
+  }
+  .estado {
+    font-size: 11px;
+    color: var(--muted, #6b7280);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
   }
   .modelo {
     display: inline-flex;
@@ -611,16 +648,7 @@
   }
   .vacio {
     text-align: center;
-    padding: 24px 6px 6px;
-  }
-  .grande {
-    display: inline-grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    color: var(--solver);
-    background: var(--solver-tint);
+    padding: 8px 6px 6px;
   }
   .vacio h3 {
     font-size: 18px;
@@ -635,6 +663,34 @@
     display: grid;
     gap: 6px;
     text-align: left;
+  }
+  .aprender {
+    margin: 14px 0 6px !important;
+    font-size: 11.5px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted, #6b7280);
+  }
+  .temas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .tema {
+    border: 0.5px solid var(--rule);
+    background: var(--sheet);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 12px;
+    color: var(--ink);
+    transition: background-color 0.12s, color 0.12s;
+  }
+  .tema:hover,
+  .tema:focus-visible {
+    background: var(--solver-tint);
+    color: var(--solver);
   }
   .opc {
     border: 0.5px solid var(--rule);

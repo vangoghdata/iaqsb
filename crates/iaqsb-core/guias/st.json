@@ -1,0 +1,272 @@
+{
+  "modulo": "st",
+  "titulo": "Series de tiempo: ARIMA, ETS y TBATS (ST)",
+  "resumen": "Explora una serie de tiempo y la pronostica con los modelos estadísticos que usan hoy la academia y la industria: ETS, ARIMA, TBATS, Theta y Croston. Sirve para quien necesita un pronóstico con intervalos de confianza y una evaluación honesta, como la que se hace en clase con R.",
+  "que_es": [
+    "Este módulo no existe en WinQSB. Complementa al módulo FC con los métodos modernos de pronóstico del libro de Hyndman y Athanasopoulos (2018) y del paquete forecast de R, que es el que usa el curso. Tiene tres tipos de problema: explorar la serie, pronosticarla y evaluar varios modelos con un conjunto de entrenamiento y otro de prueba.",
+    "La idea central es que un modelo de pronóstico se elige con evidencia. Primero miras la serie: su autocorrelación, su tendencia y su estacionalidad. Luego ajustas modelos cuyos parámetros se estiman de los datos por máxima verosimilitud, no a ojo. Por último compruebas dos cosas: que el modelo pronostica bien datos que no vio (precisión fuera de la muestra) y que sus residuos parecen ruido blanco, es decir, que no dejó patrón sin explicar."
+  ],
+  "analogia": "Evaluar modelos con entrenamiento y prueba es como preparar un examen. Si solo te evalúas con los ejercicios que ya resolviste, siempre sacas cinco. La prueba de verdad son ejercicios nuevos. Por eso el módulo esconde los últimos periodos al ajustar y luego mide el error sobre ellos.",
+  "para_que_sirve": [
+    {
+      "sector": "Energía",
+      "ejemplo": "Una distribuidora pronostica la demanda eléctrica mensual con ARIMA estacional para negociar compras en bolsa y contratos de largo plazo con menos riesgo."
+    },
+    {
+      "sector": "Consumo masivo",
+      "ejemplo": "Un fabricante de bebidas compara ETS y ARIMA en un periodo de prueba antes de fijar el pronóstico estadístico que alimenta su S&OP mensual."
+    },
+    {
+      "sector": "Salud",
+      "ejemplo": "Un hospital usa TBATS para pronosticar urgencias diarias con estacionalidad semanal y anual a la vez, y así programar turnos de enfermería."
+    },
+    {
+      "sector": "Repuestos y mantenimiento",
+      "ejemplo": "Un taller de aviación pronostica repuestos de demanda intermitente con Croston, donde los métodos clásicos sobreestiman el inventario necesario."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1970",
+      "hecho": "Box y Jenkins publican su metodología para identificar, estimar y diagnosticar modelos ARIMA.",
+      "refs": [
+        "boxjenkins1970"
+      ]
+    },
+    {
+      "anio": "1972",
+      "hecho": "Croston propone un método para pronosticar demanda intermitente que separa el tamaño de los pedidos del intervalo entre ellos.",
+      "refs": [
+        "croston1972"
+      ]
+    },
+    {
+      "anio": "1978",
+      "hecho": "Ljung y Box proponen la prueba que lleva su nombre para verificar si los residuos de un modelo tienen autocorrelación.",
+      "refs": [
+        "ljungbox1978"
+      ]
+    },
+    {
+      "anio": "2000",
+      "hecho": "Assimakopoulos y Nikolopoulos presentan el método Theta, que descompone la serie en líneas con distinta curvatura y combina sus pronósticos.",
+      "refs": [
+        "assimakopoulos2000"
+      ]
+    },
+    {
+      "anio": "2002",
+      "hecho": "Hyndman, Koehler, Snyder y Grose formulan la suavización exponencial como modelos de espacio de estados (ETS), con verosimilitud e intervalos de predicción.",
+      "refs": [
+        "hyndman2002ets"
+      ]
+    },
+    {
+      "anio": "2008",
+      "hecho": "Hyndman y Khandakar publican el paquete forecast de R, con los algoritmos automáticos auto.arima() y ets().",
+      "refs": [
+        "hyndmankhandakar2008"
+      ]
+    },
+    {
+      "anio": "2011",
+      "hecho": "De Livera, Hyndman y Snyder proponen TBATS para series con estacionalidades múltiples o no enteras.",
+      "refs": [
+        "delivera2011"
+      ]
+    },
+    {
+      "anio": "2021–2024",
+      "hecho": "El profesor Jaime Antero Arango Marín enseña exploración, suavización, ARIMA y TBATS con R y los datos de fpp2 en el Taller de Producción y Logística de la Universidad Nacional de Colombia. Los ejemplos del módulo vienen de sus diapositivas.",
+      "refs": [
+        "arango2021series",
+        "arango2022suavizacion",
+        "arango2024arima"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "La serie completa, sin huecos",
+      "para_que": "Al menos 4 datos; en la práctica, varios ciclos. Sale del ERP, del sistema de ventas o de una fuente pública. No puede tener valores vacíos en medio."
+    },
+    {
+      "dato": "Frecuencia (periodo estacional)",
+      "para_que": "12 para datos mensuales, 4 trimestrales, 7 diarios con ciclo semanal, 52.18 semanales y 1 si no hay estacionalidad. Es el m de ts(x, frequency = m) en R."
+    },
+    {
+      "dato": "Primer periodo",
+      "para_que": "Por ejemplo 2021-05, como start = c(2021, 5) en R. Nombra los periodos y fija la estación del primer dato."
+    },
+    {
+      "dato": "Último periodo del entrenamiento (evaluación)",
+      "para_que": "Por ejemplo 2023-12, como window(y, end = c(2023, 12)). Lo que sigue es el conjunto de prueba."
+    },
+    {
+      "dato": "Modelos por comparar y horizonte",
+      "para_que": "Qué modelos ajustar y cuántos periodos pronosticar, según la decisión que vas a tomar."
+    }
+  ],
+  "supuestos": [
+    "La serie está igualmente espaciada y el patrón que describe el modelo seguirá vigente en el horizonte.",
+    "Los modelos ETS y ARIMA suponen errores no correlacionados; por eso se revisan los residuos con la prueba de Ljung-Box.",
+    "Los intervalos de predicción suponen errores aproximadamente normales y no incluyen la incertidumbre por cambios estructurales.",
+    "Los resultados exactos de R se obtienen con el motor R; otros motores pueden elegir modelos distintos, sobre todo en ARIMA y TBATS."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo",
+      "texto": "En la barra lateral elige «Series de tiempo (ARIMA, ETS, TBATS)». Pulsa «Nuevo problema» o abre un ejemplo: utilidades_arango, usnetelec_arima, h02_arima_log, qcement_comparar, gas_tbats o evaluacion_clase."
+    },
+    {
+      "titulo": "Elige el tipo de problema",
+      "texto": "«Exploración de la serie», «Evaluar modelos (entrenamiento y prueba)» o «Pronóstico (ARIMA, ETS, TBATS…)». Indica el «Número de datos»."
+    },
+    {
+      "titulo": "Describe la serie",
+      "texto": "En el bloque «Serie» escribe la «Frecuencia (periodo estacional)», el «Primer periodo» (por ejemplo 2021-05) o, si no lo das, la «Estación del primer dato». Pega los valores en la tabla «Datos» (columnas «Periodo» y «Valor»)."
+    },
+    {
+      "titulo": "Evaluación como en clase",
+      "texto": "En «Evaluar modelos», escribe el «Último periodo del entrenamiento» (por ejemplo 2023-12) o los «Periodos de prueba». En «Modelos» escribe, separados por comas, ses, holt, hw, naive, snaive, tbats, arima, ets o theta; vacío = la suavización que sugiere el correlograma, el ingenuo que corresponda y TBATS. Opcional: «Tendencia amortiguada (holt, hw)», «Estacionalidad (hw)» y «λ de Box-Cox»."
+    },
+    {
+      "titulo": "Pronóstico de un modelo",
+      "texto": "En «Pronóstico», elige el «Modelo»: «Automático: comparar y elegir el mejor», ses, holt, hw, ARIMA, ETS, TBATS, Theta, Croston, «Ingenuo» o «Ingenuo estacional». Para ARIMA puedes dar «Órdenes ARIMA» (p,d,q o p,d,q,P,D,Q) y «Con deriva»; para ETS, el «Modelo ETS» (MAM, AAdN…); para TBATS, los «Periodos estacionales» (por ejemplo 7, 365.25). Fija «Periodos a pronosticar» y el «Nivel de los intervalos (%)»."
+    },
+    {
+      "titulo": "Opciones generales",
+      "texto": "En «Motor de pronóstico» deja «El mejor disponible (R, Python o nativo)» o fuerza «R (paquete forecast)», «Python (statsforecast)» o «Nativo de IAQSB (Rust)». También puedes cambiar los «Retardos del correlograma» y el tipo de «Descomposición»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver». El informe dice qué motor usó. La pestaña «Paso a paso» explica el correlograma, la elección de la suavización y cada modelo. Con «Comparar» resuelves con cada motor."
+    }
+  ],
+  "como_resuelve": [
+    "El motor de pronóstico es el mejor disponible en tu equipo. Primero, R con el paquete forecast, la implementación de referencia de Hyndman y Khandakar (2008). En la app de escritorio, si el equipo no tiene R, IAQSB usa el R que trae incluido (webR, R compilado a WebAssembly, con forecast), que da los mismos números. Si no hay ninguno de los dos, usa Python con statsforecast y, por último, el motor nativo en Rust.",
+    "El motor nativo traduce a Rust la función ets() de forecast (estado inicial, optimizador Nelder-Mead, selección por AICc), así que ses, holt, hw y ETS coinciden con R. ARIMA, TBATS, Theta y Croston nativos usan la biblioteca anofox-forecast, que puede elegir modelos distintos a los de R, sobre todo en TBATS.",
+    "La exploración calcula la ACF y la PACF con sus bandas ±1.96/√n, la prueba de Ljung-Box, la descomposición clásica, la fuerza de la tendencia y de la estacionalidad y el λ de Box-Cox de Guerrero, como Acf(), Pacf(), Box.test(), decompose() y BoxCox.lambda() de R.",
+    "La evaluación reproduce el flujo de clase: corta la serie con window(), sugiere la suavización según el correlograma del entrenamiento (Holt-Winters si la autocorrelación en el retardo de un ciclo sale de la banda; Holt si las primeras autocorrelaciones salen de la banda y bajan despacio; si no, la simple), ajusta cada modelo, pronostica el periodo de prueba y calcula accuracy() y checkresiduals(). La prueba de Ljung-Box usa min(2m, n/5) retardos y, salvo en ARIMA, tantos grados de libertad como retardos, igual que forecast 9.",
+    "En el pronóstico automático, el módulo compara los modelos en un periodo de prueba, elige el de menor MASE y lo vuelve a ajustar con toda la serie antes de pronosticar."
+  ],
+  "interpretar": [
+    "En la evaluación, mira la tabla «Exactitud: accuracy(pronóstico, prueba)». La fila de prueba es la que importa: un modelo con buen RMSE en el entrenamiento y malo en la prueba está sobreajustado. MASE menor que 1 indica que el modelo supera al método ingenuo.",
+    "La tabla «Residuos: checkresiduals()» dice si los residuos son ruido blanco. Un valor p menor que 0.05 indica que quedó patrón sin modelar: el pronóstico puede mejorarse.",
+    "El informe recomienda el modelo con menor RMSE en entrenamiento y en prueba cuando coinciden. En el ejemplo evaluacion_clase, la suavización simple gana en ambos conjuntos y sus residuos pasan la prueba de Ljung-Box.",
+    "En el pronóstico, usa los intervalos y no solo el valor central: el límite superior del intervalo del 95 % es un buen punto de partida para dimensionar capacidad o inventario de seguridad.",
+    "Revisa siempre la línea «Motor:». Si el ejercicio se resolvió en R en clase y el informe dice que usó otro motor, los valores de ARIMA o TBATS pueden diferir."
+  ],
+  "industria": [
+    {
+      "nombre": "Paquetes forecast y fable de R",
+      "tipo": "libreria",
+      "uso": "Referencia académica y profesional para ETS, ARIMA, TBATS y la evaluación de pronósticos."
+    },
+    {
+      "nombre": "statsforecast (Nixtla)",
+      "tipo": "libreria",
+      "uso": "Versiones rápidas en Python de AutoARIMA, AutoETS, Theta y Croston para pronosticar miles de series."
+    },
+    {
+      "nombre": "Prophet (Meta)",
+      "tipo": "libreria",
+      "uso": "Modelo aditivo con tendencia, estacionalidades y festivos, popular en analítica de negocios."
+    },
+    {
+      "nombre": "SAP IBP, Oracle Demand Management y Kinaxis",
+      "tipo": "software",
+      "uso": "Planeación de la demanda empresarial que combina modelos estadísticos como los de este módulo con aprendizaje de máquina y ajustes de los planeadores."
+    },
+    {
+      "nombre": "Modelos fundacionales de series (TimeGPT, Chronos)",
+      "tipo": "servicio",
+      "uso": "Modelos preentrenados con millones de series que pronostican sin ajuste específico. Se comparan contra ETS y ARIMA como línea base."
+    }
+  ],
+  "alternativas": [
+    "Los doce métodos clásicos del módulo FC, con parámetros fijados por ti, cuando el objetivo es aprender la mecánica o reproducir un ejercicio de WinQSB.",
+    "Regresión dinámica o ARIMAX cuando hay variables explicativas conocidas (precio, promociones, clima).",
+    "Aprendizaje de máquina (árboles potenciados, redes neuronales) cuando hay muchas series relacionadas y muchas variables; exige más datos y más cuidado con la validación."
+  ],
+  "errores_comunes": [
+    "Poner mal la frecuencia: 12 con datos trimestrales hace que el modelo busque un ciclo que no existe.",
+    "Elegir el modelo por el ajuste en el entrenamiento. Decide con el periodo de prueba y con la revisión de residuos.",
+    "Olvidar el primer periodo. Sin él, la estación del primer dato puede quedar mal y los índices estacionales se desplazan.",
+    "Comparar números de R con los del motor nativo en TBATS o ARIMA y concluir que hay un error. Son implementaciones distintas; para reproducir R, instala R con install.packages(\"forecast\") o usa la app de escritorio.",
+    "Ignorar los intervalos de predicción y planear con el valor central como si fuera seguro.",
+    "Transformar con Box-Cox sin necesidad. Úsalo cuando la variación crece con el nivel; si λ sugerido es cercano a 1, no hace falta."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Leer un correlograma y decidir si la serie tiene tendencia, estacionalidad o ninguna de las dos.",
+      "Separar entrenamiento y prueba, comparar modelos con accuracy() e interpretar RMSE, MAE, MAPE y MASE.",
+      "Verificar con la prueba de Ljung-Box si los residuos de un modelo son ruido blanco.",
+      "Explicar la diferencia entre ETS, ARIMA y TBATS y cuándo conviene cada uno."
+    ],
+    "actividades": [
+      "Con evaluacion_clase (cuestionario del curso), resolver primero en R con ts(), window(), ses(), naive(), tbats() y accuracy(), y luego en IAQSB. Comparar número por número; la línea «Motor:» del informe confirma si se usó R.",
+      "Con utilidades_arango, hacer la exploración: identificar en el gráfico estacional y en la ACF el ciclo trimestral y discutir qué suavización sugiere.",
+      "Con qcement_comparar, reproducir la comparación ETS frente a ARIMA de las diapositivas (entrenamiento 1988 a 2007) y debatir cuál elegirían para planear capacidad.",
+      "Con gas_tbats y h02_arima_log, discutir por qué se usa el logaritmo (λ = 0) y qué captura TBATS que no captura Holt-Winters."
+    ],
+    "preguntas": [
+      "Un modelo tiene el menor RMSE en entrenamiento pero el peor en prueba. ¿Qué está pasando y cuál eliges?",
+      "La prueba de Ljung-Box da p = 0.01. ¿Qué significa para el pronóstico?",
+      "¿Qué indica una autocorrelación alta y fuera de la banda en el retardo 12 de una serie mensual?",
+      "¿Por qué MASE menor que 1 es una buena señal y contra qué compara?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Autocorrelación (ACF)",
+      "definicion": "Correlación de la serie consigo misma desplazada k periodos."
+    },
+    {
+      "termino": "Ruido blanco",
+      "definicion": "Serie sin autocorrelación, de media cero y varianza constante; es lo que deben parecer los residuos."
+    },
+    {
+      "termino": "ETS",
+      "definicion": "Modelos de suavización exponencial en espacio de estados con error, tendencia y estacionalidad."
+    },
+    {
+      "termino": "ARIMA",
+      "definicion": "Modelo autorregresivo integrado de medias móviles, que describe la serie según sus propios rezagos y errores pasados."
+    },
+    {
+      "termino": "TBATS",
+      "definicion": "Modelo con transformación de Box-Cox, estacionalidad trigonométrica, errores ARMA y tendencia, para estacionalidades complejas."
+    },
+    {
+      "termino": "Conjunto de prueba",
+      "definicion": "Últimos periodos que se esconden al ajustar el modelo para medir su error fuera de la muestra."
+    },
+    {
+      "termino": "MASE",
+      "definicion": "Error absoluto medio escalado por el error del método ingenuo en el entrenamiento."
+    },
+    {
+      "termino": "Prueba de Ljung-Box",
+      "definicion": "Prueba estadística de si un grupo de autocorrelaciones de los residuos es distinto de cero."
+    },
+    {
+      "termino": "Transformación de Box-Cox",
+      "definicion": "Transformación con parámetro λ que estabiliza la varianza; λ = 0 es el logaritmo."
+    }
+  ],
+  "referencias": [
+    "hyndman2018fpp",
+    "hyndmankhandakar2008",
+    "hyndman2002ets",
+    "delivera2011",
+    "boxjenkins1970",
+    "assimakopoulos2000",
+    "croston1972",
+    "ljungbox1978",
+    "anofox2026",
+    "arango2021series",
+    "arango2022suavizacion",
+    "arango2024arima"
+  ]
+}

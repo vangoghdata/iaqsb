@@ -1,0 +1,260 @@
+{
+  "modulo": "fc",
+  "titulo": "Pronósticos y regresión (FC)",
+  "resumen": "Estima la demanda de los próximos periodos con los doce métodos clásicos de WinQSB o con regresión lineal múltiple. Sirve a quien planea compras, producción, inventarios o personal y necesita un número defendible para el siguiente periodo.",
+  "que_es": [
+    "Un pronóstico es una estimación de un valor futuro hecha con datos del pasado. El módulo FC trabaja con dos tipos de problema. En una serie de tiempo, el único dato es la historia de la variable: ventas por mes, llamadas por semana, kilos despachados por día. En una regresión lineal, explicas una variable con otras: por ejemplo, las ventas de una constructora según la nómina de la región.",
+    "Los métodos de series de tiempo suponen que el patrón del pasado continúa. Ese patrón tiene tres componentes posibles: el nivel (alrededor de qué valor se mueve la serie), la tendencia (si sube o baja de manera sostenida) y la estacionalidad (si se repite un ciclo, como la temporada navideña). Cada método captura uno, dos o los tres. Los promedios y la suavización simple solo siguen el nivel; Holt y el doble suavizamiento agregan tendencia; Holt-Winters agrega estacionalidad. Ningún pronóstico es exacto: por eso el módulo mide el error de cada método y te deja compararlos con los mismos datos."
+  ],
+  "analogia": "Pronosticar con suavización exponencial se parece a ajustar la ducha. Si el agua sale fría, giras la llave un poco hacia lo caliente, no del todo. El parámetro α decide qué tanto corriges con cada nueva sorpresa: un α alto reacciona rápido pero salta con cualquier ruido; un α bajo es estable pero tarda en notar un cambio real.",
+  "para_que_sirve": [
+    {
+      "sector": "Comercio minorista",
+      "ejemplo": "Una cadena de droguerías pronostica la venta semanal de cada referencia para decidir cuánto reponer. Un pronóstico con menos sesgo reduce a la vez los agotados y el inventario inmovilizado."
+    },
+    {
+      "sector": "Manufactura de alimentos",
+      "ejemplo": "Una planta de lácteos usa Holt-Winters con ciclo de 12 meses para anticipar los picos de diciembre y programar turnos y compras de leche con semanas de anticipación."
+    },
+    {
+      "sector": "Servicios y centros de contacto",
+      "ejemplo": "Un centro de llamadas pronostica el volumen diario para dimensionar cuántos asesores contratar en cada franja, en lugar de reaccionar a las colas."
+    },
+    {
+      "sector": "Construcción e inmobiliario",
+      "ejemplo": "Con regresión, una constructora relaciona sus ventas con la nómina de la región y obtiene un intervalo de confianza para el próximo año, como en el caso Triple A de Render et al. (2018)."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1957",
+      "hecho": "Charles Holt propone el suavizamiento exponencial con tendencia en un informe para la Oficina de Investigación Naval de Estados Unidos. El informe se reimprimió en 2004.",
+      "refs": [
+        "holt2004"
+      ]
+    },
+    {
+      "anio": "1959",
+      "hecho": "Robert G. Brown publica el suavizamiento exponencial simple y doble como herramienta práctica para el control de inventarios.",
+      "refs": [
+        "brown1959"
+      ]
+    },
+    {
+      "anio": "1960",
+      "hecho": "Peter Winters extiende el método de Holt con índices estacionales, aditivos y multiplicativos: nace el método de Holt-Winters.",
+      "refs": [
+        "winters1960"
+      ]
+    },
+    {
+      "anio": "1964",
+      "hecho": "D. W. Trigg propone la señal de rastreo para detectar cuándo un pronóstico se vuelve sesgado.",
+      "refs": [
+        "trigg1964"
+      ]
+    },
+    {
+      "anio": "1967",
+      "hecho": "Trigg y Leach proponen el suavizamiento con tasa de respuesta adaptativa, en el que α cambia según el error reciente.",
+      "refs": [
+        "triggleach1967"
+      ]
+    },
+    {
+      "anio": "2003",
+      "hecho": "WinQSB 2.0 reúne doce métodos de series de tiempo y la regresión en su módulo Forecasting. IAQSB conserva esos métodos y su formato de archivo.",
+      "refs": [
+        "chang2003"
+      ]
+    },
+    {
+      "anio": "2006",
+      "hecho": "Hyndman y Koehler revisan las medidas de error de pronóstico y muestran los límites del MAPE cuando hay datos cercanos a cero.",
+      "refs": [
+        "hyndmankoehler2006"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Historia de la variable",
+      "para_que": "Es la entrada de todos los métodos de series. Sale del sistema de ventas, del ERP o de los registros de despacho. Usa la demanda real, no las ventas cuando hubo agotados."
+    },
+    {
+      "dato": "Unidad de tiempo",
+      "para_que": "Define cómo se nombran los periodos (mes, semana, trimestre) y con qué detalle planeas."
+    },
+    {
+      "dato": "Longitud del ciclo",
+      "para_que": "Solo para Holt-Winters: 12 si los datos son mensuales con patrón anual, 4 si son trimestrales."
+    },
+    {
+      "dato": "Parámetros α, β y γ, o periodos m",
+      "para_que": "Controlan la reacción del método al nivel, a la tendencia y a la estacionalidad, o cuántos datos promedia. Puedes darlos o pedir que el módulo busque los mejores."
+    },
+    {
+      "dato": "Variables explicativas (regresión)",
+      "para_que": "Una matriz de observaciones con la variable dependiente y las independientes, por ejemplo ventas y nómina por año."
+    }
+  ],
+  "supuestos": [
+    "El patrón histórico se mantiene en el horizonte del pronóstico. Un cambio estructural (nuevo competidor, pandemia, cambio de precio) invalida los métodos de series.",
+    "Los periodos son consecutivos y del mismo largo. Un dato vacío en medio de la serie es un error; los vacíos al final se ignoran.",
+    "Holt-Winters necesita al menos dos ciclos completos de datos para estimar los índices estacionales con sentido.",
+    "La regresión supone una relación lineal y errores independientes con varianza constante. Una correlación alta no prueba causalidad."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo",
+      "texto": "En la barra lateral (Módulos, o Ctrl+K) elige «Pronósticos». Pulsa «Nuevo problema» o abre uno de los «Ejemplos»: ventas_mensuales, estacional_trimestral o regresion_ventas. También puedes abrir un archivo .FCC de WinQSB."
+    },
+    {
+      "titulo": "Elige el tipo de problema",
+      "texto": "«Serie de tiempo» pide el «Número de períodos» y la «Unidad de tiempo». «Regresión lineal» pide el «Número de variables» y el «Número de observaciones»."
+    },
+    {
+      "titulo": "Carga los datos",
+      "texto": "En una serie, llena la tabla «Datos históricos» con las columnas «Período» y «Dato». Puedes pegar una columna desde Excel. En la regresión, llena la matriz «Observaciones»: una fila por observación y una columna por variable."
+    },
+    {
+      "titulo": "Escoge el método",
+      "texto": "En «Método» elige uno de los doce: Promedio simple (SA), Promedio móvil (MA), Promedio móvil ponderado (WMA), Promedio móvil con tendencia (MAT), Suavizamiento exponencial simple (SES), con tendencia (SEST, Holt), doble (DES), doble con tendencia (DEST), adaptativo (AES), Regresión lineal con el tiempo (LR), Holt-Winters aditivo (HWA) o multiplicativo (HWM)."
+    },
+    {
+      "titulo": "Ajusta los parámetros",
+      "texto": "Según el método aparecen «Períodos del promedio (m)», «Pesos (del más antiguo al más reciente)», «α (suavizamiento)», «β (tendencia o ajuste)», «γ (estacionalidad)», «Longitud del ciclo (c)» y los valores iniciales opcionales F(0) y T(0). Fija «Períodos a pronosticar». Si marcas «Buscar los mejores parámetros», elige el «Criterio de búsqueda»: MSE, MAD o MAPE."
+    },
+    {
+      "titulo": "Opciones de la regresión",
+      "texto": "Indica la «Variable dependiente» (vacío = la última), el «Nivel de significancia (%)» y, si quieres predecir, los valores en «Predecir con (valores de las independientes)», separados por comas."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Con «Mostrar paso a paso» activo, la pestaña «Paso a paso» muestra la fórmula del método y el cálculo de cada periodo. El botón «Comparar» resuelve el mismo problema con cada método."
+    }
+  ],
+  "como_resuelve": [
+    "IAQSB calcula los doce métodos de WinQSB en Rust, con las fórmulas del manual: por ejemplo, F(t+1) = F(t) + α·(A(t) − F(t)) en la suavización simple. Si no das F(0), el primer pronóstico es el primer dato. En Holt-Winters los índices estacionales se inicializan con los primeros ciclos y se actualizan con γ.",
+    "Para cada periodo con pronóstico calcula el error A(t) − F(t) y sus medidas acumuladas: CFE (suma de errores), MAD (error absoluto medio), MSE (error cuadrático medio), MAPE (error porcentual absoluto medio) y la señal de rastreo, que es CFE dividido por MAD.",
+    "La búsqueda de parámetros recorre una rejilla con paso 0.01 (con tres parámetros, primero 0.05 y luego 0.01 alrededor del mejor) y se queda con la combinación de menor MSE, MAD o MAPE en la historia.",
+    "La regresión estima los coeficientes por mínimos cuadrados con descomposición en valores singulares, que es más estable que las ecuaciones normales. Calcula errores estándar, estadísticos t y sus valores p, el ANOVA con la prueba F, el R², las correlaciones y los intervalos de confianza y de predicción."
+  ],
+  "interpretar": [
+    "La métrica principal es el pronóstico del siguiente periodo. Al lado están CFE, MAD, MSE, MAPE y la señal de rastreo. Compara métodos con la misma medida y sobre los mismos periodos.",
+    "Si la señal de rastreo sale de ±4, el informe lo advierte: el método tiene sesgo. Una señal muy positiva indica que la demanda real supera sistemáticamente al pronóstico; cambia de método o aumenta α.",
+    "La tabla «Comparación de métodos (mismos parámetros)» resuelve los doce métodos con tus parámetros. Úsala para descartar métodos, no para elegir a ciegas: un método que solo gana por poco en MSE puede ser peor si deja un sesgo grande.",
+    "En la regresión, revisa primero la prueba F y el R², luego el valor p de cada coeficiente. Un coeficiente con p mayor que el nivel de significancia no aporta evidencia de relación. La predicción trae dos intervalos: el de la media (más estrecho) y el de una observación individual (más ancho), que es el que importa para planear."
+  ],
+  "industria": [
+    {
+      "nombre": "SAP Integrated Business Planning (IBP) for Demand",
+      "tipo": "software",
+      "uso": "Planeación de la demanda en grandes empresas, con suavización exponencial, modelos automáticos y aprendizaje de máquina dentro del ciclo de S&OP."
+    },
+    {
+      "nombre": "Microsoft Excel (PRONOSTICO.ETS)",
+      "tipo": "software",
+      "uso": "Suavización exponencial con estacionalidad automática en la hoja de cálculo. Es la herramienta más usada en pymes, aunque oculta los parámetros."
+    },
+    {
+      "nombre": "Paquetes forecast y fable de R",
+      "tipo": "libreria",
+      "uso": "Implementaciones de referencia de ETS, ARIMA y su evaluación. Están detrás del módulo ST de IAQSB."
+    },
+    {
+      "nombre": "statsforecast (Nixtla) y statsmodels",
+      "tipo": "libreria",
+      "uso": "Suavización exponencial, Holt-Winters y regresión en Python, para pronosticar miles de series en producción."
+    },
+    {
+      "nombre": "S&OP y planeación colaborativa de la demanda",
+      "tipo": "metodologia",
+      "uso": "Proceso mensual en que ventas, operaciones y finanzas acuerdan un único pronóstico; los métodos de este módulo dan la línea base estadística."
+    }
+  ],
+  "alternativas": [
+    "El módulo ST de IAQSB: ARIMA, ETS, TBATS, Theta y Croston con parámetros estimados por máxima verosimilitud y evaluación en un periodo de prueba. Conviene cuando la serie es larga o compleja, o cuando el curso trabaja con R.",
+    "Croston y sus variantes para demanda intermitente (muchos ceros), donde los promedios y la suavización dan pronósticos engañosos.",
+    "Modelos causales más ricos (regresión con variables de precio, promociones o clima) o aprendizaje de máquina cuando hay muchas variables explicativas y datos suficientes."
+  ],
+  "errores_comunes": [
+    "Usar ventas en lugar de demanda. Si hubo agotados, la venta subestima la demanda y el pronóstico perpetúa el faltante.",
+    "Elegir el método solo por el menor MSE en la historia. Con la búsqueda de parámetros, el ajuste dentro de la muestra siempre mejora; valida con datos que el método no vio (el módulo ST lo hace automáticamente).",
+    "Poner mal la longitud del ciclo en Holt-Winters, por ejemplo 4 con datos mensuales. Revisa la unidad de tiempo antes de resolver.",
+    "Confundir el MAPE con una medida universal. Con datos cercanos a cero el MAPE explota; usa MAD o MSE en esos casos.",
+    "Leer la señal de rastreo de un solo periodo. Se interpreta como tendencia acumulada: lo que preocupa es que salga de ±4 y se quede ahí."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Distinguir nivel, tendencia y estacionalidad en una serie y elegir un método coherente con el patrón.",
+      "Calcular a mano un periodo de suavización simple y de Holt, y verificarlo con el paso a paso de IAQSB.",
+      "Interpretar CFE, MAD, MSE, MAPE y la señal de rastreo, y explicar por qué un método tiene sesgo.",
+      "Estimar e interpretar una regresión lineal: coeficientes, pruebas de significancia e intervalos de predicción."
+    ],
+    "actividades": [
+      "Con el ejemplo ventas_mensuales, cada grupo resuelve un método distinto con α = 0.3 y luego activa la búsqueda de parámetros. En plenaria se compara la tabla de métodos y se discute si el mejor MSE es el mejor método.",
+      "Con estacional_trimestral, pedir Holt-Winters aditivo y multiplicativo con ciclo 4, leer los índices estacionales finales y explicar qué significa un índice de 1.3 en el cuarto trimestre.",
+      "Con regresion_ventas (caso Triple A), estimar la recta, interpretar el R² y predecir las ventas con una nómina de 6; comparar el intervalo de la media con el de una observación."
+    ],
+    "preguntas": [
+      "¿Por qué un α alto hace que el pronóstico reaccione más rápido y, a la vez, sea más ruidoso?",
+      "Un método tiene MAD 12 y señal de rastreo 6.5; otro tiene MAD 14 y señal 0.8. ¿Cuál usarías y por qué?",
+      "¿Qué pasa con el promedio móvil de 3 periodos cuando la serie tiene una tendencia creciente fuerte?",
+      "En una regresión con R² = 0.9, ¿puedes concluir que la variable independiente causa la dependiente?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Serie de tiempo",
+      "definicion": "Sucesión de valores de una variable medidos en periodos consecutivos e iguales."
+    },
+    {
+      "termino": "Suavizamiento exponencial",
+      "definicion": "Método que pondera más los datos recientes, con pesos que decrecen de forma geométrica hacia el pasado."
+    },
+    {
+      "termino": "α, β y γ",
+      "definicion": "Constantes de suavizamiento entre 0 y 1 para el nivel, la tendencia y la estacionalidad."
+    },
+    {
+      "termino": "CFE",
+      "definicion": "Suma acumulada de los errores de pronóstico; mide el sesgo."
+    },
+    {
+      "termino": "MAD",
+      "definicion": "Promedio de los errores en valor absoluto."
+    },
+    {
+      "termino": "MSE",
+      "definicion": "Promedio de los errores al cuadrado; castiga más los errores grandes."
+    },
+    {
+      "termino": "MAPE",
+      "definicion": "Promedio de los errores absolutos expresados como porcentaje del dato real."
+    },
+    {
+      "termino": "Señal de rastreo",
+      "definicion": "CFE dividido por MAD; si sale de ±4, el pronóstico está sesgado."
+    },
+    {
+      "termino": "Índice estacional",
+      "definicion": "Factor que indica cuánto se aparta un periodo del ciclo del nivel promedio."
+    },
+    {
+      "termino": "Coeficiente de determinación (R²)",
+      "definicion": "Proporción de la variación de la variable dependiente que explica la regresión."
+    }
+  ],
+  "referencias": [
+    "brown1959",
+    "holt2004",
+    "winters1960",
+    "trigg1964",
+    "triggleach1967",
+    "hyndmankoehler2006",
+    "render2018",
+    "chang2003",
+    "hyndman2018fpp"
+  ]
+}

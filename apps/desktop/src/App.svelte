@@ -17,6 +17,7 @@
   import { t } from './lib/i18n.svelte';
   import { onMount } from 'svelte';
   import { escucharPedidosR, motoresWeb } from './lib/motores_web.svelte';
+  import GuiaPanel from './components/GuiaPanel.svelte';
 
   onMount(() => ui.iniciar());
   // el núcleo puede pedir el R de la app (series de tiempo sin R instalado)
@@ -63,6 +64,7 @@
 <AjustesPage />
 <AparienciaDialog />
 <Avisos />
+<GuiaPanel />
 {#if motoresWeb.detalle && !chat.abierto}
   <div class="motorweb" role="status"><span class="spinner" aria-hidden="true"></span>{motoresWeb.detalle}</div>
 {/if}

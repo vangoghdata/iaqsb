@@ -200,6 +200,11 @@ enum Cmd {
         #[arg(long)]
         svg: bool,
     },
+    /// Guía de un módulo para aprender o enseñar el tema: qué es, para qué sirve, historia con fuentes, cómo usarlo, industria y más.
+    Guia {
+        /// Módulo (mrp, lp, qa…); sin módulo, la lista de guías.
+        modulo: Option<String>,
+    },
     /// Bibliografía de IAQSB en APA 7 (o en BibTeX con --bibtex).
     Fuentes {
         /// Escribe la bibliografía en BibTeX (para LaTeX o Zotero).
@@ -1039,6 +1044,26 @@ fn run(cli: Cli) -> Result<(), String> {
                 save_figures(&r, &dir, pasos, svg, cli.json)?;
             }
         }
+        Cmd::Guia { modulo } => match modulo {
+            None => {
+                for m in api::core::guias::modulos() {
+                    println!("{m}");
+                }
+            }
+            Some(m) => {
+                let lc = match lang() {
+                    Lang::En => "en",
+                    Lang::Pt => "pt",
+                    _ => "es",
+                };
+                let g = api::call("guide", json!({"module": m, "lang": lc})).map_err(|e| e.to_string())?;
+                if cli.json {
+                    out(&g["guide"]);
+                } else {
+                    println!("{}", g["markdown"].as_str().unwrap_or(""));
+                }
+            }
+        },
         Cmd::Fuentes { bibtex, pendientes } => {
             let mut all = api::bibliography();
             i18n::translate_value(&mut all, lang());

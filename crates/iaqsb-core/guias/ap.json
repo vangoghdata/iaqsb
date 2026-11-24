@@ -1,0 +1,106 @@
+{
+  "modulo": "ap",
+  "titulo": "Planificación agregada (AP)",
+  "resumen": "Decide cuánto producir, cuánta gente tener y cuánto inventario guardar en cada periodo de un horizonte de 6 a 18 meses, al menor costo. Es la herramienta del gerente de operaciones que debe cuadrar la demanda pronosticada con la capacidad de la planta.",
+  "que_es": [
+    "La planificación agregada es el plan de producción de mediano plazo expresado en unidades agregadas: toneladas, cajas equivalentes u horas, no referencias individuales. Responde tres preguntas por periodo: cuánto producir en tiempo normal y en horas extra, cuántos trabajadores contratar o despedir, y cuánto inventario, pedidos pendientes o subcontratación usar para absorber las diferencias entre la demanda y la capacidad.",
+    "Hay dos estrategias puras. En la nivelada, la producción es constante y el inventario absorbe los altibajos de la demanda. En la de persecución, la producción sigue a la demanda y lo que varía es la plantilla. Entre las dos hay un sinnúmero de planes mixtos. El módulo calcula diez estrategias, las compara por costo y encuentra el plan óptimo por programación lineal. El plan agregado alimenta después el programa maestro (módulo PMP), que lo desagrega por producto."
+  ],
+  "analogia": "Es como planear las finanzas del año de un hogar con ingresos estables y gastos que cambian por temporada: puedes ahorrar en los meses tranquilos para diciembre (nivelar con inventario), buscar trabajos extra en los meses caros (horas extra o subcontratación) o endeudarte y pagar después (pedidos pendientes). Cada opción tiene un costo distinto.",
+  "para_que_sirve": [
+    { "sector": "Manufactura de juguetes y regalos", "ejemplo": "Una fábrica con fuerte pico en el último trimestre decide cuánto inventario acumular desde junio para no contratar personal temporal que necesita semanas de entrenamiento." },
+    { "sector": "Agroindustria", "ejemplo": "Un ingenio o una procesadora de frutas cuadra la capacidad de la planta con la cosecha y la demanda, y decide cuándo subcontratar maquila." },
+    { "sector": "Confecciones", "ejemplo": "Una empresa de ropa escolar compara contratar operarias para la temporada escolar frente a producir con anticipación y almacenar." },
+    { "sector": "Servicios", "ejemplo": "Un centro de contacto o una empresa de aseo planea la plantilla por mes; como el servicio no se almacena, la decisión gira en torno a contratación, horas extra y tiempo ocioso." }
+  ],
+  "historia": [
+    { "anio": "1956", "hecho": "Edward Bowman muestra que la planeación de la producción por periodos puede plantearse como un problema de transporte: cada fuente es una forma de producir en un periodo y cada destino es la demanda de un periodo.", "refs": ["bowman1956"] },
+    { "anio": "1960", "hecho": "Holt, Modigliani, Muth y Simon publican su estudio clásico sobre la planeación de producción, inventarios y fuerza de trabajo, con reglas de decisión derivadas de costos cuadráticos.", "refs": ["holt1960"] },
+    { "anio": "1963", "hecho": "Dantzig sistematiza la programación lineal, que permite formular el plan agregado completo con contrataciones, despidos, horas extra e inventario.", "refs": ["dantzig1963"] },
+    { "anio": "2013", "hecho": "Olhager resume cómo la planeación de operaciones evolucionó hacia la planeación de ventas y operaciones (S&OP), el proceso en el que hoy vive el plan agregado.", "refs": ["olhager2013"] }
+  ],
+  "necesitas": [
+    { "dato": "Demanda por periodo", "para_que": "Sale del pronóstico agregado (módulos FC o ST) en unidades comparables." },
+    { "dato": "Capacidad y costo del tiempo normal", "para_que": "Horas por trabajador en el periodo y costo por hora. En una empresa vienen de nómina y de ingeniería de métodos." },
+    { "dato": "Horas por unidad producida", "para_que": "El estándar de trabajo que convierte horas en unidades (campo «Capacidad por unidad producida»)." },
+    { "dato": "Plantilla e inventario iniciales", "para_que": "El punto de partida del plan; un inventario negativo representa pedidos pendientes." },
+    { "dato": "Costos de las alternativas", "para_que": "Contratar, despedir, hora extra, tiempo ocioso, mantener inventario, subcontratar, pedido pendiente y venta perdida. Salen de recursos humanos, costos y comercial." },
+    { "dato": "Límites", "para_que": "Plantilla máxima y mínima, capacidad de horas extra, inventario máximo y de seguridad, subcontrato máximo. Un vacío significa sin límite." }
+  ],
+  "supuestos": [
+    "La demanda de cada periodo es conocida (es el pronóstico) y se mide en una unidad agregada.",
+    "Los costos son lineales: cada hora extra o cada unidad en inventario cuesta lo mismo, sin economías de escala.",
+    "La productividad es constante: un trabajador nuevo rinde igual que uno antiguo.",
+    "No se modelan productos individuales ni la secuencia de producción; eso corresponde al programa maestro y al MRP."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo", "texto": "En la barra lateral elige «Planificación agregada». Pulsa «Nuevo problema» o abre un ejemplo: planificacion_simple, planificacion_transporte (Farnsworth Tire Company de Heizer y Render) o planificacion_pl. También puedes abrir un archivo .APP de WinQSB." },
+    { "titulo": "Elige el tipo de problema", "texto": "«Modelo simple» (diez estrategias y el óptimo), «Modelo de transporte» (tabla de Bowman) o «Programación lineal» (modelo completo con medio tiempo). Indica el «Número de periodos»." },
+    { "titulo": "Datos generales", "texto": "Escribe el «Recurso» (trabajador), la «Unidad de capacidad» (hora), la «Capacidad por unidad producida», el «Inventario inicial (+) o pendientes (−)» y la «Plantilla inicial»." },
+    { "titulo": "Opciones del problema", "texto": "Activa lo que la empresa puede usar: «Horas extra», «Medio tiempo», «Contratar y despedir», «Subcontratación», «Pedidos pendientes» y «Ventas perdidas». La tabla de periodos muestra solo las columnas que correspondan." },
+    { "titulo": "Llena la tabla «Periodos»", "texto": "Para cada periodo: «Demanda», «Capacidad normal», «Costo normal», «Costo de tiempo ocioso» y, según las opciones, «Capacidad extra», «Costo extra», «Costo de contratar», «Costo de despedir», «Plantilla máxima», «Plantilla mínima», «Inventario de seguridad», «Costo de inventario», «Costo de subcontratar», «Costo de pendiente» y «Costo de venta perdida»." },
+    { "titulo": "Escoge la estrategia", "texto": "En el modelo simple elige la «Estrategia»: óptimo por programación lineal, producción constante promedio, promedio por bloques («Periodos por bloque»), plantilla constante propuesta («Plantilla propuesta»), plantilla inicial o mínima constante, persecución, hasta la demanda con extra, sin contratar ni despedir, o «Producción propuesta» por ti. Marca «Cantidades enteras» si la plantilla debe ser entera." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver». La pestaña «Comparación» muestra el costo de todas las estrategias; «Paso a paso» explica el cálculo de la estrategia elegida o, en transporte, las iteraciones de la tabla." }
+  ],
+  "como_resuelve": [
+    "Las estrategias heurísticas se calculan periodo a periodo, como en WinQSB: por ejemplo, la nivelada reparte por igual entre los periodos la demanda total menos el inventario inicial (más el inventario de seguridad final); la persecución produce en cada periodo exactamente lo que falta y contrata o despide para tener la plantilla justa. Luego suma los costos de cada concepto.",
+    "El óptimo del modelo simple y el modelo de programación lineal se formulan con variables por periodo para la plantilla, contrataciones, despidos, horas normales y extra, subcontrato, inventario, pendientes y ventas perdidas, con restricciones de balance de plantilla, capacidad de horas, balance de inventario y límites. Lo resuelve HiGHS, con variables enteras si pides cantidades enteras.",
+    "El modelo de transporte arma la tabla de Bowman: las filas son las fuentes (tiempo normal, extra, medio tiempo o subcontrato de cada periodo y el inventario inicial) y las columnas la demanda de cada periodo. Producir antes cuesta el costo de producir más el de mantener; producir después, si hay pendientes, suma el costo de pendiente. Se resuelve con el método de transporte del módulo de redes, con solución inicial de Vogel y mejora por MODI."
+  ],
+  "interpretar": [
+    "La tabla del plan muestra por periodo la plantilla, contrataciones, despidos, producción normal y extra, subcontrato, inventario final, pendientes y ventas perdidas. Léela de arriba abajo: es el plan de acción del año.",
+    "El «Análisis de costos» separa el total por concepto. Si domina el inventario, el plan es demasiado nivelado; si dominan contrataciones y despidos, es demasiado de persecución.",
+    "La «Comparación de estrategias» indica cuál es la más barata y cuáles no son factibles, con la razón (por ejemplo, unidades que no se pueden cubrir en un periodo). La diferencia entre la mejor heurística y el óptimo es lo que vale la pena optimizar.",
+    "Un plan óptimo puede ser socialmente costoso (despidos frecuentes). Úsalo como referencia y agrega restricciones de plantilla mínima o de despidos si la política de la empresa lo exige."
+  ],
+  "industria": [
+    { "nombre": "SAP Integrated Business Planning (IBP) for Sales and Operations", "tipo": "software", "uso": "Soporta el proceso de S&OP: plan de demanda, plan de suministro agregado y escenarios financieros." },
+    { "nombre": "Oracle Sales and Operations Planning, Kinaxis y o9 Solutions", "tipo": "software", "uso": "Planeación de ventas y operaciones con escenarios y optimización de capacidad en la nube." },
+    { "nombre": "HiGHS, Gurobi y Pyomo", "tipo": "libreria", "uso": "Solucionadores y lenguajes de modelado para escribir modelos de planeación a la medida, como el de programación lineal de este módulo." },
+    { "nombre": "Planeación de ventas y operaciones (S&OP) e IBP", "tipo": "metodologia", "uso": "Proceso mensual en que la dirección aprueba un único plan de demanda y suministro; el plan agregado es su núcleo cuantitativo." }
+  ],
+  "alternativas": [
+    "Programación lineal entera a la medida (módulo LP-ILP o el lenguaje algebraico de IAQSB) cuando hay varias familias de productos, varias plantas o costos por tramos.",
+    "Reglas de decisión lineales del tipo HMMS cuando los costos se modelan mejor como cuadráticos.",
+    "Simulación de escenarios de demanda (optimista, base, pesimista) para elegir un plan robusto en lugar de uno óptimo para un solo pronóstico.",
+    "En servicios, modelos de dimensionamiento de personal con teoría de colas (módulo QA) cuando la capacidad se mide en tiempo de atención."
+  ],
+  "errores_comunes": [
+    "Mezclar unidades: capacidad en horas por trabajador y demanda en unidades sin poner bien la «Capacidad por unidad producida».",
+    "Olvidar el inventario de seguridad o el inventario inicial, lo que hace el plan más barato pero irreal.",
+    "Dejar vacíos los costos de contratar y despedir. Entonces la persecución parece gratuita y el óptimo cambia de plantilla cada mes.",
+    "Comparar estrategias con cantidades fraccionarias de trabajadores. Activa «Cantidades enteras» para un plan ejecutable.",
+    "Tratar el plan agregado como programa de producción por producto. Es una decisión de capacidad; el detalle lo da el programa maestro."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Explicar las estrategias nivelada, de persecución y mixta, y sus costos asociados.",
+      "Calcular a mano el costo de una estrategia y verificarlo con el paso a paso.",
+      "Formular el plan agregado como programa lineal y como problema de transporte.",
+      "Recomendar un plan considerando costos y efectos sobre las personas."
+    ],
+    "actividades": [
+      "Con planificacion_simple, cada grupo calcula a mano una estrategia (nivelada, persecución, plantilla constante) y la compara con la tabla de IAQSB. Luego se discute por qué el óptimo combina inventario y una contratación.",
+      "Con planificacion_transporte, reproducir el ejemplo de Heizer y Render y seguir en el paso a paso la solución inicial de Vogel y las mejoras de MODI.",
+      "Con planificacion_pl, quitar la opción de subcontratación y observar cómo cambia el costo; luego imponer una plantilla mínima y medir el costo de la política de estabilidad laboral.",
+      "Este módulo cubre la planeación agregada que el curso hacía en el programa Jantero (nivelación, persecución y óptimo), con la ventaja de comparar todas las estrategias en un solo informe."
+    ],
+    "preguntas": [
+      "¿En qué tipo de empresa conviene una estrategia nivelada y en cuál una de persecución?",
+      "Si el costo de mantener inventario se duplica, ¿hacia qué estrategia se mueve el óptimo?",
+      "¿Por qué el modelo de transporte de Bowman no puede representar directamente los costos de contratar y despedir?",
+      "¿Qué costos difíciles de medir (clima laboral, curva de aprendizaje) deja por fuera el modelo?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Plan agregado", "definicion": "Plan de producción, plantilla e inventario de mediano plazo en unidades agregadas." },
+    { "termino": "Estrategia nivelada", "definicion": "Producir una cantidad constante y absorber las variaciones de la demanda con inventario." },
+    { "termino": "Estrategia de persecución", "definicion": "Producir lo que se demanda en cada periodo, ajustando la plantilla." },
+    { "termino": "Tiempo ocioso", "definicion": "Horas pagadas de tiempo normal que no se usan para producir." },
+    { "termino": "Pedido pendiente", "definicion": "Demanda que no se atiende en su periodo y se entrega después, con un costo de penalización." },
+    { "termino": "Venta perdida", "definicion": "Demanda que no se atiende y no se recupera." },
+    { "termino": "Subcontratación", "definicion": "Compra a terceros de parte de la producción para cubrir faltas de capacidad." },
+    { "termino": "S&OP", "definicion": "Planeación de ventas y operaciones: proceso directivo que alinea la demanda y el suministro cada mes." }
+  ],
+  "referencias": ["holt1960", "bowman1956", "dantzig1963", "heizerrender2014", "heizer2017", "olhager2013", "vollmann2005", "huangfuhall2018", "chang2003"]
+}

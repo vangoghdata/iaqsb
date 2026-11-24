@@ -1,0 +1,200 @@
+{
+  "modulo": "pert",
+  "titulo": "PERT y ruta crítica (CPM)",
+  "resumen": "Calcula cuánto dura un proyecto, qué actividades no pueden retrasarse, cuánto cuesta acortarlo y con qué probabilidad termina a tiempo. Sirve a gerentes de proyecto, interventores, constructores y equipos de ingeniería.",
+  "que_es": [
+    "Un proyecto es un conjunto de actividades con un orden: unas no pueden empezar hasta que terminen otras. El método de la ruta crítica (CPM) toma esas actividades, sus duraciones y sus predecesoras, y calcula la duración mínima del proyecto. La ruta crítica es la cadena más larga de actividades encadenadas: si una de ellas se retrasa un día, todo el proyecto se retrasa un día.",
+    "Para cada actividad se calculan cuatro fechas: inicio y fin tempranos (lo antes que puede ocurrir) e inicio y fin tardíos (lo más tarde que puede ocurrir sin retrasar el proyecto). La diferencia entre ellas es la holgura. Las actividades con holgura cero son críticas. PERT agrega la incertidumbre: cada duración es aleatoria, y entonces la pregunta ya no es cuánto dura el proyecto, sino con qué probabilidad termina antes de una fecha.",
+    "IAQSB trae dos tipos de problema. «CPM determinista» usa tiempos conocidos y permite la compresión (crashing), el presupuesto por periodo (PERT/Costo) y el control con valor ganado. «PERT probabilístico» usa tiempos aleatorios y calcula probabilidades y una simulación de Monte Carlo."
+  ],
+  "analogia": "Piensa en preparar un almuerzo familiar. El arroz tarda 25 minutos, la carne 40 y la ensalada 10. Puedes picar la ensalada mientras la carne se cocina, pero no puedes servir hasta que la carne esté lista. La carne es tu ruta crítica: si se demora, el almuerzo se demora. La ensalada tiene holgura: puedes empezarla un poco más tarde sin que nadie lo note.",
+  "para_que_sirve": [
+    {
+      "sector": "Construcción e infraestructura",
+      "ejemplo": "Una constructora programa una obra de vivienda y descubre que la cimentación, la estructura y las redes están en la ruta crítica. Concentra la supervisión allí y negocia la compresión de una actividad para cumplir la fecha de entrega pactada en el contrato."
+    },
+    {
+      "sector": "Mantenimiento industrial",
+      "ejemplo": "Una planta de alimentos planea la parada anual de mantenimiento. Cada hora de parada cuesta producción perdida, así que comprime las actividades críticas más baratas hasta que el costo de acelerar iguala lo que se ahorra en producción."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1959",
+      "hecho": "Malcolm, Roseboom, Clark y Fazar publicaron la técnica PERT, creada para evaluar el programa de desarrollo de misiles Polaris de la Marina de Estados Unidos. Propusieron estimar cada duración con tres tiempos y aproximar su media y su varianza con una distribución beta.",
+      "refs": [
+        "malcolm1959"
+      ]
+    },
+    {
+      "anio": "1959",
+      "hecho": "Kelley y Walker presentaron el método de la ruta crítica (CPM) para planear y programar proyectos con duraciones conocidas, junto con la idea de intercambiar tiempo por costo.",
+      "refs": [
+        "kelleywalker1959"
+      ]
+    },
+    {
+      "anio": "1961",
+      "hecho": "Kelley publicó la base matemática del CPM: la compresión de un proyecto al menor costo se plantea como un programa lineal y da la curva tiempo-costo del proyecto.",
+      "refs": [
+        "kelley1961"
+      ]
+    },
+    {
+      "anio": "2003",
+      "hecho": "El manual de WinQSB 2.0 documenta el módulo PERT-CPM. IAQSB lo reproduce y lee y guarda sus archivos .CPM.",
+      "refs": [
+        "chang2003"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Lista de actividades",
+      "para_que": "Cada tarea que consume tiempo. Sale de la estructura de desglose del trabajo (EDT) del proyecto. Usa nombres cortos, como A, B, C o «Cimentación»."
+    },
+    {
+      "dato": "Predecesoras inmediatas",
+      "para_que": "Definen el orden de la red. Solo se anotan las que terminan justo antes; las anteriores quedan implícitas. Salen de la lógica técnica del trabajo."
+    },
+    {
+      "dato": "Tiempo normal (CPM) o tres estimaciones (PERT)",
+      "para_que": "En CPM, la duración esperada con recursos normales. En PERT, el tiempo optimista (a), el más probable (m) y el pesimista (b), que suelen dar los expertos de cada área."
+    },
+    {
+      "dato": "Tiempo y costo de compresión (opcional)",
+      "para_que": "Lo mínimo que puede durar una actividad si se le ponen más recursos y lo que cuesta. Con ellos se calcula el costo por unidad de tiempo ahorrada."
+    },
+    {
+      "dato": "Costo real y porcentaje terminado (opcional)",
+      "para_que": "Para el control: se comparan con el presupuesto y el programa a una fecha. Salen de los informes de avance de obra."
+    }
+  ],
+  "supuestos": [
+    "Las relaciones son de tipo fin a inicio: una actividad empieza cuando terminan todas sus predecesoras.",
+    "En la compresión, el costo crece de forma lineal entre el tiempo normal y el de compresión.",
+    "La probabilidad de PERT usa la aproximación normal sobre la ruta crítica e ignora que otra ruta casi crítica pueda alargar el proyecto. La simulación corrige esa limitación."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y crea el problema",
+      "texto": "Entra a «PERT y ruta crítica» y pulsa «Nuevo problema». En «Problema nuevo» elige «CPM determinista» o «PERT probabilístico». Indica el «Número de actividades» y la «Unidad de tiempo» (por ejemplo, semana). En PERT elige también la «Distribución de los tiempos»; la usual es «Tres tiempos (beta PERT)». Pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» tienes «Reliable Construction (Hillier)» para CPM y compresión, «Reliable Construction con tres estimaciones (Hillier)» para PERT y «General Foundry: control de costos (Render)» para el control con valor ganado."
+    },
+    {
+      "titulo": "Llena la tabla de actividades",
+      "texto": "En la pestaña «Datos», en la tabla «Actividades», escribe «Actividad» y «Predecesoras» (nombres o números separados por comas). En CPM llena «Tiempo normal» y, si los tienes, «Tiempo de compresión», «Costo normal», «Costo de compresión», «Costo real» y «% terminado». En PERT con tres tiempos llena «Optimista (a)», «Más probable (m)» y «Pesimista (b)». Con «Añadir actividad» agregas filas."
+    },
+    {
+      "titulo": "Elige el análisis",
+      "texto": "En el menú de opciones de la barra de pestañas elige «Compresión»: «Sin compresión», «Costo total mínimo», «Plazo deseado» o «Presupuesto». Con «Sin compresión» puedes elegir en «Tiempos» si la ruta crítica se calcula con los tiempos «Normales» o «De compresión». Deja marcado «Mostrar paso a paso»."
+    },
+    {
+      "titulo": "Completa los parámetros",
+      "texto": "En «Parámetros del análisis», debajo de la tabla, escribe el «Plazo deseado» (para la compresión, la probabilidad y la simulación), el «Presupuesto total», la «Penalización por retraso» y el «Premio por adelanto» según el análisis. Para el control escribe la «Fecha actual (control)». En PERT ajusta «Observaciones simuladas» (0 = no simular) y la «Semilla» (27437 es la de WinQSB)."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Aparecen las pestañas «Solución», «Red», «Gantt» y, según el caso, «Compresión», «PERT/Costo», «Control», «Probabilidad» y «Simulación». En «Paso a paso» verás los pases hacia adelante y hacia atrás, las holguras y la compresión unidad por unidad."
+    }
+  ],
+  "como_resuelve": [
+    "La ruta crítica se calcula con dos recorridos de la red en orden topológico. El pase hacia adelante da el inicio temprano de cada actividad como el mayor fin temprano de sus predecesoras. El pase hacia atrás da el fin tardío como el menor inicio tardío de sus sucesoras. Holgura = inicio tardío − inicio temprano. IAQSB encuentra todas las rutas críticas, no solo una.",
+    "La compresión es un programa lineal exacto: minimiza Σ kᵢ·yᵢ, donde yᵢ es lo que se acorta la actividad i y kᵢ su costo por unidad de tiempo, sujeto a que cada actividad empiece después de sus predecesoras y a que yᵢ no pase de tᵢ − cᵢ. Lo resuelve HiGHS. Con «Costo total mínimo» se suma la penalización o el premio frente al plazo. La curva tiempo-costo se obtiene resolviendo el mismo programa para cada duración posible.",
+    "En PERT con tres tiempos, la media de cada actividad es (a + 4m + b)/6 y la varianza ((b − a)/6)². La duración del proyecto se aproxima con una normal cuya media es la suma de las medias de la ruta crítica y cuya varianza es la suma de sus varianzas. Si hay varias rutas críticas, IAQSB toma la de mayor varianza. La probabilidad es Φ((plazo − media)/σ).",
+    "La simulación de Monte Carlo sortea la duración de cada actividad, calcula la duración del proyecto y repite el número de veces pedido. Da la distribución de la duración, la probabilidad de cumplir el plazo y el índice de criticidad: el porcentaje de corridas en que cada actividad quedó en la ruta crítica.",
+    "PERT/Costo reparte el costo de cada actividad de forma pareja en su duración y arma el presupuesto por periodo con inicios tempranos y tardíos. El control calcula el valor ganado (presupuesto × % terminado), el índice de costo CPI = EV/AC y, con la fecha actual, el índice de plazo SPI = EV/PV."
+  ],
+  "interpretar": [
+    "En el ejemplo de Reliable Construction el proyecto dura 44 semanas. Si pides un «Plazo deseado» de 40 semanas, IAQSB comprime F y J dos semanas cada una y el costo total sube a 4690. Esa es la forma más barata de ganar cuatro semanas.",
+    "En la versión PERT del mismo ejemplo la duración esperada es 44 semanas con σ = 3. La probabilidad de terminar en 47 semanas es 0.8413 (z = 1). La tabla de plazos dice qué fecha prometer para un nivel de confianza: para el 95 % son unas 48.9 semanas.",
+    "En «Control», un CPI menor que 1 significa que se gasta más de lo que se avanza. En General Foundry, a la semana 6, el CPI es 0.89 y el costo estimado al terminar sube de 308 a 344.96. Un SPI menor que 1 indica que el avance va por detrás del programa temprano."
+  ],
+  "industria": [
+    {
+      "nombre": "Oracle Primavera P6",
+      "tipo": "software",
+      "uso": "Programación de proyectos grandes de construcción, energía y petróleo con ruta crítica, recursos, líneas base y control de avance."
+    },
+    {
+      "nombre": "Microsoft Project",
+      "tipo": "software",
+      "uso": "Programación de proyectos con diagrama de Gantt, ruta crítica, asignación de recursos y seguimiento de costos en empresas de todos los tamaños."
+    },
+    {
+      "nombre": "Gestión del valor ganado (EVM)",
+      "tipo": "metodologia",
+      "uso": "Control de costo y plazo con EV, PV, AC, CPI y SPI, exigido en muchos contratos públicos y descrito en la guía del PMI."
+    },
+    {
+      "nombre": "Google OR-Tools (CP-SAT)",
+      "tipo": "libreria",
+      "uso": "Programación de proyectos con recursos limitados (RCPSP) en Python, C++, Java o C#, cuando CPM no basta porque los recursos chocan."
+    }
+  ],
+  "alternativas": [
+    "Programación con recursos limitados (RCPSP): cuando dos actividades comparten una grúa o un equipo de trabajo, CPM da fechas imposibles. Conviene un modelo entero o de programación con restricciones.",
+    "Cadena crítica: concentra la incertidumbre en amortiguadores del proyecto en lugar de inflar cada actividad. Conviene cuando los equipos tienden a usar toda la holgura que se les da."
+  ],
+  "errores_comunes": [
+    "Comprimir una actividad que no es crítica. No acorta el proyecto y cuesta dinero. Además, al comprimir, la ruta crítica puede cambiar: por eso conviene el programa lineal y no la intuición.",
+    "Confundir el tiempo más probable con el esperado. En PERT la media es (a + 4m + b)/6, que suele ser mayor que m porque el pesimista está más lejos.",
+    "Prometer la duración esperada como fecha de entrega. Con la aproximación normal, esa fecha solo se cumple el 50 % de las veces."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Construir la red de un proyecto y calcular a mano los pases hacia adelante y hacia atrás, las holguras y la ruta crítica.",
+      "Plantear la compresión como programa lineal y explicar por qué la ruta crítica puede cambiar al comprimir.",
+      "Calcular e interpretar la probabilidad de terminar en un plazo y compararla con la simulación."
+    ],
+    "actividades": [
+      "Con «Reliable Construction (Hillier)», pide a los estudiantes calcular la ruta crítica a mano y verificarla con la pestaña «Paso a paso».",
+      "Taller de compresión: varía el «Plazo deseado» de 44 a 28 semanas y construye la curva tiempo-costo. Discute dónde la curva cambia de pendiente y por qué.",
+      "Con la versión PERT, corre la simulación con 1000 y con 10 000 «Observaciones simuladas» y compara la probabilidad con la de la aproximación normal."
+    ],
+    "preguntas": [
+      "¿Por qué una actividad con holgura cero en el plan puede dejar de ser crítica después de comprimir otra?",
+      "Un proyecto tiene CPI = 1.1 y SPI = 0.8. ¿Qué le dirías al gerente?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Ruta crítica",
+      "definicion": "Cadena de actividades con holgura cero cuya duración total es la del proyecto."
+    },
+    {
+      "termino": "Holgura",
+      "definicion": "Tiempo que una actividad puede retrasarse sin retrasar el proyecto: inicio tardío menos inicio temprano."
+    },
+    {
+      "termino": "Compresión (crashing)",
+      "definicion": "Acortar actividades con más recursos, a un costo adicional."
+    },
+    {
+      "termino": "Índice de criticidad",
+      "definicion": "Porcentaje de las simulaciones en que una actividad quedó en la ruta crítica."
+    },
+    {
+      "termino": "Valor ganado (EV)",
+      "definicion": "Presupuesto del trabajo realmente hecho: costo presupuestado por porcentaje terminado."
+    },
+    {
+      "termino": "CPI y SPI",
+      "definicion": "Índices de costo (EV/AC) y de plazo (EV/PV); menores que 1 indican problemas."
+    }
+  ],
+  "referencias": [
+    "malcolm1959",
+    "kelleywalker1959",
+    "kelley1961",
+    "hillier2015en",
+    "render2018",
+    "law2015",
+    "chang2003",
+    "huangfuhall2018",
+    "bernstein2008"
+  ]
+}

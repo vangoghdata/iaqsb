@@ -1,0 +1,108 @@
+{
+  "modulo": "alm",
+  "titulo": "Almacenes: paletizado y dimensionado",
+  "resumen": "Calcula cuántas cajas caben en una estiba, cuánta área necesita una bodega en bloque y qué tamaño de almacén propio conviene construir, rentando el resto. Es para jefes de bodega, de logística y de proyectos de infraestructura.",
+  "que_es": [
+    "El módulo resuelve dos decisiones de almacenamiento. La primera es operativa: el paletizado. Dadas las medidas y el peso de una caja, una estiba y las restricciones del montacargas, de la altura y de la resistencia de la caja, calcula cuántas cajas van por tendido, cuántos tendidos se pueden apilar y cuántas cajas lleva cada estiba. Con eso calcula cuántas estibas ocupa cada lote y el área mínima de una bodega en bloque, con pasillos para que el montacargas llegue a cada lote.",
+    "La segunda es estratégica: el dimensionado. La demanda cambia mes a mes y el espacio requerido también. Construir un almacén para el pico deja área ociosa casi todo el año; construir para el mínimo obliga a rentar mucho. El módulo calcula el espacio requerido en cada período, el costo anual de cada tamaño propio (inversión amortizada, costos fijos y variables) más el costo de rentar lo que falte, y encuentra el tamaño de menor costo total."
+  ],
+  "analogia": "Es como decidir si compras un carro o usas taxi. Si lo usas todos los días, el carro se paga solo. Si lo necesitas tres veces al año, sale más barato pagar taxi esas veces. Con el almacén pasa lo mismo: cada metro cuadrado propio conviene solo si se usa suficientes meses al año.",
+  "para_que_sirve": [
+    { "sector": "Bebidas y envasados", "ejemplo": "Una envasadora de agua o licores debe dejar reposar cada lote varios días. El módulo calcula cuántas estibas ocupa cada lote y cuántos metros cuadrados necesita la bodega en bloque." },
+    { "sector": "Químicos y agroinsumos", "ejemplo": "Una empresa con ventas estacionales decide cuántos metros cuadrados construir y cuántos rentar en temporada alta." },
+    { "sector": "Comercio exterior", "ejemplo": "Un importador define cómo armar las estibas para no pasar la capacidad del montacargas ni aplastar las cajas de abajo." },
+    { "sector": "Operadores logísticos", "ejemplo": "Un operador cotiza espacio a un cliente nuevo a partir de su demanda mensual y de cuántas unidades caben por estiba." },
+    { "sector": "Retail", "ejemplo": "Una cadena evalúa si amplía su centro de distribución o renta bodega temporal para la temporada de diciembre." }
+  ],
+  "historia": [
+    { "anio": "1999", "hecho": "ICONTEC publica la NTC 4680, la estiba intercambiable de madera de cuatro entradas de 1200 × 1000 mm. Es la medida por defecto en IAQSB.", "refs": ["ntc4680"] },
+    { "anio": "2004", "hecho": "Ballou presenta en su texto de logística el dimensionamiento del almacén por costo total: espacio propio para la base de la demanda y rentado para los picos.", "refs": ["ballou2004", "ballou2004es"] },
+    { "anio": "2007", "hecho": "Se publica en español el libro de Frazelle sobre almacenamiento y manejo de materiales de clase mundial, con criterios de unidades de carga, sistemas de almacenaje y pasillos.", "refs": ["frazelle2007"] },
+    { "anio": "2026", "hecho": "Las diapositivas del curso Taller de Producción y Logística de la Universidad Nacional de Colombia plantean el paletizado, la bodega en bloque y el dimensionado que reproduce este módulo.", "refs": ["sarache2026almacenes"] }
+  ],
+  "necesitas": [
+    { "dato": "Medidas y peso de la caja", "para_que": "Largo, ancho y alto en centímetros y el peso lleno, o las unidades por caja con el peso de cada unidad y de la caja vacía. Salen de la ficha técnica del empaque." },
+    { "dato": "Estiba y montacargas", "para_que": "Medidas y peso de la estiba, capacidad del montacargas incluida la estiba y altura máxima de la carga, que depende del montacargas, de las puertas o del rack." },
+    { "dato": "Resistencia del primer tendido", "para_que": "El peso que soportan las cajas de abajo sin dañarse. Sale de la prueba de compresión del empaque." },
+    { "dato": "Lotes y pasillos (opcional)", "para_que": "Unidades por lote, días de reposo o número de espacios, largo del montacargas y holgura del pasillo. Con esto se calcula el área de la bodega en bloque." },
+    { "dato": "Demanda por período", "para_que": "Para el dimensionado: la demanda de cada mes o semana del año, de los pronósticos de ventas." },
+    { "dato": "Rotación y espacio por unidad", "para_que": "La rotación convierte demanda en inventario; el área por unidad o las unidades por estiba convierten inventario en metros cuadrados." },
+    { "dato": "Costos", "para_que": "Inversión por metro cuadrado y su amortización, costos fijos y variables de operar el almacén propio, y tarifas de renta por almacenaje y por manejo." }
+  ],
+  "supuestos": [
+    "Todas las cajas de una estiba son iguales y van en la misma orientación dentro de cada tendido.",
+    "El número de tendidos lo fija la restricción más estricta: peso del montacargas, altura máxima o resistencia del primer tendido.",
+    "En la bodega en bloque cada lote ocupa un bloque de estibas rodeado de pasillos.",
+    "En el dimensionado, el inventario promedio es la demanda del período dividida por la rotación.",
+    "Los costos del almacén propio se pagan aunque el área no se use; la renta se paga solo por lo que se usa."
+  ],
+  "pasos": [
+    { "titulo": "Elige el tipo de problema", "texto": "Entra a «Almacenes» y, en «Problema nuevo», escoge «Paletizado y bodega en bloque» o «Dimensionado del almacén (propio o rentado)». En el dimensionado indica el número de «Períodos». Los ejemplos envasadora y taller3_estiba son de paletizado; compania_quimica y taller3_dimensionado, de dimensionado." },
+    { "titulo": "Paletizado: describe la caja", "texto": "En «Caja (cm y kg)» escribe «Largo de la caja (cm)», «Ancho de la caja (cm)» y «Alto de la caja (cm)». Luego el «Peso de la caja llena (kg)», o bien «o unidades por caja», «y peso de cada unidad (kg)» y «y peso de la caja vacía (kg)»." },
+    { "titulo": "Paletizado: estiba y restricciones", "texto": "En «Estiba y restricciones» revisa las medidas de la estiba (por defecto 120 × 100 × 14.5 cm y 30 kg) y escribe la «Capacidad del montacargas (kg, con la estiba)», la «Altura máxima de la carga (cm, con la estiba)» y el «Peso que resiste el primer tendido (kg)». Deja vacías las restricciones que no apliquen." },
+    { "titulo": "Paletizado: lotes y bodega (opcional)", "texto": "En «Lotes y bodega en bloque (opcional)» escribe las «Unidades por lote» y los «Días de reposo de cada lote» (o el número de espacios), el «Largo total del montacargas (m)» y la «Holgura del pasillo (m)» (o el ancho del pasillo), las «Filas de estibas por lote» y las «Estibas apiladas»." },
+    { "titulo": "Dimensionado: espacio y costos", "texto": "En «Espacio» define la «Unidad de la demanda», las «Unidades por unidad de manejo (caja)», la «Rotación por período», «Cómo se calcula el espacio» (por área por unidad o con estibas), el «% del espacio para pasillos» y el «% utilizable». En «Costos» escribe la inversión, su amortización (en años, o con tasa de interés y número de períodos), los costos fijos, el variable propio y las tarifas de renta." },
+    { "titulo": "Dimensionado: demanda y alternativas", "texto": "Llena la tabla «Demanda por período». En «Alternativas a evaluar (área propia)» puedes añadir tamaños que la gerencia quiera comparar; IAQSB calcula además el óptimo." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver». En paletizado revisa la «Solución», la tabla «Restricciones de la estiba», las «Distribuciones probadas» y los «Planos» a escala. En dimensionado revisa la «Solución», los «Gráficos» y la pestaña «Alternativas», con el costo período a período de cada tamaño." }
+  ],
+  "como_resuelve": [
+    "Cajas por tendido: prueba las dos orientaciones de la caja sobre la estiba, ⌊largo de la estiba / largo de la caja⌋ × ⌊ancho / ancho⌋ y la girada, y toma la mayor.",
+    "Tendidos por estiba: cada restricción da un número de tendidos, siempre redondeando hacia abajo. El montacargas limita por peso, la altura máxima limita por centímetros y la resistencia limita cuántos tendidos van encima del primero. Manda el menor, y el informe dice cuál fue.",
+    "Bodega en bloque: las estibas de cada lote se reparten en filas para que toda estiba dé a un pasillo, cuyo ancho es el largo del montacargas más la holgura. IAQSB prueba varias formas de acomodar los bloques y elige la de menor área, con un plano a escala.",
+    "Dimensionado: el espacio requerido de cada período es demanda / rotación convertida a área, más pasillos y holgura. Para cada tamaño propio suma el costo fijo del área (inversión amortizada más costos fijos), el variable propio y la renta de lo que no cabe. El tamaño óptimo sale de un análisis marginal: un metro cuadrado propio se paga si se usa al menos cierto número de períodos, así que se construye hasta el requerimiento que ocupa esa posición, ordenando los requerimientos de mayor a menor.",
+    "Son cálculos cerrados; no se necesita un solver de optimización."
+  ],
+  "interpretar": [
+    "En el ejemplo envasadora, cada estiba lleva 80 cajas: 5 tendidos de 16. Manda la resistencia del primer tendido, no el montacargas, que permitiría 8. Una caja más resistente aumentaría la carga por estiba un 60 % y reduciría el área de bodega.",
+    "En ese mismo ejemplo, cada lote ocupa 13 estibas y se necesitan 8 espacios; la bodega mínima es de 475.15 m², de los que solo 124.8 m² son estibas. El resto son pasillos: por eso las estanterías o el apilamiento suelen ser más eficientes que el bloque con pasillos alrededor de cada lote.",
+    "En el dimensionado de la compañía química, conviene construir 63 720 ft² aunque el pico sea de 83 929 ft²: los meses de pico se cubren rentando.",
+    "Si el óptimo coincide con el pico, rentar es tan caro frente a construir que conviene pagar área ociosa. Revisa entonces si la tarifa de renta es realista."
+  ],
+  "industria": [
+    { "nombre": "SAP Extended Warehouse Management, Manhattan Active Warehouse Management y Blue Yonder WMS", "tipo": "software", "uso": "Sistemas de gestión de bodegas: ubicaciones, recibo, almacenamiento, alistamiento y despacho." },
+    { "nombre": "Cape Pack y TOPS Pro", "tipo": "software", "uso": "Optimización del paletizado y del diseño del empaque para aprovechar la estiba y el contenedor." },
+    { "nombre": "AutoCAD y software de diseño de racks", "tipo": "software", "uso": "Planos de bodega con racks, pasillos y zonas de maniobra a escala." },
+    { "nombre": "Bodega en bloque, estantería selectiva, drive-in y almacenes automáticos", "tipo": "metodologia", "uso": "Sistemas de almacenaje que cambian el área por estiba y el acceso a cada lote; se escogen según rotación y número de referencias." },
+    { "nombre": "Operadores logísticos con bodega compartida", "tipo": "servicio", "uso": "Almacenamiento tercerizado cobrado por posición de estiba y por movimiento, la alternativa de renta del dimensionado." }
+  ],
+  "alternativas": [
+    "Estanterías o racks en altura, que aumentan el número de posiciones por metro cuadrado a cambio de inversión en estructura y montacargas adecuados.",
+    "Paletizado mixto o software de cargas para cajas de varios tamaños, que este módulo no cubre.",
+    "Modelos de programación entera para decidir varios almacenes y su ubicación a la vez (módulos LP-ILP y FLL).",
+    "Simulación de la bodega cuando hay mucha variabilidad en entradas y salidas y el promedio no basta."
+  ],
+  "errores_comunes": [
+    "Mezclar unidades: la caja en centímetros y el pasillo en metros es correcto en IAQSB, pero escribir la caja en milímetros da cajas por tendido absurdas.",
+    "Olvidar el peso de la estiba en la capacidad del montacargas o en la altura máxima.",
+    "Calcular el espacio con la demanda y no con el inventario. Lo que ocupa espacio es el inventario: demanda dividida por rotación.",
+    "Dimensionar el almacén propio para el pico sin hacer el análisis de costos.",
+    "Ignorar los pasillos y el porcentaje utilizable. Una bodega no se llena al 100 %."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Calcular cajas por tendido, tendidos y cajas por estiba con varias restricciones.",
+      "Estimar el área de una bodega en bloque con pasillos.",
+      "Decidir el tamaño de un almacén propio frente a rentar, con un análisis de costo total y marginal."
+    ],
+    "actividades": [
+      "Con envasadora, cambiar la resistencia del primer tendido y la capacidad del montacargas para ver cuándo cambia la restricción que manda.",
+      "Medir una caja real de un producto de supermercado, buscar su peso y calcular cuántas caben en una estiba NTC 4680 con un montacargas de 1000 kg.",
+      "Con taller3_dimensionado, subir la tarifa de renta y la inversión por metro cuadrado y graficar cómo se mueve el tamaño óptimo."
+    ],
+    "preguntas": [
+      "¿Por qué el área total de la bodega en bloque es mucho mayor que el área de las estibas?",
+      "¿Qué significa que el tamaño óptimo esté por debajo del pico de requerimiento?",
+      "¿Qué cambiaría si la empresa usara racks de cuatro niveles en lugar de bloque?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Estiba", "definicion": "Plataforma, normalmente de madera, que sirve de base para mover y almacenar carga con montacargas; también se llama paleta o pallet." },
+    { "termino": "Tendido", "definicion": "Cada capa de cajas sobre la estiba." },
+    { "termino": "Bodega en bloque", "definicion": "Almacenamiento de estibas directamente en el piso, juntas, sin estanterías." },
+    { "termino": "Rotación", "definicion": "Número de veces que el inventario se renueva en un período; inventario = demanda / rotación." },
+    { "termino": "Unidad de manejo", "definicion": "Forma en que se mueve el producto: caja, paca o estiba." },
+    { "termino": "Amortización", "definicion": "Reparto de una inversión entre los períodos de su vida útil." },
+    { "termino": "Análisis marginal", "definicion": "Comparar el costo y el ahorro de una unidad adicional, aquí un metro cuadrado propio más." }
+  ],
+  "referencias": ["sarache2026almacenes", "sarache2026taller3", "ballou2004", "ballou2004es", "frazelle2007", "ntc4680", "blanktarquin"]
+}

@@ -1,0 +1,107 @@
+{
+  "modulo": "mrp2",
+  "titulo": "MRP II por matrices (Gozinto)",
+  "resumen": "Explota la demanda de varios productos en necesidades de todos sus componentes con multiplicaciones de matrices, y compara la carga resultante con la capacidad de cada departamento. Sirve para entender de un vistazo el vínculo entre materiales y capacidad que define al MRP II.",
+  "que_es": [
+    "El MRP II (planeación de recursos de manufactura) amplía el MRP: además de calcular qué materiales se necesitan, verifica si la planta tiene horas suficientes para fabricarlos y ajusta por calidad. Este módulo, que no existe en WinQSB, lo hace con el método matricial que enseña el profesor Arango en el curso, conocido como Gozinto. En lugar de recorrer la lista de materiales artículo por artículo, la escribe como una matriz y obtiene todos los requerimientos con una sola multiplicación.",
+    "La pieza central es la matriz de requerimientos totales LM. Cada columna es un artículo y cada fila un componente; el valor dice cuántas unidades del componente lleva, directa o indirectamente, una unidad del artículo, con 1 en la diagonal. Si solo tienes la estructura directa N (unidades por padre inmediato), el módulo calcula LM = (I − N)⁻¹. Con LM se obtienen los requerimientos brutos, los netos, la demanda neta y las necesidades a programar. Con la matriz de tasas de producción se obtiene el tiempo de máquina de cada departamento y se compara con el tiempo disponible."
+  ],
+  "analogia": "La matriz LM es como una tabla de conversión de recetas en una panadería: dice cuántos gramos de harina, huevos y mantequilla lleva cada producto, ya sumando lo que va en sus rellenos y masas. Multiplicar esa tabla por el pedido del día da la lista completa de insumos de una vez, sin repasar receta por receta.",
+  "para_que_sirve": [
+    { "sector": "Muebles metálicos", "ejemplo": "Un fabricante de estanterías calcula de una vez cuántos anaqueles, patas, insertos, tornillos y láminas necesita en el trimestre, y descubre qué departamento se queda corto de horas en marzo." },
+    { "sector": "Electrodomésticos", "ejemplo": "Una planta con varias líneas de producto que comparten componentes ve el efecto total de un cambio en la demanda de un modelo sobre todos los subensambles y sobre la carga de troquelado y pintura." },
+    { "sector": "Docencia y consultoría", "ejemplo": "Un analista arma el modelo en una hoja de cálculo con matrices para mostrarle a la gerencia, con pocas operaciones, por qué el plan de ventas no cabe en la capacidad instalada." }
+  ],
+  "historia": [
+    { "anio": "1954", "hecho": "Andrew Vazsonyi propone en el primer número de Management Science el uso de matrices para calcular los requerimientos totales de una lista de materiales, el origen del método Gozinto.", "refs": ["vazsonyi1954"] },
+    { "anio": "1975", "hecho": "Orlicky describe el MRP de requerimientos netos por periodos, base sobre la que se construye el MRP II.", "refs": ["orlicky1975"] },
+    { "anio": "1981", "hecho": "Oliver Wight populariza el MRP II, que une los materiales con la capacidad, las ventas y las finanzas en un circuito cerrado de planeación.", "refs": ["wight1981"] },
+    { "anio": "Década de 1990", "hecho": "El MRP II se integra con el resto de la empresa en los sistemas ERP.", "refs": ["jacobsweston2007"] },
+    { "anio": "2021", "hecho": "El profesor Jaime Antero Arango Marín enseña el MRP II con matrices (LM, Ds, Ifd, Exd, Opd, Reo, Tpr, Ctr, Fcal) y el ejemplo de los estantes en la Universidad Nacional de Colombia.", "refs": ["arango2021gozinto"] }
+  ],
+  "necesitas": [
+    { "dato": "Lista de materiales LM", "para_que": "La matriz de requerimientos totales (1 en la diagonal) o la estructura directa. Fila: componente; columna: artículo que lo usa. Sale de ingeniería de producto." },
+    { "dato": "Demanda sincronizada (Ds)", "para_que": "La demanda de cada artículo en cada periodo, ya ubicada en el periodo en que se necesita producir. Viene del programa maestro." },
+    { "dato": "Inventario final deseado (Ifd) y existencias (Exd)", "para_que": "Lo que se quiere tener al final del horizonte y lo que hay hoy en bodega." },
+    { "dato": "Órdenes pendientes (Opd)", "para_que": "Órdenes ya lanzadas que llegarán en cada periodo, sin incluir las existencias." },
+    { "dato": "Punto de reorden (Reo) y factor de calidad (Fcal)", "para_que": "Reo avisa qué artículos están por debajo del mínimo; Fcal infla las necesidades para compensar defectos (1.04 = 4 % de rechazo)." },
+    { "dato": "Tasas de producción (Tpr), tiempo máximo (Tmax) y carga comprometida (Ctr)", "para_que": "Minutos u horas por unidad en cada departamento, horas disponibles y horas ya comprometidas en cada periodo. Salen de ingeniería de métodos y de programación de la planta." }
+  ],
+  "supuestos": [
+    "La demanda ya está sincronizada: el método no desplaza las órdenes por tiempos de entrega, como sí hace el MRP del módulo mrp.",
+    "No hay reglas de tamaño de lote: las necesidades se programan tal como salen del cálculo.",
+    "Las tasas de producción son constantes y la capacidad se mide en horas por departamento y periodo.",
+    "El factor de calidad es un porcentaje fijo de rechazo por artículo."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo", "texto": "En la barra lateral elige «MRP II por matrices (Gozinto)». Pulsa «Nuevo problema» con el «Número de artículos», el «Número de periodos» y el «Número de departamentos», o abre el ejemplo estantes_arango." },
+    { "titulo": "Lista de materiales", "texto": "En «La matriz LM es» elige «De requerimientos totales (1 en la diagonal)» o «La estructura directa (padre inmediato)». En «Las tasas de producción están en» elige minutos u horas por unidad." },
+    { "titulo": "Artículos y periodos", "texto": "En «Artículos» escribe para cada uno el «Inventario final deseado (Ifd)», las «Existencias (Exd)», el «Punto de reorden (Reo)» si aplica y el «Factor de calidad (Fcal)». En «Periodos» nombra cada periodo (por ejemplo Enero, Febrero, Marzo)." },
+    { "titulo": "Matrices de materiales", "texto": "Llena «Lista de materiales LM (fila: componente; columna: artículo que lo usa)», «Demanda sincronizada (Ds)» y «Órdenes pendientes (Opd, sin las existencias)»." },
+    { "titulo": "Capacidad", "texto": "En «Departamentos» nombra cada uno y llena «Tasas de producción (Tpr): tiempo por unidad», «Tiempo máximo (Tmax, horas)» y «Carga de trabajo comprometida (Ctr, horas)»." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Deja marcado «Repartir los negativos en los periodos siguientes» si quieres que un sobrante de un periodo cubra los siguientes. Pulsa «Resolver». El «Paso a paso» muestra seis pasos: requerimientos brutos, inventario programado y requerimientos netos, demanda neta, necesidades a programar, capacidad y ajuste por calidad." }
+  ],
+  "como_resuelve": [
+    "El módulo hace en Rust las mismas operaciones de matrices que se hacen en clase con Excel. Si diste la estructura directa N, primero calcula LM = (I − N)⁻¹.",
+    "Requerimientos brutos: RB = LM × Ds. Inventario programado: Ipr = Ds + Ifd, sumando el inventario final deseado en el último periodo. Requerimientos netos: RN = LM × Ipr.",
+    "Demanda neta: Dneta = Ipr − Opd ajustada, donde las órdenes pendientes del primer periodo incluyen las existencias. Necesidades a programar: NP = LM × Dneta. Un valor negativo es un sobrante; con la opción marcada se reparte en los periodos siguientes y lo que sobra al final se informa como sobrante del horizonte.",
+    "Capacidad: tiempo de máquina Tmq = Tpr × NP (dividido por 60 si las tasas están en minutos), tiempo disponible Tdisp = Tmax − Ctr y tiempo residual Tres = Tdisp − Tmq. Un residual negativo es falta de capacidad.",
+    "Calidad: requerimiento ajustado RA = Fcal × NP, que es lo que realmente hay que programar para obtener las unidades buenas. El módulo también lista los artículos cuyas existencias están por debajo del punto de reorden."
+  ],
+  "interpretar": [
+    "La tabla «Necesidades a programar NP = LM × Dneta» dice cuántas unidades de cada artículo hay que producir o comprar en cada periodo. La de «Requerimiento ajustado por calidad» es la cantidad que se lanza realmente.",
+    "En «Capacidad», el tiempo residual negativo señala el departamento y el periodo sin horas suficientes. En el ejemplo de los estantes falta capacidad en el Dpto. 2 en marzo (−111.25 h): hay que programar horas extra, subcontratar o adelantar producción a febrero, donde sobran horas.",
+    "Los avisos de existencias por debajo del punto de reorden (en el ejemplo, Inserto y Conector) indican compras urgentes aunque el cálculo de necesidades no las pida todavía.",
+    "La pestaña «Matrices» muestra todos los cálculos intermedios, útil para comparar con la hoja de Excel celda por celda."
+  ],
+  "industria": [
+    { "nombre": "ERP con MRP y planeación de capacidad (SAP S/4HANA, Oracle, Microsoft Dynamics 365, Odoo)", "tipo": "software", "uso": "Ejecutan el MRP II de circuito cerrado en la práctica: explosión de materiales, planeación de requerimientos de capacidad (CRP) y retroalimentación del taller." },
+    { "nombre": "Microsoft Excel (MMULT y MINVERSA)", "tipo": "software", "uso": "Las funciones de matrices permiten montar el método Gozinto en una hoja, como en las clases del curso." },
+    { "nombre": "NumPy y R", "tipo": "libreria", "uso": "Álgebra matricial para explotar listas de materiales grandes en análisis y prototipos." },
+    { "nombre": "Estándar Clase A de Oliver Wight", "tipo": "metodologia", "uso": "Marco de evaluación de la madurez de la planeación y el control (MRP II, S&OP) que usan consultoras y empresas." }
+  ],
+  "alternativas": [
+    "El módulo MRP de IAQSB, con tiempos de entrega, reglas de lote y registros por periodo, cuando importa el momento exacto de emitir cada orden.",
+    "El plan aproximado de capacidad (RCCP) del módulo PMP, cuando basta revisar un recurso clave con el programa maestro.",
+    "Sistemas APS con capacidad finita, cuando la sobrecarga debe resolverse moviendo órdenes automáticamente y no solo detectarse.",
+    "Programación lineal (módulo LP-ILP) para decidir de forma óptima cómo redistribuir la producción entre periodos cuando falta capacidad."
+  ],
+  "errores_comunes": [
+    "Confundir la matriz de requerimientos totales con la estructura directa. Elige bien la opción «La matriz LM es»; si das la directa como total, faltarán los componentes de los niveles inferiores.",
+    "Trasponer la matriz: en IAQSB la fila es el componente y la columna el artículo que lo usa.",
+    "Sumar las existencias a las órdenes pendientes antes de escribirlas. La matriz Opd va sin existencias; el módulo las agrega en el primer periodo.",
+    "Mezclar minutos y horas entre Tpr y Tmax. Revisa la opción de unidades de las tasas.",
+    "Olvidar el factor de calidad o ponerlo en porcentaje (4) en lugar de factor (1.04)."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Construir la matriz de requerimientos totales a partir de la estructura del producto.",
+      "Calcular requerimientos brutos, netos, demanda neta y necesidades a programar con operaciones de matrices.",
+      "Evaluar la carga por departamento y proponer acciones ante una falta de capacidad.",
+      "Explicar qué agrega el MRP II al MRP y cómo se relaciona con el ERP."
+    ],
+    "actividades": [
+      "Con estantes_arango (diapositivas 4 a 14 del profesor Arango), resolver en Excel con MMULT y comparar cada matriz con la pestaña «Matrices» de IAQSB. La solución del ejemplo está por verificar contra una solución oficial: es una buena oportunidad para que el grupo la valide.",
+      "Cambiar la opción a «La estructura directa (padre inmediato)», escribir N y comprobar que el módulo obtiene la misma LM.",
+      "Proponer un plan para la falta de capacidad del Dpto. 2 en marzo: adelantar producción a febrero (modificando Ds), horas extra (aumentando Tmax) o subcontratación, y medir el efecto en Tres.",
+      "Comparar el mismo producto en el módulo mrp, con tiempos de entrega, y discutir qué se pierde al trabajar con demanda sincronizada."
+    ],
+    "preguntas": [
+      "¿Por qué la matriz LM tiene 1 en la diagonal?",
+      "¿Qué representa un valor negativo en las necesidades a programar y qué hace la opción de repartirlo?",
+      "Si el factor de calidad de un componente pasa de 1.02 a 1.10, ¿qué cambia en su requerimiento ajustado y en la carga de los departamentos?",
+      "¿Qué limitaciones tiene el método matricial frente al MRP con tiempos de entrega y lotes?"
+    ]
+  },
+  "glosario": [
+    { "termino": "MRP II", "definicion": "Planeación de recursos de manufactura: MRP más capacidad, ventas y finanzas en un circuito cerrado." },
+    { "termino": "Método Gozinto", "definicion": "Cálculo de requerimientos de materiales con matrices de la lista de materiales." },
+    { "termino": "Matriz de requerimientos totales (LM)", "definicion": "Matriz con las unidades de cada componente por unidad de cada artículo, en todos los niveles." },
+    { "termino": "Estructura directa (N)", "definicion": "Matriz con las unidades de cada componente por unidad de su padre inmediato." },
+    { "termino": "Demanda sincronizada (Ds)", "definicion": "Demanda de cada artículo ubicada en el periodo en que debe producirse." },
+    { "termino": "Necesidades a programar (NP)", "definicion": "Unidades que hay que producir o comprar después de descontar inventarios y órdenes pendientes." },
+    { "termino": "Tiempo residual (Tres)", "definicion": "Horas que sobran (o faltan, si es negativo) en un departamento después de la carga del plan." },
+    { "termino": "Factor de calidad (Fcal)", "definicion": "Multiplicador que infla las necesidades para compensar las unidades defectuosas." }
+  ],
+  "referencias": ["arango2021gozinto", "vazsonyi1954", "orlicky1975", "wight1981", "jacobsweston2007", "vollmann2005"]
+}

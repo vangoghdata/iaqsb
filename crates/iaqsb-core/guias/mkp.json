@@ -1,0 +1,212 @@
+{
+  "modulo": "mkp",
+  "titulo": "Procesos de Markov (cadenas de Markov)",
+  "resumen": "Describe sistemas que cambian de estado de un periodo a otro con probabilidades fijas, y calcula a dónde tienden a largo plazo, cuánto tardan en llegar a un estado y con qué probabilidad terminan en uno absorbente. Lo usan analistas de mercadeo, crédito, mantenimiento e inventarios.",
+  "que_es": [
+    "Una cadena de Markov es un sistema que en cada periodo está en uno de varios estados: un cliente compra en la tienda A, B o C; una máquina está buena, regular o dañada; una cuenta por cobrar está al día, vencida o pagada. De un periodo al siguiente el sistema pasa de un estado a otro con probabilidades conocidas. Esas probabilidades se ordenan en la matriz de transición: la fila es el estado de hoy y la columna el de mañana, y cada fila suma 1.",
+    "La propiedad de Markov dice que el futuro depende solo del estado actual, no de cómo se llegó a él. Con esa sola idea se responden preguntas valiosas: qué porcentaje del tiempo pasará el sistema en cada estado a largo plazo (estado estable), cuántos periodos tarda en promedio en ir de un estado a otro (tiempo de primer paso) y, si hay estados de los que no se sale (absorbentes), con qué probabilidad termina en cada uno.",
+    "IAQSB tiene un solo tipo de problema, «Cadena de Markov». Con la matriz, las probabilidades iniciales y un costo por estado, calcula la clasificación de los estados, el estado estable, la evolución período a período con su costo esperado, los tiempos de primer paso y, cuando hay estados transitorios, la matriz fundamental y las probabilidades de absorción."
+  ],
+  "analogia": "Piensa en el clima de una ciudad en la que, si hoy llueve, mañana llueve con probabilidad 0.6, y si hoy hace sol, mañana hace sol con probabilidad 0.8. No importa qué pasó la semana pasada: solo importa el día de hoy. Si sigues esa regla durante muchos días, el porcentaje de días lluviosos se estabiliza en un valor fijo, sin importar con qué día empezaste. Ese valor es el estado estable.",
+  "para_que_sirve": [
+    {
+      "sector": "Comercio minorista y mercadeo",
+      "ejemplo": "Una cadena de supermercados estima, con datos de tarjetas de fidelización, la probabilidad de que un cliente cambie de tienda cada mes. El estado estable predice la participación de mercado de largo plazo y permite evaluar si una campaña que mejora la retención vale lo que cuesta."
+    },
+    {
+      "sector": "Banca y cartera",
+      "ejemplo": "Una entidad financiera clasifica sus créditos por días de mora. Los estados «pagado» y «castigado» son absorbentes. Las probabilidades de absorción estiman qué parte de la cartera actual se perderá, un insumo para las provisiones."
+    },
+    {
+      "sector": "Mantenimiento de equipos",
+      "ejemplo": "Una empresa de transporte clasifica sus buses en buen estado, desgaste medio y falla. Con un costo por estado compara políticas de mantenimiento preventivo por su costo esperado por periodo."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1906",
+      "hecho": "Andréi Márkov publicó en Kazán un trabajo que extiende la ley de los grandes números a variables que dependen unas de otras. En él aparecen por primera vez las cadenas que hoy llevan su nombre.",
+      "refs": [
+        "markov1906"
+      ]
+    },
+    {
+      "anio": "1960",
+      "hecho": "Kemeny y Snell publicaron «Finite Markov chains», que organizó la teoría de las cadenas finitas para la enseñanza: estado estable, tiempos de primera pasada, estados absorbentes y matriz fundamental.",
+      "refs": [
+        "kemenysnell1960"
+      ]
+    },
+    {
+      "anio": "2003",
+      "hecho": "El manual de WinQSB 2.0 documenta el módulo MKP de procesos de Markov. IAQSB reproduce sus resultados, lee y guarda sus archivos y agrega la clasificación de estados y la absorción.",
+      "refs": [
+        "chang2003"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Estados",
+      "para_que": "Las situaciones posibles del sistema, exhaustivas y excluyentes. Salen de cómo la empresa clasifica a sus clientes, máquinas o cuentas."
+    },
+    {
+      "dato": "Matriz de transición",
+      "para_que": "La probabilidad de pasar de cada estado a cada otro en un periodo. Se estima contando transiciones en datos históricos: de los clientes que estaban en A, qué fracción pasó a B al mes siguiente."
+    },
+    {
+      "dato": "Probabilidades iniciales",
+      "para_que": "Cómo está repartido el sistema hoy. Sirven para la evolución período a período y para las probabilidades de largo plazo cuando no hay un estado estable único."
+    },
+    {
+      "dato": "Costo del estado (opcional)",
+      "para_que": "Lo que cuesta, o rinde, estar un periodo en cada estado. Con él IAQSB calcula el costo esperado por periodo."
+    },
+    {
+      "dato": "Períodos de la evolución",
+      "para_que": "Cuántos periodos quieres proyectar para ver cómo cambian las probabilidades desde la situación inicial."
+    }
+  ],
+  "supuestos": [
+    "Propiedad de Markov: la probabilidad de pasar al siguiente estado depende solo del estado actual.",
+    "Las probabilidades de transición no cambian con el tiempo (cadena homogénea).",
+    "El tiempo es discreto: el sistema cambia en periodos fijos (días, semanas, meses).",
+    "El número de estados es finito y cada fila de la matriz suma exactamente 1."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y crea el problema",
+      "texto": "Entra a «Procesos de Markov» y pulsa «Nuevo problema». El tipo de problema es «Cadena de Markov». Indica el «Número de estados» y pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» tienes «Inventario de camaras (Hillier)», con costos por estado; «Cambio de tienda (Render)», sobre participación de mercado; y «Cuentas por cobrar (Render)», con dos estados absorbentes."
+    },
+    {
+      "titulo": "Escribe la matriz",
+      "texto": "En la pestaña «Datos», la tabla «Probabilidades de transición (desde × hacia)» tiene una fila por estado de origen («Desde») y una columna por estado de destino («Hacia»). Cambia los nombres de los estados y escribe cada probabilidad. Revisa que cada fila sume 1. Con «Añadir estado» agregas estados."
+    },
+    {
+      "titulo": "Agrega probabilidades iniciales y costos",
+      "texto": "En las columnas «Probabilidad inicial» y «Costo del estado» escribe cómo está repartido el sistema hoy (deben sumar 1) y el costo de cada estado. Si no tienes costos, déjalos en cero."
+    },
+    {
+      "titulo": "Ajusta las opciones",
+      "texto": "En «Parámetros del análisis» escribe los «Períodos de la evolución». En el menú de opciones deja marcado «Mostrar paso a paso»."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Revisa las pestañas «Solución», «Diagrama», «Evolución», «Primer paso» y, si hay estados absorbentes, «Absorción». La pestaña «Paso a paso» muestra la verificación de la matriz, la clasificación de los estados y el sistema de ecuaciones que da el estado estable."
+    }
+  ],
+  "como_resuelve": [
+    "Primero verifica que las filas sumen 1. Luego clasifica los estados: calcula qué estados se alcanzan desde cuáles (cierre transitivo), forma las clases comunicantes, marca como recurrentes las clases cerradas y como transitorios los demás estados, e identifica los absorbentes (los que vuelven a sí mismos con probabilidad 1). También calcula el periodo de cada clase.",
+    "El estado estable π resuelve π = π·P con Σπ = 1. IAQSB arma ese sistema lineal para cada clase cerrada y lo resuelve por factorización LU con la librería nalgebra. El tiempo de recurrencia de cada estado es 1/πᵢ. Si hay varias clases recurrentes, no hay un estado estable único y muestra las probabilidades de largo plazo según el estado inicial.",
+    "La evolución multiplica el vector de probabilidades por la matriz periodo a periodo: q(n+1) = q(n)·P, y en cada periodo calcula el costo esperado Σ qᵢ·costoᵢ.",
+    "Los tiempos medios de primer paso mᵢⱼ resuelven mᵢⱼ = 1 + Σₖ≠ⱼ pᵢₖ·mₖⱼ. Si desde un estado no se llega a otro con certeza, el tiempo es infinito.",
+    "Con estados transitorios, separa la submatriz Q entre transitorios y R hacia absorbentes. La matriz fundamental N = (I − Q)⁻¹ da las visitas esperadas a cada estado transitorio, N·R las probabilidades de absorción y N·1 los periodos esperados antes de la absorción."
+  ],
+  "interpretar": [
+    "En «Solución», la clasificación te dice qué tipo de cadena tienes. Si hay una sola clase recurrente y aperiódica, el estado estable no depende del punto de partida y es la respuesta de largo plazo.",
+    "En el ejemplo de las cámaras, el estado estable es 0.2857, 0.2848, 0.2632 y 0.1663, y el costo esperado es 5.6691 por semana. El libro da 5.662 porque redondea las probabilidades antes de multiplicar.",
+    "El tiempo de recurrencia de un estado es cada cuánto vuelve en promedio. Con 0 cámaras es 3.5 semanas: la tienda se queda sin producto aproximadamente una semana de cada tres y media.",
+    "En «Absorción» del ejemplo de cuentas por cobrar, una cuenta de 1 a 3 meses se cobra con probabilidad 0.862 y se pierde con 0.138. Con la mezcla inicial de la cartera, se cobra el 89.16 % y se pierde el 10.84 %. Esa cifra es la base para provisionar.",
+    "En «Evolución» verás cuántos periodos tarda el sistema en acercarse al estado estable. Si tarda mucho, las decisiones de corto plazo deben basarse en la evolución y no en el estado estable."
+  ],
+  "industria": [
+    {
+      "nombre": "Modelos de migración de crédito",
+      "tipo": "metodologia",
+      "uso": "Bancos y calificadoras usan matrices de transición entre calificaciones o franjas de mora para estimar pérdidas esperadas y provisiones."
+    },
+    {
+      "nombre": "PageRank",
+      "tipo": "metodologia",
+      "uso": "Ordena páginas web según la distribución estacionaria de una cadena de Markov que recorre los enlaces; es la misma idea del estado estable."
+    },
+    {
+      "nombre": "R: paquete markovchain",
+      "tipo": "libreria",
+      "uso": "Estima matrices de transición desde datos, clasifica estados y calcula estado estable y absorción."
+    },
+    {
+      "nombre": "Python: NumPy y SciPy",
+      "tipo": "libreria",
+      "uso": "Álgebra lineal para resolver π = π·P, potencias de la matriz y la matriz fundamental en análisis a la medida."
+    },
+    {
+      "nombre": "Microsoft Excel",
+      "tipo": "software",
+      "uso": "Muy usado en empresas para proyectar cadenas pequeñas con MMULT y resolver el estado estable con MINVERSA."
+    }
+  ],
+  "alternativas": [
+    "Procesos de decisión de Markov: cuando además de observar el estado puedes tomar una decisión en cada periodo (reparar o no, dar crédito o no). Se resuelven con programación dinámica.",
+    "Cadenas de Markov de tiempo continuo: cuando los cambios ocurren en cualquier instante, como en las colas. El módulo de teoría de colas usa esa idea.",
+    "Simulación: cuando las probabilidades cambian con el tiempo o dependen de la historia, una simulación es más flexible que la cadena."
+  ],
+  "errores_comunes": [
+    "Escribir la matriz traspuesta: en IAQSB las filas son el estado de origen y las columnas el de destino. Cada fila, no cada columna, suma 1.",
+    "Buscar un estado estable único en una cadena con estados absorbentes o con varias clases recurrentes. En ese caso la respuesta de largo plazo depende del estado inicial.",
+    "Estimar las probabilidades con muy pocos datos. Una fila basada en diez clientes produce un estado estable poco confiable.",
+    "Olvidar que el modelo supone probabilidades constantes. Si hay estacionalidad o una campaña cambia el comportamiento, la matriz deja de ser válida.",
+    "Confundir el tiempo de primer paso con el de recurrencia: el primero va de un estado a otro; el segundo, de un estado a sí mismo."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Plantear una matriz de transición a partir de un enunciado o de datos.",
+      "Clasificar estados en recurrentes, transitorios y absorbentes, y saber cuándo existe un estado estable único.",
+      "Calcular e interpretar el estado estable, los tiempos de primer paso y las probabilidades de absorción.",
+      "Usar el costo esperado por periodo para comparar políticas."
+    ],
+    "actividades": [
+      "Con «Cambio de tienda (Render)», pide resolver el estado estable a mano con el sistema de ecuaciones y compararlo con la pestaña «Paso a paso».",
+      "Con «Inventario de camaras (Hillier)», cambia la política de reposición, recalcula la matriz y compara el costo esperado por semana.",
+      "Con «Cuentas por cobrar (Render)», calcula la matriz fundamental a mano y discute cuánto debe provisionar la empresa."
+    ],
+    "preguntas": [
+      "¿Por qué una cadena con dos estados absorbentes no tiene un estado estable único?",
+      "Si el tiempo de recurrencia de un estado es 4, ¿qué fracción del tiempo pasa el sistema en él?",
+      "¿Qué cambiarías en el modelo si la probabilidad de que un cliente se vaya aumenta con los meses que lleva sin comprar?",
+      "Una campaña sube de 0.80 a 0.85 la probabilidad de retener a un cliente. ¿Cómo decidirías si vale la pena?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Matriz de transición",
+      "definicion": "Tabla con la probabilidad de pasar de cada estado a cada otro en un periodo."
+    },
+    {
+      "termino": "Estado estable",
+      "definicion": "Distribución de probabilidades que ya no cambia de un periodo a otro: π = π·P."
+    },
+    {
+      "termino": "Estado absorbente",
+      "definicion": "Estado del que no se sale: su probabilidad de quedarse es 1."
+    },
+    {
+      "termino": "Estado transitorio",
+      "definicion": "Estado al que el sistema puede no volver nunca."
+    },
+    {
+      "termino": "Tiempo de primer paso",
+      "definicion": "Número esperado de periodos para llegar por primera vez de un estado a otro."
+    },
+    {
+      "termino": "Tiempo de recurrencia",
+      "definicion": "Número esperado de periodos para volver a un mismo estado; es 1/πᵢ."
+    },
+    {
+      "termino": "Matriz fundamental",
+      "definicion": "N = (I − Q)⁻¹: visitas esperadas a cada estado transitorio antes de la absorción."
+    }
+  ],
+  "referencias": [
+    "markov1906",
+    "kemenysnell1960",
+    "hillier2015en",
+    "render2018",
+    "chang2003",
+    "nalgebra"
+  ]
+}

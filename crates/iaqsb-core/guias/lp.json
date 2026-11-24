@@ -1,0 +1,250 @@
+{
+  "modulo": "lp",
+  "titulo": "Programación lineal y entera (LP-ILP)",
+  "resumen": "Decide cuánto hacer de cada actividad para lograr el mejor resultado posible (más utilidad o menos costo) sin pasarse de los recursos disponibles. Sirve a planeadores de producción, logística, finanzas y a cualquier área que reparta recursos escasos.",
+  "que_es": [
+    "Un programa lineal es un modelo con tres partes: variables de decisión (cuánto producir, enviar o comprar), una función objetivo que se quiere maximizar o minimizar y un conjunto de restricciones que limitan las decisiones. Todo se escribe con sumas de coeficientes por variables: no hay productos entre variables ni potencias.",
+    "La intuición es geométrica. Cada restricción corta el espacio y deja una región de soluciones factibles. Si la región no está vacía y el objetivo no crece sin límite, el óptimo está en un vértice de esa región. El método símplex recorre vértices vecinos, siempre mejorando, hasta que ningún vecino es mejor.",
+    "Cuando algunas variables deben ser enteras (camiones, personas, lotes) o binarias (abrir o no una planta), el modelo se vuelve de programación entera. Ya no basta con el vértice: hay que buscar entre soluciones enteras, y para eso se usa ramificación y acotamiento (branch and bound) sobre relajaciones lineales."
+  ],
+  "analogia": "Es como armar el mercado del mes con un presupuesto fijo: quieres la mayor nutrición posible, pero el dinero, la nevera y el tiempo de cocina ponen límites. Cada producto aporta algo y gasta algo; la programación lineal encuentra la combinación que más rinde sin romper ningún límite.",
+  "para_que_sirve": [
+    {
+      "sector": "Manufactura",
+      "ejemplo": "Mezcla de productos: cuántas unidades fabricar de cada referencia según las horas de máquina y de mano de obra disponibles. La empresa conoce su utilidad máxima y qué recurso es el cuello de botella."
+    },
+    {
+      "sector": "Alimentos y agroindustria",
+      "ejemplo": "Formulación de concentrados para animales al menor costo que cumpla requisitos de proteína, energía y fibra. Pequeños ahorros por kilo se vuelven grandes en miles de toneladas."
+    },
+    {
+      "sector": "Logística y distribución",
+      "ejemplo": "Asignar volúmenes de bodegas a clientes, o decidir con variables binarias qué centros de distribución abrir. El modelo equilibra costo fijo de abrir y costo variable de transporte."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1939",
+      "hecho": "Leonid Kantorovich formula en la Unión Soviética problemas de organización y planeación de la producción como modelos lineales. Su trabajo se conoció en Occidente con la traducción de 1960.",
+      "refs": [
+        "kantorovich1960"
+      ]
+    },
+    {
+      "anio": "1945",
+      "hecho": "George Stigler plantea el problema de la dieta de costo mínimo, que se volvió un ejemplo clásico de la programación lineal.",
+      "refs": [
+        "stigler1945"
+      ]
+    },
+    {
+      "anio": "1947",
+      "hecho": "George Dantzig propone el método símplex. Su libro de 1963 reúne la teoría, la dualidad y el análisis de sensibilidad que siguen enseñándose.",
+      "refs": [
+        "dantzig1963"
+      ]
+    },
+    {
+      "anio": "1958",
+      "hecho": "Ralph Gomory publica un algoritmo de planos de corte para obtener soluciones enteras de programas lineales.",
+      "refs": [
+        "gomory1958"
+      ]
+    },
+    {
+      "anio": "1960",
+      "hecho": "Ailsa Land y Alison Doig proponen la ramificación y acotamiento, base de todos los motores de programación entera actuales.",
+      "refs": [
+        "landdoig1960"
+      ]
+    },
+    {
+      "anio": "1984",
+      "hecho": "Narendra Karmarkar presenta un método de punto interior de tiempo polinomial, que abrió la familia de métodos de barrera usados hoy en modelos grandes.",
+      "refs": [
+        "karmarkar1984"
+      ]
+    },
+    {
+      "anio": "2018",
+      "hecho": "Qi Huangfu y Julian Hall publican el símplex dual revisado en paralelo en el que se basa HiGHS, el motor libre que trae IAQSB.",
+      "refs": [
+        "huangfuhall2018"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Variables de decisión",
+      "para_que": "Lo que vas a decidir, con nombre y unidad. Sale de la pregunta gerencial: «¿cuánto producir de cada producto por semana?»."
+    },
+    {
+      "dato": "Coeficientes de la función objetivo",
+      "para_que": "Utilidad o costo por unidad de cada variable. En una empresa salen de costos estándar, precios de venta o contabilidad de costos."
+    },
+    {
+      "dato": "Coeficientes de las restricciones",
+      "para_que": "Cuánto consume cada unidad de cada recurso: horas de máquina, kilos de materia prima, metros cúbicos. Vienen de hojas de ruta, listas de materiales o estudios de tiempos."
+    },
+    {
+      "dato": "Lados derechos",
+      "para_que": "Disponibilidad de cada recurso o requisito mínimo (capacidad de planta, demanda comprometida, presupuesto)."
+    },
+    {
+      "dato": "Tipo y cotas de cada variable",
+      "para_que": "Si es continua, entera, binaria o libre, y sus límites inferior y superior. Una variable binaria representa decisiones de sí o no."
+    }
+  ],
+  "supuestos": [
+    "Proporcionalidad: el aporte de cada variable al objetivo y a cada restricción crece en proporción directa a su valor.",
+    "Aditividad: el efecto total es la suma de los efectos individuales; no hay interacciones entre variables.",
+    "Divisibilidad: en el modelo continuo las variables pueden tomar valores fraccionarios. Si no tiene sentido, declara la variable entera.",
+    "Certeza: todos los coeficientes se conocen con exactitud. El análisis de sensibilidad ayuda a medir qué tanto importa ese supuesto."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo",
+      "texto": "En la barra lateral elige «Programación lineal y entera». Para practicar, abre el menú «Ejemplos» y carga «Wyndor Glass», «Dieta mínima», «Producción con lotes enteros» o «Mochila binaria»."
+    },
+    {
+      "titulo": "Crea el problema",
+      "texto": "Pulsa «Nuevo problema». Arriba eliges la forma de escribirlo: «Hoja» (la de WinQSB, una columna por variable) o «Modelo algebraico» (conjuntos, índices y sumas, al estilo de AMPL o LINGO, para modelos grandes). Escribe el nombre del problema y elige «Maximizar» o «Minimizar»."
+    },
+    {
+      "titulo": "Llena la hoja",
+      "texto": "Con «+ Variable» y «+ Restricción» agregas columnas y filas. En la fila del objetivo van los coeficientes de cada variable. En cada restricción escribe los coeficientes, el «Sentido» (<=, >= o =) y el «Lado derecho». Puedes pegar una tabla copiada de Excel."
+    },
+    {
+      "titulo": "Define cotas y tipos",
+      "texto": "En las filas «Cota inferior», «Cota superior» y «Tipo» indica los límites y si cada variable es «Continua», «Entera», «Binaria», «Libre», «Semicontinua» o «Semientera». Usa M para infinito, como en WinQSB."
+    },
+    {
+      "titulo": "Ajusta las opciones",
+      "texto": "En el menú de opciones puedes activar «Guardar las tablas del símplex» y, si hay enteras, cambiar la «Tolerancia entera». En el menú «Motor de optimización» eliges el motor (HiGHS viene incluido), el tiempo máximo, la brecha MIP, los hilos y el método para LP."
+    },
+    {
+      "titulo": "Resuelve y revisa",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). La pestaña «Solución» trae variables, restricciones y sensibilidad. «Tablas del símplex» muestra cada iteración con la columna que entra y la fila que sale; «Branch and bound» muestra el árbol en problemas enteros; «Método gráfico» aparece si hay dos variables. Con «¿Qué pasa si…?» mueves un dato y ves cómo cambia el óptimo, y con «Práctica» haces tú mismo las iteraciones."
+    }
+  ],
+  "como_resuelve": [
+    "IAQSB tiene dos caminos. Los modelos pequeños, como los de clase, se resuelven con el símplex de tablas con gran M simbólica, igual al que muestra WinQSB: el problema se pasa a forma estándar, se agregan holguras, excesos y variables artificiales, y la fila C(j) − Z(j) se muestra con la M explícita. El resultado se comprueba siempre con el motor; si hubiera diferencia, se muestra el del motor y se avisa.",
+    "Si hay variables enteras o binarias, el modo didáctico hace ramificación y acotamiento con la regla de WinQSB: ramifica sobre la variable fraccionaria de mayor prioridad, explora primero la rama «menor o igual» y poda los nodos que no pueden mejorar la mejor solución entera conocida.",
+    "Los modelos grandes, o los que piden parámetros del motor, van directo a HiGHS, que usa símplex dual, símplex primal, punto interior o PDLP para lo continuo, y ramificación y corte (branch and cut) para lo entero. Si en el equipo están instalados Gurobi, CPLEX, SCIP, CBC o GLPK, puedes elegirlos en «Motor de optimización».",
+    "Si el modelo no es factible, IAQSB explica por qué: muestra un conflicto mínimo de restricciones (IIS) y el cambio más pequeño que lo vuelve factible, siguiendo a Chinneck."
+  ],
+  "interpretar": [
+    "El encabezado dice si la solución es óptima, no factible o no acotada, y da el valor de Z. En Wyndor, por ejemplo, Z = 36 con Puertas = 2 y Ventanas = 6.",
+    "Costo reducido de una variable: cuánto empeora el objetivo si obligas a producir una unidad de algo que hoy vale cero. Si es cero en una variable no básica, hay óptimos alternativos.",
+    "Holgura o exceso: recurso que sobra en una restricción. Una restricción con holgura cero es activa: limita la solución.",
+    "Precio sombra: cuánto mejora Z con una unidad más de lado derecho. En Wyndor, una hora más en la Planta 2 vale 1.5 y en la Planta 3 vale 1; en la Planta 1 vale cero porque sobran horas. Esa es la cifra para decidir si conviene pagar horas extra.",
+    "Rangos «c(j) mínimo» y «c(j) máximo», y «Lado der. mínimo» y «Lado der. máximo»: dentro de ellos la base óptima no cambia y los precios sombra siguen valiendo. En problemas enteros no hay precios sombra ni rangos."
+  ],
+  "industria": [
+    {
+      "nombre": "Gurobi Optimizer",
+      "tipo": "software",
+      "uso": "Motor comercial de LP, MIP y QP usado en planeación de producción, energía, logística y finanzas. Tiene interfaces para Python, Java, C++ y otros lenguajes."
+    },
+    {
+      "nombre": "IBM ILOG CPLEX Optimization Studio",
+      "tipo": "software",
+      "uso": "Motor y lenguaje de modelado OPL para LP y MIP, muy presente en grandes empresas y en sistemas de planeación."
+    },
+    {
+      "nombre": "HiGHS",
+      "tipo": "libreria",
+      "uso": "Motor libre (licencia MIT) para LP, MIP y QP convexo. Es el que trae IAQSB y el que usa SciPy en linprog y milp."
+    },
+    {
+      "nombre": "Pyomo, PuLP y JuMP",
+      "tipo": "libreria",
+      "uso": "Lenguajes de modelado en Python (Pyomo, PuLP) y Julia (JuMP) para escribir modelos algebraicos y enviarlos a cualquier motor."
+    },
+    {
+      "nombre": "Solver de Excel",
+      "tipo": "software",
+      "uso": "Complemento de Excel con símplex para LP; útil en modelos pequeños de oficina, con límite de tamaño en la versión incluida."
+    }
+  ],
+  "alternativas": [
+    "Si las relaciones no son lineales (economías de escala, precios que dependen del volumen), usa programación no lineal (NLP) o cuadrática (QP).",
+    "Si hay varios objetivos en conflicto, usa programación por metas (GP) o los objetivos múltiples por prioridad del propio LP-ILP desde la CLI o el MCP.",
+    "Si el problema tiene estructura de red (transporte, asignación, rutas), el módulo de redes (NET) lo resuelve con algoritmos especializados y muestra el método de clase."
+  ],
+  "errores_comunes": [
+    "Olvidar la no negatividad o, al revés, dejar en cero la cota de una variable que puede ser negativa (por ejemplo, un cambio de inventario). Usa el tipo «Libre» cuando corresponda.",
+    "Redondear la solución continua en vez de declarar la variable entera. El redondeo puede ser infactible o estar lejos del óptimo entero.",
+    "Interpretar el precio sombra fuera de su rango de validez. Fuera de «Lado der. mínimo» y «Lado der. máximo» el valor cambia.",
+    "Usar una restricción >= con un lado derecho imposible y concluir que el modelo está mal. Lee el diagnóstico de infactibilidad antes de cambiar datos al azar."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Formular un problema verbal como programa lineal o entero, con variables, objetivo y restricciones bien definidos.",
+      "Ejecutar a mano el símplex y verificarlo con las tablas de IAQSB.",
+      "Interpretar costos reducidos, holguras, precios sombra y rangos para recomendar decisiones.",
+      "Explicar la diferencia entre la relajación lineal y la solución entera usando el árbol de branch and bound."
+    ],
+    "actividades": [
+      "Resolver Wyndor con el «Método gráfico» y luego con «Tablas del símplex»; pedir que relacionen cada iteración con un vértice de la región.",
+      "Usar «Práctica» para que cada estudiante elija la variable que entra y la que sale, y compare con la tabla de IAQSB.",
+      "Cargar «Producción con lotes enteros», resolverlo como continuo (relajación) y como entero, y discutir la brecha.",
+      "Taller con datos propios de una empresa de la región: formular, resolver y presentar un informe exportado a Word o PDF con la recomendación gerencial."
+    ],
+    "preguntas": [
+      "¿Por qué el óptimo de un programa lineal está en un vértice de la región factible?",
+      "Si el precio sombra de una restricción es cero, ¿qué dice eso del recurso?",
+      "¿Qué pasa con la solución si el coeficiente de una variable sale de su rango c(j) mínimo y c(j) máximo?",
+      "¿Por qué el valor de la relajación lineal es una cota para el problema entero?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Región factible",
+      "definicion": "Conjunto de soluciones que cumplen todas las restricciones."
+    },
+    {
+      "termino": "Holgura",
+      "definicion": "Diferencia entre el lado derecho y el lado izquierdo de una restricción <=; en una >= se llama exceso."
+    },
+    {
+      "termino": "Precio sombra",
+      "definicion": "Cambio del valor óptimo por una unidad adicional en el lado derecho de una restricción; también se llama valor dual."
+    },
+    {
+      "termino": "Costo reducido",
+      "definicion": "Cuánto debe mejorar el coeficiente de una variable para que convenga usarla."
+    },
+    {
+      "termino": "Relajación lineal",
+      "definicion": "El mismo modelo entero sin la condición de integralidad."
+    },
+    {
+      "termino": "Branch and bound",
+      "definicion": "Búsqueda que divide el problema en ramas con nuevas cotas y descarta las que no pueden mejorar la mejor solución conocida."
+    },
+    {
+      "termino": "Brecha MIP",
+      "definicion": "Distancia relativa entre la mejor solución entera hallada y la mejor cota; con brecha cero la solución es óptima."
+    },
+    {
+      "termino": "IIS",
+      "definicion": "Subsistema irreducible infactible: conjunto mínimo de restricciones que se contradicen."
+    }
+  ],
+  "referencias": [
+    "dantzig1963",
+    "kantorovich1960",
+    "stigler1945",
+    "gomory1958",
+    "landdoig1960",
+    "karmarkar1984",
+    "huangfuhall2018",
+    "chinneck2008",
+    "hillier2015en",
+    "hillier2015",
+    "taha2012",
+    "winston2004",
+    "chang2003"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "modulo": "kpi",
+  "titulo": "Indicadores logísticos (KPI)",
+  "resumen": "Calcula, a partir de la lista de pedidos de un período, los indicadores de servicio al cliente (a tiempo, completos, bien documentados, pedido perfecto, OTIF, ciclo de la orden) y el costo logístico sobre las ventas. Es para gerentes de logística, de servicio al cliente y analistas de operaciones.",
+  "que_es": [
+    "Un indicador clave de desempeño (KPI) convierte la operación en un número que se puede seguir en el tiempo y comparar con una meta. En logística los más usados miden si el cliente recibió lo que pidió, cuando lo pidió y con la documentación correcta, y cuánto le cuesta eso a la empresa. El pedido perfecto exige las tres condiciones a la vez; el OTIF (on time, in full) exige dos: a tiempo y completo.",
+    "La clave del módulo es que trabaja pedido por pedido. Un pedido puede llegar a tiempo pero incompleto, o completo pero con la factura errada. Por eso el pedido perfecto siempre es menor o igual que cada indicador por separado. El módulo además compara los pedidos urgentes con los estándar mediante una prueba estadística, para saber si el trato urgente de verdad acorta el ciclo, y expresa el costo logístico como porcentaje de las ventas frente a un estándar del sector."
+  ],
+  "analogia": "Piensa en un domicilio de comida. Que llegue a la hora es bueno; que llegue todo lo que pediste también; que la factura esté bien, también. Pero solo quedas satisfecho si las tres cosas ocurren en el mismo pedido. Si cada una falla el 20 % de las veces, la experiencia perfecta es mucho más rara que cualquiera de las tres por separado.",
+  "para_que_sirve": [
+    { "sector": "Distribución mayorista", "ejemplo": "Un distribuidor mide el pedido perfecto mensual de sus clientes de canal tradicional y descubre que la documentación, no el transporte, es su principal falla." },
+    { "sector": "Proveedores de grandes superficies", "ejemplo": "Muchas cadenas de supermercados evalúan a sus proveedores por OTIF y pueden aplicar sanciones cuando no se cumple la meta pactada. El módulo permite medirlo con los mismos datos antes de que lo haga el cliente." },
+    { "sector": "Comercio electrónico", "ejemplo": "Una tienda en línea sigue el ciclo de la orden desde la compra hasta la entrega y compara el despacho exprés con el estándar." },
+    { "sector": "Industria farmacéutica", "ejemplo": "Un laboratorio vigila la documentación correcta de cada despacho, porque un error en lotes o registros puede detener la entrega." },
+    { "sector": "Gerencia y junta directiva", "ejemplo": "El costo logístico sobre ventas resume en una cifra si la operación es eficiente frente a la competencia del sector." }
+  ],
+  "historia": [
+    { "anio": "1947", "hecho": "B. L. Welch publica la prueba t para comparar dos medias con varianzas distintas. IAQSB la usa para comparar el ciclo de los pedidos urgentes y estándar.", "refs": ["welch1947"] },
+    { "anio": "2004", "hecho": "Ballou presenta el servicio al cliente como resultado del sistema logístico y su relación con el costo total en su texto de logística.", "refs": ["ballou2004", "ballou2004es"] },
+    { "anio": "2008", "hecho": "Luis Aníbal Mora publica la segunda edición de Indicadores de la gestión logística, referencia latinoamericana con las fórmulas de entregas a tiempo, completas, documentación, ciclo de la orden y costo logístico.", "refs": ["mora2008"] },
+    { "anio": "2022", "hecho": "ASCM publica el SCOR Digital Standard, donde el cumplimiento del pedido perfecto es una métrica de primer nivel de confiabilidad.", "refs": ["scor"] }
+  ],
+  "necesitas": [
+    { "dato": "Lista de pedidos del período", "para_que": "Una fila por pedido. Sale del ERP o del sistema de gestión de pedidos, como un reporte exportado a Excel." },
+    { "dato": "Fechas de generación, prometida y de entrega real", "para_que": "Con ellas se calculan el ciclo de la orden y si el pedido llegó a tiempo. Pueden ir como dd/mm, dd/mm/aaaa o número de día." },
+    { "dato": "Unidades pedidas y entregadas", "para_que": "Indican si el pedido llegó completo y permiten calcular el nivel de cumplimiento en unidades (fill rate)." },
+    { "dato": "Documentación correcta", "para_que": "Si la factura, la remisión y los soportes llegaron sin errores. Sale de los reclamos o de la auditoría de despachos." },
+    { "dato": "Marca de urgente", "para_que": "Separa los pedidos con trato prioritario para compararlos con los estándar." },
+    { "dato": "Ventas, costos logísticos y estándar del sector", "para_que": "Ventas del período y costos por rubro (transporte, almacenamiento, procesamiento de pedidos, devoluciones) para el costo logístico sobre ventas; el estándar sale de estudios sectoriales o de la meta de la empresa." }
+  ],
+  "supuestos": [
+    "Un pedido está a tiempo si la entrega real es igual o anterior a la fecha prometida.",
+    "Un pedido está completo si se entregaron al menos las unidades pedidas.",
+    "Los indicadores se cuentan por pedido, salvo el fill rate, que se cuenta por unidades.",
+    "La prueba t de Welch supone que los ciclos de cada grupo son aproximadamente normales e independientes.",
+    "El costo logístico incluye solo los rubros que escribas; si falta uno, el indicador queda subestimado."
+  ],
+  "pasos": [
+    { "titulo": "Crea el problema", "texto": "Entra a «Indicadores logísticos» y, en «Problema nuevo», escoge «Indicadores a partir de los pedidos» con el «Número de pedidos». También puedes abrir el ejemplo taller1_distribuidor, con 30 pedidos de un distribuidor mayorista." },
+    { "titulo": "Llena los pedidos", "texto": "En la tabla «Pedidos» escribe para cada fila el «Pedido», la «Generación», la «Fecha prometida», la «Entrega real», las «Unidades pedidas» y las «Unidades entregadas». Marca «Documentación correcta» y «Urgente» según corresponda. Si tienes los datos en Excel, puedes pegarlos directamente en la tabla." },
+    { "titulo": "Agrega ventas y costos", "texto": "En «Ventas y estándar» escribe las «Ventas del período» y el «Costo logístico estándar del sector (% de las ventas)». En «Costos logísticos» escribe el «Rubro» y el «Valor» de cada costo; la plantilla trae almacenamiento, transporte, procesamiento de pedidos y devoluciones." },
+    { "titulo": "Ajusta la prueba estadística", "texto": "En las opciones, «Significancia de la prueba t» es 0.05 por defecto. Cámbiala si tu curso o tu empresa usan otro nivel." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver». Revisa las pestañas «Indicadores», «Gráficos», «Urgentes», «Costos», «Fallas» y «Paso a paso», donde se ven las columnas auxiliares de cada pedido y cómo se cuenta cada indicador." }
+  ],
+  "como_resuelve": [
+    "Para cada pedido IAQSB calcula columnas auxiliares: ciclo = entrega real − generación; a tiempo = entrega real ≤ fecha prometida; completo = entregadas ≥ pedidas; perfecto = a tiempo, completo y con documentación correcta.",
+    "Cada indicador es el número de pedidos que cumplen sobre el total. El fill rate es la suma de unidades entregadas sobre la suma de unidades pedidas. El ciclo promedio se reporta para todos los pedidos y solo para los estándar.",
+    "El informe explica por qué el pedido perfecto es menor que cada indicador: compara el resultado real con el producto de los tres porcentajes, que sería el esperado si las fallas fueran independientes, y lista los pedidos que fallan en más de una cosa.",
+    "Urgentes frente a estándar: aplica la prueba t de Welch de una cola, con grados de libertad de Welch-Satterthwaite. La hipótesis alternativa es que los urgentes tienen un ciclo medio menor.",
+    "Costo logístico: suma los rubros, los divide por las ventas y compara con el estándar del sector. No interviene ningún solver: son conteos, promedios y una prueba estadística."
+  ],
+  "interpretar": [
+    "En el ejemplo, cada indicador parece aceptable por separado (80 % a tiempo, 83.3 % completos, 80 % documentación), pero el pedido perfecto es solo 60 %: 12 de 30 pedidos fallan en algo. Ese es el número que vive el cliente.",
+    "El fill rate en unidades es 98.7 % mientras los pedidos completos son 83.3 %. Medir por unidades esconde que casi uno de cada seis pedidos llegó incompleto.",
+    "Los urgentes tardan en promedio 2.25 días frente a 3.89 de los estándar, y la prueba t confirma que la diferencia es significativa. Pero los urgentes llegan completos con menos frecuencia: la prisa cuesta calidad.",
+    "El costo logístico es 9.2 % de las ventas frente a un estándar de 8 %: 15 000 de más en el período. La tabla de «Costos» muestra que transporte y distribución es el rubro mayor; por ahí empieza la revisión.",
+    "La pestaña «Fallas» lista los pedidos problemáticos: úsala para un análisis de causa raíz o un Pareto en el módulo QCC."
+  ],
+  "industria": [
+    { "nombre": "SCOR Digital Standard (ASCM)", "tipo": "metodologia", "uso": "Marco de referencia con definiciones estándar de métricas como el pedido perfecto, el ciclo de la orden y el costo total de la cadena." },
+    { "nombre": "Microsoft Power BI y Tableau", "tipo": "software", "uso": "Tableros de indicadores conectados al ERP para seguir OTIF, pedido perfecto y costos en el tiempo." },
+    { "nombre": "SAP S/4HANA y Oracle Fusion Cloud SCM", "tipo": "software", "uso": "Registran fechas, cantidades y documentos de cada pedido, la fuente de datos de los indicadores." },
+    { "nombre": "pandas y SciPy", "tipo": "libreria", "uso": "Cálculo de indicadores y pruebas estadísticas, como la t de Welch, en Python sobre los reportes exportados." },
+    { "nombre": "Balanced Scorecard", "tipo": "metodologia", "uso": "Conecta los indicadores logísticos con los objetivos financieros y de cliente de la estrategia." }
+  ],
+  "alternativas": [
+    "Fill rate por unidades o por líneas cuando el negocio vende muchas referencias por pedido y el pedido completo es una exigencia muy dura.",
+    "Indicadores de inventario (rotación, días de inventario) y financieros (ciclo de conversión del efectivo) en los módulos INV y FIN.",
+    "Gráficos de control (módulo QCC) para seguir un indicador semana a semana y separar cambios reales de variación normal.",
+    "Costeo basado en actividades (ABC) para asignar el costo logístico a clientes y canales, no solo como porcentaje de las ventas."
+  ],
+  "errores_comunes": [
+    "Calcular el pedido perfecto multiplicando los tres porcentajes. Solo coincide si las fallas son independientes, y casi nunca lo son.",
+    "Medir a tiempo contra la fecha que pidió el cliente en un caso y contra la prometida en otro. Define una sola regla y mantenla.",
+    "Escribir fechas con formatos mezclados, como mm/dd y dd/mm. IAQSB espera dd/mm o dd/mm/aaaa.",
+    "Reportar el fill rate en unidades como si fuera el porcentaje de pedidos completos.",
+    "Comparar el costo logístico con un estándar de otro sector o de otro país sin ajustar."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Calcular los indicadores de servicio a partir de una base de pedidos.",
+      "Explicar por qué el pedido perfecto es menor que cada indicador y qué implica para el cliente.",
+      "Aplicar e interpretar una prueba t de Welch en un contexto logístico."
+    ],
+    "actividades": [
+      "Con taller1_distribuidor, calcular a mano en Excel las columnas auxiliares y verificar el resultado con el «Paso a paso».",
+      "Cambiar la documentación de tres pedidos que ya fallan por tiempo y observar cómo el pedido perfecto no cambia, mientras el indicador de documentación sí.",
+      "Pedir a los estudiantes que registren durante una semana los domicilios de su hogar o de una tienda cercana y calculen sus indicadores."
+    ],
+    "preguntas": [
+      "Si a tiempo, completos y documentación son cada uno del 95 %, ¿cuál es el rango posible del pedido perfecto?",
+      "¿Qué decisión tomarías si los urgentes son más rápidos pero llegan incompletos con más frecuencia?",
+      "¿Por qué el fill rate en unidades puede ser alto aunque muchos pedidos lleguen incompletos?"
+    ]
+  },
+  "glosario": [
+    { "termino": "KPI", "definicion": "Indicador clave de desempeño: medida cuantitativa que se compara con una meta." },
+    { "termino": "Pedido perfecto", "definicion": "Pedido entregado a tiempo, completo y con la documentación correcta." },
+    { "termino": "OTIF", "definicion": "On time, in full: porcentaje de pedidos entregados a tiempo y completos." },
+    { "termino": "Fill rate", "definicion": "Nivel de cumplimiento: unidades entregadas sobre unidades pedidas." },
+    { "termino": "Ciclo de la orden", "definicion": "Tiempo desde que se genera el pedido hasta que se entrega." },
+    { "termino": "Costo logístico sobre ventas", "definicion": "Suma de los costos logísticos del período dividida por las ventas." },
+    { "termino": "Prueba t de Welch", "definicion": "Prueba para comparar dos medias sin suponer que las varianzas son iguales." }
+  ],
+  "referencias": ["mora2008", "scor", "welch1947", "ballou2004", "ballou2004es", "sarache2026taller1"]
+}

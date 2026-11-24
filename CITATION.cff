@@ -10,7 +10,7 @@ abstract: >-
   En español, inglés y portugués.
 authors:
   - name: "IA Nativa"
-version: "0.2.2"
+version: "0.2.3"
 date-released: "2026-11-23"
 license: MIT
 repository-code: "https://github.com/vangoghdata/iaqsb"

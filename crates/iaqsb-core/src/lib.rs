@@ -10,6 +10,7 @@
 
 pub mod biblio;
 pub mod expr;
+pub mod guias;
 pub mod i18n;
 pub mod layout;
 pub mod linear;

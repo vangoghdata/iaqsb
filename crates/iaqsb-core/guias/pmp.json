@@ -1,0 +1,227 @@
+{
+  "modulo": "pmp",
+  "titulo": "Programa maestro de producción (PMP)",
+  "resumen": "Convierte el pronóstico y los pedidos de un producto terminado en lotes concretos por periodo y dice cuánto se le puede prometer a cada cliente. Es la herramienta del planeador maestro, el puente entre ventas, el plan agregado y el MRP.",
+  "que_es": [
+    "El programa maestro de producción (PMP, o MPS en inglés) dice qué producto terminado se va a producir, cuánto y en qué periodo, normalmente semana a semana. Parte de la demanda (pronóstico y pedidos en firme), del inventario disponible, del tamaño de lote y del stock de seguridad. Su resultado es doble: los lotes programados, que alimentan la explosión de materiales del MRP, y el disponible para promesa (DPP), que le dice al área comercial cuántas unidades libres puede comprometer en cada periodo.",
+    "El módulo trabaja dos casos del curso. En el programa básico, de fabricar para inventario, se programa un lote cada vez que el disponible proyectado no alcanza a cubrir la demanda más el stock de seguridad. En el ensamble bajo pedido (ATO) entran las barreras de tiempo: dentro de la barrera de demanda el programa está congelado y solo cuentan los pedidos; después, la demanda es el mayor entre el pronóstico y los pedidos. Además, el módulo evalúa solicitudes de pedidos, revisa la capacidad del recurso clave (RCCP) y calcula el PMP de menor costo con programación entera."
+  ],
+  "analogia": "El PMP se parece al horario de vuelos de una aerolínea. Los vuelos de los próximos días están congelados: ya hay pasajeros y tripulaciones asignadas. Los de las próximas semanas todavía se pueden mover con cuidado. Los sillas libres de cada vuelo son el disponible para promesa: lo que el área comercial puede vender sin romper lo ya prometido.",
+  "para_que_sirve": [
+    {
+      "sector": "Electrodomésticos",
+      "ejemplo": "Un fabricante de neveras ensambla bajo pedido variantes de color y capacidad. El DPP le permite al vendedor confirmar en minutos una fecha de entrega a un almacén de cadena."
+    },
+    {
+      "sector": "Alimentos empacados",
+      "ejemplo": "Una planta de galletas fabrica para inventario por lotes fijos de horneado. El PMP básico le dice en qué semanas lanzar cada lote para no quedar por debajo del stock de seguridad."
+    },
+    {
+      "sector": "Equipos industriales",
+      "ejemplo": "Un fabricante de motobombas evalúa si puede aceptar un pedido grande para la semana 6 sin incumplir a los clientes que ya tiene, y desde qué semana podría entregarlo completo."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1975",
+      "hecho": "Orlicky describe el MRP como un sistema que parte del programa maestro de producción: sin un PMP realista, la explosión de materiales no tiene sentido.",
+      "refs": [
+        "orlicky1975"
+      ]
+    },
+    {
+      "anio": "2005",
+      "hecho": "Vollmann, Berry, Whybark y Jacobs consolidan en su texto de planeación y control de la manufactura las barreras de tiempo, el disponible para promesa y el plan aproximado de capacidad.",
+      "refs": [
+        "vollmann2005"
+      ]
+    },
+    {
+      "anio": "2013",
+      "hecho": "Olhager ubica el programa maestro en la evolución de la planeación de operaciones, entre el MRP y la planeación de ventas y operaciones.",
+      "refs": [
+        "olhager2013"
+      ]
+    },
+    {
+      "anio": "2020",
+      "hecho": "El profesor Jaime Antero Arango Marín enseña el programa maestro básico y ATO con ejemplos resueltos en Excel en el Taller de Producción y Logística de la Universidad Nacional de Colombia. IAQSB reproduce exactamente esos ejemplos.",
+      "refs": [
+        "arango2020maestro"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Pronóstico por periodo",
+      "para_que": "La demanda esperada del producto terminado. Sale del módulo FC o ST, o de desagregar el plan agregado (módulo AP)."
+    },
+    {
+      "dato": "Pedidos comprometidos",
+      "para_que": "Los pedidos en firme de clientes por periodo. Vienen del sistema comercial o del ERP."
+    },
+    {
+      "dato": "Disponible inicial",
+      "para_que": "El inventario de producto terminado al comenzar (periodo 0)."
+    },
+    {
+      "dato": "Tamaño de lote y stock de seguridad",
+      "para_que": "El lote lo fija la línea de producción o el proveedor (0 = lote a lote). El stock de seguridad protege contra la variación de la demanda."
+    },
+    {
+      "dato": "Barreras de tiempo",
+      "para_que": "La de demanda define cuántos periodos están congelados; la de planificación, hasta dónde el programa es flexible. Las define la dirección según el tiempo de ciclo y de compras."
+    },
+    {
+      "dato": "Horas del recurso clave y costos (opcional)",
+      "para_que": "Horas por unidad y horas disponibles por periodo para el RCCP; costo de preparar un lote y de mantener una unidad para el PMP óptimo."
+    }
+  ],
+  "supuestos": [
+    "Se planea un solo producto terminado por problema, en periodos de igual duración.",
+    "La producción de un lote está disponible en el mismo periodo en que se programa.",
+    "Dentro de la barrera de demanda se ignora el pronóstico: solo cuentan los pedidos.",
+    "El RCCP revisa solo un recurso clave con horas por unidad constantes; no reemplaza la planeación detallada de capacidad."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo",
+      "texto": "En la barra lateral elige «Programa maestro de producción». Pulsa «Nuevo problema» o abre un ejemplo: basico_arango, ato_arango, ato_solicitudes o ato_capacidad."
+    },
+    {
+      "titulo": "Elige el tipo de problema",
+      "texto": "«Programa maestro básico» (fabricar para inventario) o «Ensamble bajo pedido (ATO)». Indica el «Número de periodos»."
+    },
+    {
+      "titulo": "Datos",
+      "texto": "Escribe el «Disponible inicial», el «Tamaño de lote» (0 = lote a lote) y el «Stock de seguridad». En ATO agrega la «Barrera de tiempo de demanda (periodos)» y la «Barrera de tiempo de planificación (periodos)» (0 = todo el horizonte)."
+    },
+    {
+      "titulo": "Demanda",
+      "texto": "En el básico llena «Demanda por periodo» con «Periodo» y «Demanda». En ATO llena «Pronóstico y pedidos» con «Pronóstico» y «Pedidos». En ambos, «Horas disponibles» es opcional."
+    },
+    {
+      "titulo": "Solicitudes de pedidos (ATO)",
+      "texto": "En «Solicitudes de pedidos por evaluar» escribe el «Periodo» y la «Cantidad» de cada pedido que un cliente quiere hacer."
+    },
+    {
+      "titulo": "Capacidad y costos (opcional)",
+      "texto": "Escribe las «Horas del recurso clave por unidad» para el RCCP, el «Costo de preparar un lote» y el «Costo de mantener una unidad un periodo»."
+    },
+    {
+      "titulo": "Elige el método y resuelve",
+      "texto": "En «Método» elige «Regla del curso (un lote cuando no alcanza)» u «Óptimo con el motor (programación entera)»; con el óptimo puedes «Respetar la zona congelada en el óptimo». Pulsa «Resolver». La pestaña «Paso a paso» muestra el cálculo de cada periodo y del DPP."
+    }
+  ],
+  "como_resuelve": [
+    "Regla del curso: en cada periodo calcula la demanda usada (en ATO, los pedidos dentro de la barrera de demanda y el mayor entre pronóstico y pedidos después). Si demanda más stock de seguridad supera el disponible anterior, programa uno o varios lotes; el proyectado disponible es el anterior más el PMP menos la demanda. El paso a paso escribe cada cálculo, por ejemplo «20 + 0 = 20 > 9 disponible: se programa un lote → PMP = 60».",
+    "Disponible para promesa discreto: en el primer periodo es el disponible inicial más el PMP menos los pedidos hasta el siguiente lote; en cada periodo con lote es el lote menos los pedidos hasta el siguiente lote. Si un DPP queda negativo, se cubre con el del lote anterior, como en Vollmann et al. (2005). El DPP acumulado suma los anteriores.",
+    "Solicitudes: cada pedido se evalúa por separado contra el DPP acumulado, sin tocar la zona congelada. El informe dice si se acepta, cuánto se puede prometer como máximo y desde qué periodo se podría entregar completo.",
+    "PMP óptimo: un modelo de programación entera mixta con una variable binaria de preparación por periodo, el número de lotes y el inventario, que minimiza costo de preparación más costo de mantener, respeta el stock de seguridad y la capacidad del recurso clave y, si lo pides, mantiene el PMP de la regla en la zona congelada. Lo resuelve HiGHS.",
+    "RCCP: multiplica el PMP de cada periodo por las horas por unidad y lo compara con las horas disponibles, con el porcentaje de utilización."
+  ],
+  "interpretar": [
+    "La tabla del programa maestro tiene, por periodo, la demanda usada, el proyectado disponible, el PMP, el DPP, el DPP acumulado y la zona (Congelado, Flexible o Libre). Las filas con lote van resaltadas.",
+    "El proyectado disponible nunca debería quedar por debajo del stock de seguridad fuera de la zona congelada. Si queda negativo dentro de ella, el informe avisa que el PMP congelado no alcanza para los pedidos: hay que negociar fechas o romper la congelación con autorización.",
+    "El DPP del periodo 1 es lo que puedes vender ya. En el ejemplo ato_arango, con lotes de 60 en los periodos 3, 6, 8 y 10, el DPP del periodo 1 es 9: solo 9 unidades pueden prometerse antes del primer lote nuevo.",
+    "La comparación «Regla del curso frente al óptimo» muestra cuánto ahorra el PMP óptimo en preparaciones e inventario. En el RCCP, una utilización mayor que 100 % significa que el programa no es factible con la capacidad dada."
+  ],
+  "industria": [
+    {
+      "nombre": "SAP S/4HANA (gestión de la demanda y ATP avanzado)",
+      "tipo": "software",
+      "uso": "Programa maestro, verificación de disponibilidad y promesa de pedidos integrados con ventas y con el MRP."
+    },
+    {
+      "nombre": "Oracle Fusion Cloud SCM (Global Order Promising)",
+      "tipo": "software",
+      "uso": "Promesa de pedidos con disponibilidad y capacidad en varias plantas."
+    },
+    {
+      "nombre": "Microsoft Dynamics 365 Supply Chain Management",
+      "tipo": "software",
+      "uso": "Planeación maestra (master planning) con barreras de tiempo y cálculo de disponible para promesa."
+    },
+    {
+      "nombre": "Odoo (aplicación de Fabricación)",
+      "tipo": "software",
+      "uso": "Programa maestro de producción para pymes, con pronóstico manual, stock de seguridad y reabastecimiento sugerido."
+    },
+    {
+      "nombre": "HiGHS y Gurobi",
+      "tipo": "libreria",
+      "uso": "Solucionadores de programación entera para PMP óptimos con capacidad y costos, como el del método «Óptimo con el motor»."
+    }
+  ],
+  "alternativas": [
+    "Lotificación dinámica (Wagner-Whitin, Silver-Meal) en el módulo MRP cuando lo que interesa es el costo de preparar y mantener, no la promesa de pedidos.",
+    "Modelos de lotificación con capacidad para varios productos (CLSP) en el módulo LP-ILP o el lenguaje algebraico, cuando varios productos comparten el recurso clave.",
+    "Sistemas de planeación avanzada (APS) que programan el PMP con capacidad finita en todos los recursos.",
+    "Planeación impulsada por la demanda (DDMRP) o kanban, que reemplazan parte del programa maestro por amortiguadores de inventario y señales de consumo."
+  ],
+  "errores_comunes": [
+    "Usar el pronóstico dentro de la barrera de demanda en ATO. Allí solo cuentan los pedidos; el pronóstico ya no es información útil.",
+    "Calcular el DPP con todos los pedidos del horizonte en lugar de los que hay hasta el siguiente lote.",
+    "Olvidar que el DPP negativo de un lote se cubre con el del lote anterior; sin ese préstamo se promete de más.",
+    "Confundir el proyectado disponible con el DPP. El primero es inventario físico esperado; el segundo, lo que aún no está comprometido.",
+    "Aceptar varias solicitudes evaluadas por separado como si fueran independientes. El módulo las evalúa sin efectos acumulativos; si las aceptas todas, vuelve a resolver con los pedidos nuevos."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Construir el programa maestro básico y ATO a mano y verificarlo con IAQSB.",
+      "Explicar el papel de las barreras de tiempo de demanda y de planificación.",
+      "Calcular el disponible para promesa discreto y acumulado, y responder a una solicitud de pedido.",
+      "Relacionar el PMP con el plan agregado (aguas arriba) y con el MRP (aguas abajo)."
+    ],
+    "actividades": [
+      "Con basico_arango y ato_arango (diapositivas 8 a 18 del profesor Arango), resolver primero en Excel y luego en IAQSB; la tabla de IAQSB reproduce las hojas del curso.",
+      "Con ato_solicitudes (producto A con solicitudes de 20, 40 y 120 unidades), decidir cuáles se aceptan y desde qué periodo se entregaría completa la de 120.",
+      "Con ato_capacidad, comparar la regla del curso con el óptimo y leer el RCCP: ¿en qué periodo falta capacidad y qué harían?",
+      "Encadenar niveles: el asistente de IA, la CLI o el servidor MCP de IAQSB (herramienta link_models) pasan el plan agregado al PMP y el PMP al MRP. Este módulo reemplaza el programa maestro básico y ATO del programa Jantero."
+    ],
+    "preguntas": [
+      "¿Por qué dentro de la barrera de tiempo de demanda se ignora el pronóstico?",
+      "Si el DPP acumulado del periodo 5 es 15, ¿puedes aceptar un pedido de 20 unidades para el periodo 5? ¿Y para el periodo 8?",
+      "¿Qué costo tiene congelar demasiados periodos y qué costo tiene congelar muy pocos?",
+      "¿Por qué el RCCP solo revisa un recurso clave y no toda la planta?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Programa maestro de producción (PMP)",
+      "definicion": "Plan de cuánto producir de cada producto terminado en cada periodo."
+    },
+    {
+      "termino": "Proyectado disponible",
+      "definicion": "Inventario esperado al final de un periodo: el anterior más el PMP menos la demanda."
+    },
+    {
+      "termino": "Disponible para promesa (DPP)",
+      "definicion": "Parte de la producción programada que aún no está comprometida con pedidos."
+    },
+    {
+      "termino": "Barrera de tiempo de demanda",
+      "definicion": "Límite del horizonte congelado, donde solo cuentan los pedidos y no se cambia el programa."
+    },
+    {
+      "termino": "Barrera de tiempo de planificación",
+      "definicion": "Límite hasta el cual los cambios al programa requieren aprobación; después, el horizonte es libre."
+    },
+    {
+      "termino": "Ensamble bajo pedido (ATO)",
+      "definicion": "Estrategia en que los componentes se tienen listos y el producto se ensambla al recibir el pedido."
+    },
+    {
+      "termino": "RCCP",
+      "definicion": "Plan aproximado de capacidad: compara las horas que pide el PMP con las disponibles en un recurso clave."
+    }
+  ],
+  "referencias": [
+    "arango2020maestro",
+    "vollmann2005",
+    "orlicky1975",
+    "olhager2013",
+    "heizerrender2014",
+    "huangfuhall2018"
+  ]
+}

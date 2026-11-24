@@ -1,0 +1,218 @@
+{
+  "modulo": "its",
+  "titulo": "Teoría y sistemas de inventario",
+  "resumen": "Decide cuánto pedir y cuándo pedir para equilibrar el costo de ordenar, el de mantener inventario y el de quedarse sin producto, con demanda conocida, demanda que cambia por periodo o demanda aleatoria. Sirve a compradores, planeadores de producción y gerentes de logística.",
+  "que_es": [
+    "El inventario es dinero quieto en una bodega. Tener mucho cuesta: capital inmovilizado, espacio, seguros, obsolescencia. Tener poco también cuesta: pedidos frecuentes con su costo fijo, ventas perdidas o clientes que esperan. La teoría de inventarios busca la política que minimiza la suma de esos costos.",
+    "El modelo más conocido es la cantidad económica de pedido (EOQ): con demanda constante D, costo por pedido K y costo de mantener h por unidad y tiempo, el lote óptimo es Q* = √(2KD/h). En ese punto el costo anual de pedir iguala al de mantener. A partir de ahí el modelo se extiende: faltantes planeados, producción gradual (POQ), descuentos por cantidad, una sola temporada de venta con demanda incierta, demanda distinta en cada periodo y demanda aleatoria con revisión continua o periódica.",
+    "IAQSB trae los ocho tipos de problema de WinQSB: «EOQ (demanda determinística)», «Descuentos por cantidad», «Período único (vendedor de periódicos)», «Tamaño de lote (demanda dinámica)», «Revisión continua (s, Q)», «Revisión continua (s, S)», «Revisión periódica (R, S)» y «Revisión periódica (R, s, S)». Para los temas de clase como el ABC, el punto de reorden con demanda variable y los despejes del EOQ, mira también el módulo «Gestión de inventarios»."
+  ],
+  "analogia": "Piensa en el mercado de tu casa. Si vas al supermercado todos los días, gastas mucho en transporte y tiempo, pero la nevera nunca se llena. Si compras para tres meses, haces un solo viaje, pero necesitas una despensa enorme y algo se vence. Entre los dos extremos hay una frecuencia de compra que minimiza la molestia total. El EOQ encuentra ese punto para una empresa.",
+  "para_que_sirve": [
+    {
+      "sector": "Comercio y distribución",
+      "ejemplo": "Una ferretería calcula el lote económico de cada referencia y descubre que comprar 1200 unidades de una vez le cuesta 76 más al año que comprar 524. Con cientos de referencias, el ahorro es grande."
+    },
+    {
+      "sector": "Productos de temporada",
+      "ejemplo": "Un distribuidor de útiles escolares o de adornos navideños decide cuánto pedir para una sola temporada. El vendedor de periódicos equilibra lo que pierde por sobrantes con lo que pierde por faltantes."
+    },
+    {
+      "sector": "Planeación de producción",
+      "ejemplo": "Una planta con demanda distinta cada semana y un costo alto de alistamiento usa Wagner-Whitin para decidir en qué semanas producir y cuánto, en lugar de producir cada semana lo justo."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1913",
+      "hecho": "Ford Whitman Harris publicó «How many parts to make at once», el origen del modelo de lote económico (EOQ).",
+      "refs": [
+        "harris1913"
+      ]
+    },
+    {
+      "anio": "1918",
+      "hecho": "E. W. Taft extendió el lote económico al caso de producción con tasa finita, la base del modelo POQ o EPQ.",
+      "refs": [
+        "taft1918"
+      ]
+    },
+    {
+      "anio": "1951",
+      "hecho": "Arrow, Harris y Marschak formularon modelos de política óptima de inventario con demanda incierta, incluidos el de un periodo y las políticas de tipo (s, S).",
+      "refs": [
+        "arrow1951"
+      ]
+    },
+    {
+      "anio": "1958",
+      "hecho": "Wagner y Whitin publicaron el algoritmo de programación dinámica que da el tamaño de lote óptimo cuando la demanda cambia de un periodo a otro.",
+      "refs": [
+        "wagnerwhitin1958"
+      ]
+    },
+    {
+      "anio": "1960",
+      "hecho": "Herbert Scarf demostró que las políticas (s, S) son óptimas en el problema dinámico de inventario con costo fijo de pedido.",
+      "refs": [
+        "scarf1960"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Demanda",
+      "para_que": "Por unidad de tiempo en el EOQ; por periodo en el tamaño de lote; como distribución en el periodo único y en los sistemas (s, Q), (s, S), (R, S) y (R, s, S). Sale del histórico de ventas o del pronóstico."
+    },
+    {
+      "dato": "Costo de ordenar o preparar",
+      "para_que": "Lo que cuesta cada pedido o cada alistamiento de máquina, sin importar la cantidad: trámite, transporte fijo, pruebas de arranque."
+    },
+    {
+      "dato": "Costo de mantener",
+      "para_que": "Por unidad y por unidad de tiempo, o como porcentaje del costo unitario. Incluye costo de capital, bodegaje, seguros y obsolescencia; suele expresarse como un porcentaje anual del costo del artículo."
+    },
+    {
+      "dato": "Costo de faltante",
+      "para_que": "Por unidad atrasada, por venta perdida o fijo por cada faltante. Escribe M si no se permiten faltantes."
+    },
+    {
+      "dato": "Tasa de producción y tiempo de entrega",
+      "para_que": "La tasa a la que entra el lote (M si llega completo) y cuánto tarda en llegar un pedido, para el punto de reorden."
+    }
+  ],
+  "supuestos": [
+    "En el EOQ la demanda es constante y conocida, y los costos no cambian con el tiempo.",
+    "En el tamaño de lote la demanda de cada periodo es conocida y se atiende al inicio del periodo.",
+    "En los sistemas con demanda aleatoria, el modelo analítico aproxima la demanda del periodo de protección con una normal; la simulación permite comprobarlo con la distribución real."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo y crea el problema",
+      "texto": "Entra a «Inventarios» y pulsa «Nuevo problema». Elige el tipo: «EOQ (demanda determinística)», «Descuentos por cantidad» (indica el «Número de descuentos»), «Período único (vendedor de periódicos)», «Tamaño de lote (demanda dinámica)» (indica el «Número de períodos») o uno de los cuatro sistemas con revisión continua o periódica. Pulsa «Crear problema»."
+    },
+    {
+      "titulo": "O carga un ejemplo",
+      "texto": "En «Ejemplos» hay, entre otros, «Altavoces (Hillier)», «Ferretería Nacional: EOQ (clase)», «Ferretería Nacional: POQ (clase)», «Carritos de juguete (Render)», «Freddie el vendedor de periodicos (Hillier)», «Plan de produccion de 8 semanas» y «Revision continua (s, Q)»."
+    },
+    {
+      "titulo": "Llena los datos del EOQ y sus variantes",
+      "texto": "Escribe «Demanda por unidad de tiempo», «Costo de ordenar o preparar (por pedido)» y «Costo de mantener (por unidad y unidad de tiempo)», o el «Costo unitario de adquisición» con el «Costo de mantener como % del costo unitario». Para faltantes, «Costo de faltante por unidad y unidad de tiempo»; para POQ, la «Tasa de reabastecimiento o producción»."
+    },
+    {
+      "titulo": "Llena los otros tipos",
+      "texto": "En descuentos, la tabla «Descuentos» pide «A partir de (cantidad)» y «Descuento (%)» o el precio. En el periodo único elige la «Distribución» de la demanda y escribe costos, precio de venta y valor de rescate. En tamaño de lote, cada fila de «Períodos» lleva demanda y costos. En los sistemas aleatorios elige las distribuciones de la demanda y del tiempo de entrega."
+    },
+    {
+      "titulo": "Elige el método o el modo",
+      "texto": "En tamaño de lote elige el «Método» en la barra: Wagner-Whitin (óptimo), lote a lote, FOQ, EOQ, FOI, POQ, LUC, LTC, PPB o Silver-Meal; el botón «Comparar» los resuelve todos. En los sistemas aleatorios elige en «Resolver» la «Política óptima», «Con valores conocidos» o «Con nivel de servicio», y en «Parámetros del análisis» el «Tiempo simulado» para comprobar la política."
+    },
+    {
+      "titulo": "Resuelve y revisa el paso a paso",
+      "texto": "Pulsa «Resolver» (Ctrl+Intro). Revisa «Solución», «Gráficos» y, en tamaño de lote, «Comparación». La pestaña «Paso a paso» muestra las fórmulas con tus números o, en Wagner-Whitin, la tabla de costos acumulados periodo a periodo."
+    }
+  ],
+  "como_resuelve": [
+    "El EOQ, con o sin faltantes planeados y con producción gradual, se resuelve con fórmulas cerradas: Q* = √(2KD/h) y sus extensiones: se multiplica por √((p + h)/p) con faltantes planeados (p = costo de faltante) y por √(1/(1 − D/P)) con producción gradual a tasa P. IAQSB calcula además el punto de reorden, el número de pedidos, el ciclo y el costo de la cantidad que quieras evaluar.",
+    "En descuentos calcula el EOQ de cada rango de precio, lo sube al mínimo del rango si queda por debajo y compara el costo total, compra incluida, de cada candidato. Acepta descuentos sobre todas las unidades o incrementales.",
+    "El periodo único usa la razón crítica: pide la cantidad cuya probabilidad acumulada de demanda iguala Cu/(Cu + Co), donde Cu es lo que se pierde por cada unidad faltante y Co lo que se pierde por cada sobrante. Con un costo fijo de pedido o inventario inicial evalúa si conviene pedir.",
+    "El tamaño de lote tiene diez métodos. Wagner-Whitin es programación dinámica exacta: f(k) = mínimo sobre j de f(j) más el costo de producir en j lo de los periodos j a k. Las demás son reglas o heurísticas que IAQSB compara contra el óptimo.",
+    "En (s, Q), (s, S), (R, S) y (R, s, S) arma el costo esperado por unidad de tiempo con la demanda del periodo de protección aproximada por una normal y la falta esperada por ciclo. Lo minimiza con una búsqueda en rejilla, sección áurea y Nelder-Mead. Luego, si lo pides, simula la política con la distribución real para comprobar costo y nivel de servicio."
+  ],
+  "interpretar": [
+    "En «Altavoces (Hillier)» el lote óptimo es 25 298 unidades cada 3.16 meses, con un costo de inventario de 7589.47 por mes. Revisa la gráfica de costos: es plana cerca del óptimo, así que redondear a 25 000 casi no cambia el costo.",
+    "En «Carritos de juguete (Render)» conviene pedir 1000 unidades para ganar el 4 % de descuento: el costo total baja a 24 725 por año aunque el inventario promedio suba.",
+    "En el vendedor de periódicos el resultado es pedir 45 ejemplares, con nivel de servicio de 54.54 % y ganancia esperada de 42.27. El nivel de servicio óptimo no es el 100 %: depende de la relación entre lo que cuesta faltar y lo que cuesta sobrar.",
+    "En «Plan de produccion de 8 semanas», Wagner-Whitin y Silver-Meal dan 610, el lote a lote 800 y el EOQ 821. La tabla «Comparación» muestra cuánto se pierde con cada regla simple."
+  ],
+  "industria": [
+    {
+      "nombre": "SAP S/4HANA (gestión de materiales y MRP)",
+      "tipo": "software",
+      "uso": "Parametriza por material el procedimiento de tamaño de lote (lote a lote, fijo, periódico u óptimo), el punto de pedido y el stock de seguridad."
+    },
+    {
+      "nombre": "SAP IBP, Blue Yonder, Kinaxis y o9",
+      "tipo": "software",
+      "uso": "Plataformas de planeación de la cadena que optimizan inventarios de seguridad y políticas de reposición en redes de muchos artículos y bodegas."
+    },
+    {
+      "nombre": "stockpyl",
+      "tipo": "libreria",
+      "uso": "Librería de Python con modelos clásicos de inventario: EOQ, vendedor de periódicos, (s, S), Wagner-Whitin y redes de varios niveles."
+    },
+    {
+      "nombre": "Microsoft Excel con Solver",
+      "tipo": "software",
+      "uso": "La herramienta más común en empresas medianas para calcular EOQ y puntos de reorden por referencia."
+    }
+  ],
+  "alternativas": [
+    "MRP: cuando la demanda de un componente depende de la de un producto final, no se usa EOQ sino la explosión de materiales con sus reglas de lote.",
+    "Optimización de inventarios multinivel: cuando hay varias bodegas en serie, optimizar cada una por separado deja inventario de más."
+  ],
+  "errores_comunes": [
+    "Mezclar unidades de tiempo: demanda mensual con costo de mantener anual. Todo debe estar en la misma unidad.",
+    "Usar el EOQ para productos con demanda muy estacional o de temporada única. Para eso están el periodo único y el tamaño de lote dinámico.",
+    "En descuentos, olvidar el costo de compra en la comparación. El EOQ de cada rango no basta: hay que sumar lo que se paga por las unidades."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Deducir el EOQ y explicar por qué el costo total es poco sensible cerca del óptimo.",
+      "Resolver descuentos por cantidad y periodo único, y justificar la decisión con costos.",
+      "Aplicar Wagner-Whitin a mano en un problema pequeño y compararlo con heurísticas."
+    ],
+    "actividades": [
+      "Con «Ferretería Nacional: EOQ (clase)» y «Ferretería Nacional: POQ (clase)», compara comprar con producir y explica el ahorro.",
+      "Con «Plan de produccion de 8 semanas», usa «Comparar» y pide a los estudiantes explicar por qué el EOQ es la peor regla con demanda irregular.",
+      "Con «Freddie el vendedor de periodicos (Hillier)», cambia el valor de rescate y observa cómo se mueve la cantidad óptima."
+    ],
+    "preguntas": [
+      "Si el costo de ordenar se reduce a la cuarta parte, ¿qué pasa con el lote económico?",
+      "¿Por qué el nivel de servicio óptimo del vendedor de periódicos puede ser menor que 50 %?",
+      "¿En qué se diferencian (s, Q) y (R, S) en la información que exigen y en el inventario de seguridad?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "EOQ",
+      "definicion": "Cantidad económica de pedido: el lote que minimiza la suma de costos de ordenar y de mantener."
+    },
+    {
+      "termino": "Punto de reorden (s)",
+      "definicion": "Nivel de inventario en el que se lanza un pedido."
+    },
+    {
+      "termino": "Nivel máximo (S)",
+      "definicion": "Nivel hasta el que se completa el inventario al pedir."
+    },
+    {
+      "termino": "Razón crítica",
+      "definicion": "Cu/(Cu + Co): el nivel de servicio óptimo en el modelo de periodo único."
+    },
+    {
+      "termino": "Wagner-Whitin",
+      "definicion": "Algoritmo de programación dinámica que da el plan de lotes óptimo con demanda variable."
+    },
+    {
+      "termino": "Inventario de seguridad",
+      "definicion": "Existencias adicionales que protegen contra la variación de la demanda y del tiempo de entrega."
+    }
+  ],
+  "referencias": [
+    "harris1913",
+    "taft1918",
+    "arrow1951",
+    "wagnerwhitin1958",
+    "scarf1960",
+    "hadleywhitin1963",
+    "dematteis1968",
+    "silvermeal1973",
+    "silver2017",
+    "hillier2015en",
+    "render2018",
+    "schroeder2018",
+    "sarache2026inventarios",
+    "chang2003"
+  ]
+}

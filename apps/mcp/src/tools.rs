@@ -41,6 +41,7 @@ sobre todo en TBATS) y sugiere instalar R con install.packages(\"forecast\") o u
 Si el usuario te da una foto, un PDF o una tabla de un ejercicio: lee el enunciado, di qué datos extrajiste (para que los revise), \
 elige el módulo, plantea el modelo con describe_module y resuélvelo con solve; nunca inventes datos que no se ven. \
 Los archivos de WinQSB se leen con import_winqsb_file y los libros de Excel con import_excel.\n\
+Para aprender o enseñar un tema (¿qué es el MRP?, ¿para qué sirven las colas?, guíame por un módulo) usa get_module_guide(module): qué es, para qué sirve en la vida real, historia con fuentes, cómo usarlo en IAQSB, cómo lo resuelve el motor, qué se usa hoy en la industria, alternativas, errores comunes e ideas para el profesor; explica a partir de ella y resuelve un ejemplo pequeño con solve.\n\
 Flujo: 1) describe_module(module, problem_type) da el esquema del modelo, las opciones y un ejemplo del tipo de problema; \
 2) solve(module, model, options); 3) explica el resultado.\n\
 Las respuestas vienen en Markdown y son cortas a propósito: resultado, métricas, tablas principales y las gráficas descritas con sus números. \
@@ -305,6 +306,13 @@ fn tools_es() -> Value {
                 "path": {"type": "string", "description": "Ruta donde guardar (opcional)"}
             }, "required": ["module", "model"]},
             "annotations": {"readOnlyHint": false, "destructiveHint": true, "openWorldHint": false}
+        },
+        {
+            "name": "get_module_guide",
+            "title": "Guía de un módulo (Guíame)",
+            "description": "Guía didáctica de un módulo para aprender el tema o enseñarlo: qué es, para qué sirve en la vida real, historia con fuentes (APA 7), qué datos necesita, cómo usarlo paso a paso en IAQSB, cómo lo resuelve el motor, cómo leer los resultados, qué software y librerías se usan hoy en la industria, alternativas, errores comunes, ideas para el profesor y glosario. Úsala cuando el usuario quiera aprender o enseñar un tema (¿qué es el MRP?, ¿para qué sirven las colas?).",
+            "inputSchema": {"type": "object", "properties": {"module": module_prop()}, "required": ["module"]},
+            "annotations": ro
         },
         {
             "name": "get_bibliography",
@@ -646,6 +654,15 @@ Los modelos completos están en el resultado estructurado (models[].model): resu
             } else {
                 Ok(Reply { content: vec![text(api::formats::decode_ansi(&bytes))], structured: None })
             }
+        }
+        "get_module_guide" => {
+            let lc = match lang() {
+                Lang::En => "en",
+                Lang::Pt => "pt",
+                _ => "es",
+            };
+            let g = api::call("guide", json!({"module": module, "lang": lc})).map_err(|e| e.to_string())?;
+            Ok(Reply { content: vec![text(g["markdown"].as_str().unwrap_or("").to_string())], structured: None })
         }
         "get_bibliography" => {
             if args.get("bibtex").and_then(|v| v.as_bool()) == Some(true) {

@@ -1,0 +1,110 @@
+{
+  "modulo": "vrp",
+  "titulo": "Ruteo de vehículos (VRP)",
+  "resumen": "Diseña las rutas de reparto desde un depósito con vehículos de capacidad limitada, para visitar a todos los clientes recorriendo la menor distancia. Es para jefes de distribución, operadores logísticos y empresas con flota propia.",
+  "que_es": [
+    "El problema de ruteo de vehículos con capacidad (CVRP) parte de un depósito, un grupo de clientes con una demanda y una flota de vehículos iguales con una capacidad. Hay que decidir dos cosas a la vez: qué clientes atiende cada vehículo (agrupación) y en qué orden los visita (secuencia). Cada ruta sale del depósito y vuelve a él, y la carga de una ruta no puede pasar la capacidad del vehículo.",
+    "Es una generalización del agente viajero y es un problema NP-difícil: el número de soluciones crece de forma explosiva con los clientes. Por eso en la práctica se combinan heurísticas constructivas rápidas (barrido, ahorros, vecino más cercano), mejoras locales como 2-opt y, para instancias pequeñas, modelos de programación entera que garantizan el óptimo. IAQSB agrega restricciones útiles: número máximo de vehículos, distancia máxima por ruta y costos por distancia y por vehículo."
+  ],
+  "analogia": "Imagina que tú y dos amigos reparten los domicilios de una panadería en bicicleta, y cada canasta lleva máximo 20 panes. Primero se reparten el barrio por sectores, como tajadas de una pizza vista desde la panadería. Después cada uno decide el orden de su recorrido para no devolverse. Eso es exactamente el método del barrido.",
+  "para_que_sirve": [
+    { "sector": "Consumo masivo", "ejemplo": "Una distribuidora de bebidas atiende cada día cientos de tiendas de barrio. Un buen ruteo reduce camiones, horas extra y combustible." },
+    { "sector": "Comercio electrónico y última milla", "ejemplo": "Un operador de paquetería arma las rutas de sus motos y furgones cada mañana según los pedidos del día." },
+    { "sector": "Alimentos frescos", "ejemplo": "Un centro de distribución abastece supermercados con camiones refrigerados; la distancia máxima por ruta protege la cadena de frío." },
+    { "sector": "Servicios públicos", "ejemplo": "Una empresa de aseo diseña las rutas de recolección por sectores, y una empresa de gas programa las visitas de sus técnicos." },
+    { "sector": "Transporte escolar y de personal", "ejemplo": "Se agrupan los estudiantes o empleados por zonas y se define el recorrido de cada bus respetando su cupo." }
+  ],
+  "historia": [
+    { "anio": "1959", "hecho": "Dantzig y Ramser plantean el problema de despacho de camiones para repartir gasolina a estaciones de servicio: el origen formal del VRP.", "refs": ["dantzigramser1959"] },
+    { "anio": "1960", "hecho": "Miller, Tucker y Zemlin proponen restricciones para eliminar subciclos con variables de orden. IAQSB usa una versión con cargas para su modelo óptimo.", "refs": ["miller1960"] },
+    { "anio": "1962", "hecho": "Held y Karp resuelven el agente viajero con programación dinámica. IAQSB lo usa para ordenar de forma exacta las zonas pequeñas.", "refs": ["heldkarp1962"] },
+    { "anio": "1964", "hecho": "Clarke y Wright publican el método de los ahorros, todavía hoy una de las heurísticas más usadas por su sencillez y buena calidad.", "refs": ["clarkewright1964"] },
+    { "anio": "1972", "hecho": "Wren y Holliday agrupan clientes por su ángulo polar alrededor del depósito, antecedente del barrido.", "refs": ["wrenholliday1972"] },
+    { "anio": "1974", "hecho": "Gillett y Miller publican el método del barrido (sweep): agrupar por ángulo y luego ordenar cada grupo.", "refs": ["gillettmiller1974"] },
+    { "anio": "2014", "hecho": "Toth y Vigo editan la segunda edición de la obra de referencia sobre variantes, formulaciones y métodos del VRP.", "refs": ["tothvigo2014"] },
+    { "anio": "2022", "hecho": "Vidal publica una implementación abierta de la búsqueda genética híbrida (HGS), referente del estado del arte en el CVRP.", "refs": ["vidal2022"] }
+  ],
+  "necesitas": [
+    { "dato": "Depósito y clientes con su ubicación", "para_que": "Coordenadas X, Y en un plano, o latitud y longitud tomadas de un mapa o de las direcciones geocodificadas del sistema comercial." },
+    { "dato": "Demanda de cada cliente", "para_que": "En la misma unidad que la capacidad: cajas, kilos, estibas. Sale de los pedidos del día." },
+    { "dato": "Capacidad de cada vehículo", "para_que": "La carga máxima de un vehículo; todos los vehículos de la flota se suponen iguales." },
+    { "dato": "Vehículos disponibles y distancia máxima (opcional)", "para_que": "Limitan la flota y la longitud de cada ruta, por jornada laboral o por autonomía." },
+    { "dato": "Tabla de distancias de la red (opcional)", "para_que": "Si conoces las distancias reales por las calles, el tipo «Red de calles» las usa en lugar de las coordenadas." },
+    { "dato": "Costos por distancia y por vehículo (opcional)", "para_que": "Expresan el resultado en dinero y deciden entre soluciones con menos kilómetros o con menos vehículos." }
+  ],
+  "supuestos": [
+    "Un solo depósito y una flota homogénea.",
+    "Cada cliente se atiende completo por un solo vehículo y una sola vez.",
+    "Las distancias son simétricas con coordenadas; en la red de calles pueden no serlo si desmarcas «Calles de doble sentido».",
+    "No se modelan ventanas de tiempo, tráfico, tiempos de servicio ni recogidas.",
+    "La distancia geográfica (haversine) es en línea recta sobre la Tierra; la distancia real por carretera es mayor."
+  ],
+  "pasos": [
+    { "titulo": "Elige el tipo de problema", "texto": "Entra a «Ruteo de vehículos» y, en «Problema nuevo», escoge «Clientes con coordenadas» o «Red de calles (tabla de distancias)». Indica el «Número de clientes» y, en coordenadas, la «Distancia»: «Euclidiana (en línea recta)», «Rectilínea (por cuadras)» o «Geográfica: latitud y longitud (km)». Puedes partir de los ejemplos barrido_clase, reparto_ciudad o reparto_bogota." },
+    { "titulo": "Configura la flota", "texto": "En «Flota» escribe la «Capacidad de cada vehículo», los «Vehículos disponibles» (vacío = los que hagan falta), la «Distancia máxima por ruta» (vacío = sin límite), el «Costo por unidad de distancia» y el «Costo fijo por vehículo»." },
+    { "titulo": "Llena el depósito y los clientes", "texto": "En «Depósito (primera fila) y clientes» la primera fila es siempre el depósito. Escribe el «Punto», sus coordenadas (X e Y, o «Latitud» y «Longitud» en grados; en Colombia la longitud es negativa) y la «Demanda». En «Red de calles», llena además la matriz «Distancias directas»; deja vacío donde no hay calle directa." },
+    { "titulo": "Elige el método", "texto": "En «Método» elige «Comparar todos», «Barrido», «Ahorros (Clarke y Wright)», «Vecino más cercano» u «Óptimo (programación entera)». Deja marcado «Mejorar las rutas con 2-opt». Para el barrido puedes fijar el «Barrido: ángulo inicial (grados)», el «Barrido: sentido» y «Barrido: probar todos los inicios». Con «Tiempo máximo del óptimo (segundos)» limitas la búsqueda exacta." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver» o «Comparar». Revisa las pestañas «Solución» (rutas, carga, uso y distancia de cada vehículo), «Mapa», «Comparación», «Paso a paso» y «Distancias». En el paso a paso del barrido ves el orden por ángulo y cómo se llena cada vehículo; en el de ahorros, la lista de ahorros y cada unión de rutas." }
+  ],
+  "como_resuelve": [
+    "Primero IAQSB arma la matriz de distancias: euclidiana, rectilínea o haversine con coordenadas; con la red de calles, completa los pares sin calle directa con la ruta más corta de Floyd-Warshall.",
+    "Barrido: ordena los clientes por el ángulo que forman con el depósito y llena cada vehículo en ese orden hasta su capacidad. Luego busca el mejor orden de visita de cada zona: exacto con la programación dinámica de Held y Karp si la zona tiene hasta 12 clientes.",
+    "Ahorros de Clarke y Wright: empieza con una ruta por cliente y calcula el ahorro s(i, j) = d(i, 0) + d(0, j) − d(i, j) de atender i y j en la misma ruta. Une rutas por sus extremos en orden de mayor ahorro mientras la carga quepa.",
+    "Vecino más cercano: desde el depósito va al cliente más cercano que quepa en el vehículo; cuando no cabe ninguno, vuelve y sale otro vehículo. En todos los métodos, 2-opt invierte tramos de cada ruta mientras se acorte.",
+    "Óptimo: un modelo de programación entera con la formulación de Miller-Tucker-Zemlin con cargas, resuelto con HiGHS y arrancado desde la mejor heurística. En «Comparar todos» se intenta solo hasta 15 clientes. Si se alcanza el tiempo máximo, el informe lo dice y entrega la mejor solución encontrada, sin prueba de optimalidad."
+  ],
+  "interpretar": [
+    "La «Solución» da la distancia total, los vehículos usados y el «Uso de la capacidad». Un uso bajo indica que sobran vehículos o que la distancia máxima está partiendo rutas.",
+    "En la «Comparación» del ejemplo barrido_clase, el barrido y los ahorros recorren 50, el vecino más cercano 56 y la programación entera 47. Las heurísticas quedan a 6.4 % del mejor valor, una brecha típica; el vecino más cercano suele ser el peor.",
+    "Si el estado dice «factible (no se garantiza el óptimo)», la mejor solución viene de una heurística o el modelo entero llegó al tiempo límite. Para decidir, compara la brecha entre métodos: si es pequeña, la ganancia de seguir buscando también lo es.",
+    "Con costos, gana la solución más barata, no la más corta: a veces conviene un vehículo menos aunque se recorran más kilómetros."
+  ],
+  "industria": [
+    { "nombre": "Google OR-Tools (Routing)", "tipo": "libreria", "uso": "Ruteo con capacidad, ventanas de tiempo, recogidas y entregas, en Python, C++, Java o C#." },
+    { "nombre": "PyVRP", "tipo": "libreria", "uso": "Librería abierta en Python basada en la búsqueda genética híbrida para CVRP y variantes con ventanas de tiempo." },
+    { "nombre": "VROOM", "tipo": "libreria", "uso": "Motor abierto de optimización de rutas que se integra con OSRM para usar distancias reales por las vías." },
+    { "nombre": "ORTEC Routing and Dispatch", "tipo": "software", "uso": "Planeación de rutas para distribuidores de consumo masivo y operadores logísticos." },
+    { "nombre": "SAP Transportation Management y Oracle Transportation Management", "tipo": "software", "uso": "Planeación del transporte dentro del ERP, con ruteo, consolidación de carga y liquidación de fletes." },
+    { "nombre": "Routific, OptimoRoute y similares", "tipo": "servicio", "uso": "Servicios en la nube para pymes de reparto: importan pedidos, arman rutas y las envían a la aplicación del conductor." }
+  ],
+  "alternativas": [
+    "Agente viajero (módulo NET) cuando hay un solo vehículo sin límite de capacidad.",
+    "Metaheurísticas como la búsqueda genética híbrida, la búsqueda tabú o la búsqueda adaptativa de vecindario grande (ALNS) para cientos o miles de clientes.",
+    "Modelos de ruteo con ventanas de tiempo (VRPTW), con recogidas y entregas o con flota heterogénea cuando la operación lo exige.",
+    "Rutas fijas por zonas (ruteo maestro) cuando la demanda es estable: se diseñan una vez y se ajustan poco cada día."
+  ],
+  "errores_comunes": [
+    "Invertir latitud y longitud. En IAQSB, Y es la latitud y X la longitud; en Colombia continental la longitud es negativa (en Bogotá, cerca de −74) y la latitud casi siempre positiva (en Bogotá, cerca de 4.6).",
+    "Poner un cliente con demanda mayor que la capacidad. Ningún vehículo puede llevarlo; hay que dividir el pedido.",
+    "Olvidar que la primera fila es el depósito y escribir ahí un cliente.",
+    "Reportar la distancia haversine como kilómetros reales de recorrido. Para tarifas o tiempos, multiplícala por un factor de tortuosidad o usa la red de calles.",
+    "Pedir el óptimo con muchos clientes y creer que la solución es óptima aunque el informe diga que se alcanzó el tiempo máximo."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Plantear un CVRP con depósito, demandas y capacidad.",
+      "Aplicar a mano el barrido y los ahorros de Clarke y Wright en instancias pequeñas.",
+      "Comparar heurísticas con el óptimo y discutir la brecha y el tiempo de cálculo."
+    ],
+    "actividades": [
+      "Con barrido_clase, hacer el barrido a mano con transportador y comparar con el «Paso a paso». Luego cambiar el ángulo inicial y el sentido.",
+      "Con reparto_bogota, cambiar la capacidad del vehículo y el costo fijo por vehículo para ver cuándo conviene un vehículo menos.",
+      "Pedir a los estudiantes que tomen las coordenadas reales de 8 a 10 tiendas de su barrio en un mapa y armen sus rutas."
+    ],
+    "preguntas": [
+      "¿Por qué el método de los ahorros une rutas por los extremos y no por el medio?",
+      "¿Qué pasa con la distancia total si se limita la flota a menos vehículos de los que usa la mejor solución?",
+      "¿Por qué el VRP se considera más difícil que el problema de transporte, si ambos mueven producto desde un origen?"
+    ]
+  },
+  "glosario": [
+    { "termino": "CVRP", "definicion": "Problema de ruteo de vehículos con capacidad: rutas desde un depósito que no pasan la capacidad de cada vehículo." },
+    { "termino": "Ahorro", "definicion": "Distancia que se evita al atender dos clientes en la misma ruta en lugar de dos viajes separados." },
+    { "termino": "Barrido", "definicion": "Heurística que agrupa clientes por su ángulo alrededor del depósito y luego ordena cada grupo." },
+    { "termino": "2-opt", "definicion": "Mejora que quita dos arcos de una ruta y reconecta invirtiendo el tramo intermedio cuando eso acorta la ruta." },
+    { "termino": "Subciclo", "definicion": "Recorrido cerrado que no pasa por el depósito; los modelos enteros lo prohíben con restricciones especiales." },
+    { "termino": "Haversine", "definicion": "Fórmula de la distancia más corta entre dos puntos sobre una esfera a partir de su latitud y longitud." },
+    { "termino": "Uso de la capacidad", "definicion": "Demanda total dividida por la capacidad total de los vehículos usados." }
+  ],
+  "referencias": ["dantzigramser1959", "clarkewright1964", "gillettmiller1974", "wrenholliday1972", "miller1960", "heldkarp1962", "croes1958", "floyd1962", "sinnott1984", "tothvigo2014", "vidal2022", "ropke2006", "sarache2026ruteo", "huangfuhall2018"]
+}

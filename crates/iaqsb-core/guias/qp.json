@@ -1,0 +1,109 @@
+{
+  "modulo": "qp",
+  "titulo": "Programación cuadrática (QP-IQP)",
+  "resumen": "Optimiza un objetivo que tiene términos al cuadrado o productos entre variables, con restricciones lineales. Es la herramienta clásica para carteras de inversión de mínimo riesgo y para modelos donde el costo o el ingreso crecen de forma no proporcional.",
+  "que_es": [
+    "Un programa cuadrático tiene restricciones lineales, como un programa lineal, pero su función objetivo incluye términos como X1², X2² o X1·X2. Se escribe como Z = término lineal + suma de coeficientes por Xi·Xj. La matriz de esos coeficientes, duplicada en la diagonal, es la hessiana del objetivo.",
+    "La forma de la función decide todo. Si al minimizar la función es convexa (tiene forma de tazón), cualquier mínimo local es global y el problema es fácil. Si al maximizar es cóncava, ocurre lo mismo. Si no es ni lo uno ni lo otro, puede haber varios óptimos locales y hay que buscar con más cuidado. IAQSB revisa la convexidad con los valores propios de la hessiana.",
+    "A diferencia de la programación lineal, el óptimo no tiene que estar en un vértice: puede estar en el interior de una cara de la región factible o incluso en el interior de la región. Por eso el método símplex no basta y se usan las condiciones de Karush-Kuhn-Tucker (KKT)."
+  ],
+  "analogia": "Es como repartir tus ahorros entre varias alcancías que se mueven juntas: si dos suben y bajan al mismo tiempo, poner todo en ellas aumenta el susto. La parte cuadrática mide justamente cómo se mueven juntas, y el modelo busca la mezcla que menos se sacude sin perder la rentabilidad que pides.",
+  "para_que_sirve": [
+    { "sector": "Banca y fondos de inversión", "ejemplo": "Cartera de mínima varianza que alcanza una rentabilidad objetivo, con límites por tipo de activo. Es el modelo de Markowitz, base de la gestión de portafolios." },
+    { "sector": "Fondos de pensiones y aseguradoras", "ejemplo": "Asignación estratégica de activos con restricciones regulatorias de inversión por clase de activo." },
+    { "sector": "Comercio y precios", "ejemplo": "Fijación de precios cuando la demanda baja linealmente con el precio: el ingreso precio × cantidad es cuadrático." },
+    { "sector": "Manufactura y control de procesos", "ejemplo": "Ajuste de mezclas o de puntos de operación minimizando la suma de desviaciones al cuadrado respecto a una especificación." },
+    { "sector": "Análisis de datos", "ejemplo": "Regresión por mínimos cuadrados con restricciones (coeficientes no negativos o que suman uno) y máquinas de vectores de soporte, que son programas cuadráticos." }
+  ],
+  "historia": [
+    { "anio": "1939", "hecho": "William Karush escribe en su tesis de maestría las condiciones de optimalidad con restricciones de desigualdad.", "refs": ["karush1939"] },
+    { "anio": "1951", "hecho": "Harold Kuhn y Albert Tucker publican esas condiciones para la programación no lineal; hoy se llaman condiciones de Karush-Kuhn-Tucker.", "refs": ["kuhntucker1951"] },
+    { "anio": "1952", "hecho": "Harry Markowitz propone elegir carteras por media y varianza, un problema de programación cuadrática.", "refs": ["markowitz1952"] },
+    { "anio": "1956", "hecho": "Marguerite Frank y Philip Wolfe publican un algoritmo para programación cuadrática que resuelve una sucesión de programas lineales.", "refs": ["frankwolfe1956"] },
+    { "anio": "1959", "hecho": "Philip Wolfe adapta el método símplex a la programación cuadrática convexa escribiendo las condiciones KKT como un sistema lineal; es el método de los libros de texto.", "refs": ["wolfe1959"] },
+    { "anio": "2024", "hecho": "Paul Goulart y Yuwen Chen publican Clarabel, un motor libre de punto interior para programas cónicos con objetivo cuadrático, el que usa IAQSB.", "refs": ["goulartchen2024"] }
+  ],
+  "necesitas": [
+    { "dato": "Variables de decisión", "para_que": "Por ejemplo, la fracción del presupuesto en acciones, bonos e inmuebles." },
+    { "dato": "Término lineal de cada variable", "para_que": "Coeficiente de la variable sola en el objetivo (ingreso unitario, rentabilidad esperada)." },
+    { "dato": "Coeficientes cuadráticos", "para_que": "Coeficiente de Xi·Xj. En una cartera son las varianzas y covarianzas de los rendimientos, que se estiman con datos históricos." },
+    { "dato": "Restricciones lineales", "para_que": "Presupuesto, rentabilidad mínima, límites por activo o por capacidad." },
+    { "dato": "Cotas y tipo de variable", "para_que": "Límites inferior y superior y si la variable es continua, entera, binaria o libre." }
+  ],
+  "supuestos": [
+    "Las restricciones son lineales; si no lo son, usa programación no lineal (NLP).",
+    "El objetivo es exactamente cuadrático: no hay logaritmos, raíces ni potencias distintas de dos.",
+    "Los coeficientes se conocen con certeza. En carteras, las covarianzas estimadas tienen error y la solución es sensible a ellas.",
+    "Para garantizar el óptimo global, el objetivo debe ser convexo al minimizar o cóncavo al maximizar."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo y un ejemplo", "texto": "En la barra lateral elige «Programación cuadrática». En «Ejemplos» puedes cargar «Cartera de mínimo riesgo (Markowitz)» o «Ejemplo del método de Wolfe (Hillier)»." },
+    { "titulo": "Crea el problema", "texto": "Pulsa «Nuevo problema». El tipo es «Programa cuadrático». Elige el «Criterio» («Minimizar» o «Maximizar»), el «Número de variables» y el «Número de restricciones», y pulsa «Crear problema»." },
+    { "titulo": "Escribe la función objetivo", "texto": "En la tabla «Función objetivo: coeficiente de Xi·Xj (fila i, columna j) y término lineal» escribe en la diagonal los coeficientes de X1², X2², etc., fuera de la diagonal los de los productos cruzados y, en la columna «Término lineal», el coeficiente de cada variable sola. Un producto X1·X2 puede ir en la celda (1, 2) o repartido entre (1, 2) y (2, 1): lo que cuenta es la suma." },
+    { "titulo": "Escribe las restricciones", "texto": "En «Restricciones, cotas y tipos» escribe los coeficientes de cada restricción, su «Sentido» y su «Lado derecho». Debajo define «Cota inferior», «Cota superior» y «Tipo» de cada variable." },
+    { "titulo": "Resuelve y revisa", "texto": "Deja activo «Mostrar paso a paso» y pulsa «Resolver». Mira las pestañas «Solución», «Convexidad» y «Paso a paso». Con «¿Qué pasa si…?» puedes variar, por ejemplo, la rentabilidad mínima y trazar la frontera eficiente punto a punto." }
+  ],
+  "como_resuelve": [
+    "Primero IAQSB analiza la convexidad: calcula los valores propios de la hessiana. Si todos son mayores o iguales a cero, la función es convexa; si todos son menores o iguales a cero, es cóncava; si hay de los dos signos, no es ni convexa ni cóncava.",
+    "Si el problema es convexo y continuo, lo resuelve con Clarabel, un motor de punto interior, y luego hace un pulido exacto con las restricciones activas para obtener los valores y los multiplicadores de Lagrange (precios sombra) sin errores de redondeo.",
+    "Si no es convexo y es pequeño, encuentra el óptimo global enumerando los puntos KKT de cada combinación de restricciones activas, porque el óptimo está en uno de ellos. Si es grande, da el mejor óptimo local de varios arranques y lo avisa. Si hay variables enteras, aplica ramificación y acotamiento sobre esas relajaciones.",
+    "El «Paso a paso» muestra el método de Wolfe que traen los libros: escribe las condiciones KKT como un sistema lineal con multiplicadores y holguras, y resuelve la fase uno del símplex con la regla de entrada restringida (una variable no entra si su complementaria está en la base). Al final comprueba que se cumplen las condiciones KKT."
+  ],
+  "interpretar": [
+    "El encabezado da el valor óptimo y las variables. En la cartera de ejemplo, el riesgo mínimo (varianza) es 0.0076 con 11.4 % en acciones, 55.4 % en bonos y 33.1 % en inmuebles.",
+    "La «Solución» separa la parte lineal y la cuadrática del objetivo y da para cada variable su derivada parcial ∂Z/∂x y si está entre cotas o en una cota.",
+    "El «Precio sombra» de una restricción dice cuánto cambia Z por una unidad más de lado derecho. En la cartera, el de «Rentabilidad» mide cuánto riesgo adicional cuesta pedir más rentabilidad: es la pendiente de la frontera eficiente. Solo es válido en problemas continuos y convexos.",
+    "La pestaña «Convexidad» dice si el óptimo es global. Si la función no tiene la forma adecuada, toma el resultado como un óptimo local y prueba con otros datos o con el módulo NLP."
+  ],
+  "industria": [
+    { "nombre": "Gurobi Optimizer y IBM ILOG CPLEX", "tipo": "software", "uso": "Resuelven QP y QP con variables enteras (MIQP); se usan en optimización de carteras con restricciones de cardinalidad y lotes mínimos." },
+    { "nombre": "MOSEK", "tipo": "software", "uso": "Motor comercial de optimización cónica muy usado en finanzas cuantitativas para carteras y problemas con riesgo cuadrático." },
+    { "nombre": "OSQP", "tipo": "libreria", "uso": "Motor libre de QP convexo por el método de direcciones alternadas, popular en control predictivo y robótica." },
+    { "nombre": "Clarabel", "tipo": "libreria", "uso": "Motor libre de punto interior para QP y programas cónicos, escrito en Rust con interfaz para Python y Julia; es el que usa IAQSB." },
+    { "nombre": "CVXPY", "tipo": "libreria", "uso": "Lenguaje de modelado en Python para optimización convexa: verifica la convexidad del modelo y lo envía a OSQP, Clarabel, MOSEK u otros." },
+    { "nombre": "HiGHS", "tipo": "libreria", "uso": "Además de LP y MIP, resuelve QP convexo continuo; es libre y se usa desde Python, Julia y C++." }
+  ],
+  "alternativas": [
+    "Si las restricciones no son lineales o el objetivo tiene otras funciones (logaritmos, exponenciales), usa programación no lineal (NLP).",
+    "Si basta con una aproximación, puedes linealizar el objetivo por tramos y resolverlo como programa lineal o entero.",
+    "En carteras, medidas de riesgo como la desviación absoluta media o el CVaR llevan a programas lineales en lugar de cuadráticos.",
+    "Cuando hay restricciones de cardinalidad (máximo cinco activos), el modelo pasa a ser QP entero mixto y conviene un motor comercial o heurísticas."
+  ],
+  "errores_comunes": [
+    "Confundir el coeficiente de X1·X2 con el de la hessiana: la hessiana duplica los términos al cuadrado. Escribe en la tabla los coeficientes tal como aparecen en la función.",
+    "Duplicar un producto cruzado. Si la función dice 4X1X2, escribe 4 en una sola celda o 2 en cada una; 4 en ambas lo duplica. En cambio, la matriz de covarianzas de una cartera se copia completa, porque la varianza es la suma de σij·Xi·Xj sobre todas las celdas.",
+    "Maximizar una función convexa o minimizar una cóncava y creer que el resultado es global. Revisa siempre la pestaña «Convexidad».",
+    "Usar covarianzas de pocas observaciones; la cartera óptima cambia mucho con pequeños errores de estimación.",
+    "Interpretar precios sombra en un problema con variables enteras, donde no son válidos."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Escribir un objetivo cuadrático en forma matricial e identificar su hessiana.",
+      "Decidir si un programa cuadrático es convexo con los valores propios.",
+      "Plantear y verificar las condiciones KKT en un ejemplo pequeño.",
+      "Interpretar la frontera eficiente de Markowitz y el precio sombra de la rentabilidad."
+    ],
+    "actividades": [
+      "Resolver el ejemplo de Wolfe y seguir el «Paso a paso» hasta comprobar las condiciones KKT en el punto (12, 9).",
+      "Con la cartera de ejemplo, variar la rentabilidad mínima en «¿Qué pasa si…?» y graficar riesgo contra rentabilidad.",
+      "Pedir a los estudiantes que estimen covarianzas con precios reales de acciones de la Bolsa de Valores de Colombia en una hoja de cálculo y armen su propia cartera.",
+      "Cambiar el signo de un coeficiente cuadrático para volver la función no convexa y discutir qué reporta la pestaña «Convexidad»."
+    ],
+    "preguntas": [
+      "¿Por qué en un QP convexo todo mínimo local es global?",
+      "¿Qué condición KKT falla si un multiplicador de una restricción <= es negativo al minimizar?",
+      "¿Qué representa económicamente el precio sombra de la rentabilidad en el modelo de Markowitz?",
+      "¿Por qué el óptimo de un QP puede estar en el interior de la región factible?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Hessiana", "definicion": "Matriz de segundas derivadas de la función objetivo; en un QP es constante." },
+    { "termino": "Función convexa", "definicion": "Función cuyo segmento entre dos puntos de su gráfica queda por encima de ella; al minimizarla, todo mínimo local es global." },
+    { "termino": "Valores propios", "definicion": "Números que indican la curvatura de la función en sus direcciones principales." },
+    { "termino": "Condiciones KKT", "definicion": "Condiciones de estacionariedad, factibilidad y holgura complementaria que cumple todo óptimo regular." },
+    { "termino": "Holgura complementaria", "definicion": "Condición de que, en cada restricción, la holgura o el multiplicador sea cero." },
+    { "termino": "Frontera eficiente", "definicion": "Conjunto de carteras con el menor riesgo para cada nivel de rentabilidad." },
+    { "termino": "Punto interior", "definicion": "Familia de métodos que avanzan por el interior de la región factible en lugar de recorrer sus vértices." }
+  ],
+  "referencias": ["markowitz1952", "wolfe1959", "frankwolfe1956", "karush1939", "kuhntucker1951", "goulartchen2024", "nocedalwright2006", "hillier2015en", "nalgebra", "chang2003"]
+}

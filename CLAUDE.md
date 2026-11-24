@@ -52,7 +52,7 @@ Lee primero `LEEME.md`, que es la fuente de verdad sobre funciones, comandos y e
   - En Rust se escriben en español y los traducen los catálogos del núcleo. Para encontrar los textos nuevos: `python3 tools/i18n_extraer.py`, compararlo con `en.json` y `pt.json`, y traducir lo que falte.
 - Todo método o ejemplo nuevo lleva su fuente, y sus pruebas comparan contra valores publicados o contra otra implementación independiente.
 
-## Estado (noviembre de 2026, versión 0.2.2)
+## Estado (noviembre de 2026, versión 0.2.3)
 
 Ya está hecho:
 - Ajustes (Ctrl+,), con cambio de idioma que no bloquea la app.
@@ -71,10 +71,14 @@ Pendiente:
 - Probar el asistente con claves reales de varios proveedores. Hasta ahora solo se probó contra servidores simulados.
 - Publicar el repositorio y poner su dirección en `CITATION.cff` y en `CONTRIBUTING.md` (hoy no hay ninguna).
 - Decidir si se adopta un formato de código.
-- Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. La versión 0.2.2 está publicada (https://github.com/vangoghdata/iaqsb/releases/tag/v0.2.2, la más reciente) con los seis instaladores: Windows, macOS chip Apple (macos-15) e Intel (macos-15-intel), .deb, .rpm y AppImage. Para una versión nueva: subir la versión en Cargo.toml, package.json y tauri.conf.json, crear la etiqueta y publicar el borrador. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
+- Repositorio publicado en https://github.com/vangoghdata/iaqsb (cuenta de GitHub de Luis: vangoghdata). Los instaladores de Windows, macOS y Linux los genera `.github/workflows/instaladores.yml` al subir una etiqueta `v*`. La versión 0.2.3 está publicada (https://github.com/vangoghdata/iaqsb/releases/tag/v0.2.3, la más reciente) con los seis instaladores: Windows, macOS chip Apple (macos-15) e Intel (macos-15-intel), .deb, .rpm y AppImage. Para una versión nueva: subir la versión en Cargo.toml, package.json y tauri.conf.json, crear la etiqueta y publicar el borrador. Opcional: certificado de Apple Developer para firmar y notarizar en macOS.
 - Probar los adjuntos del asistente con proveedores reales (imágenes y PDF): se probaron con un servidor simulado compatible con OpenAI.
 - Cadena jerárquica (ap → pmp → mrp → crp) completa en el núcleo; faltan botones en la interfaz para pasar de un nivel a otro (hoy se hace con `link` desde la IA, la CLI o el MCP).
 - Programa Jantero del profesor (`C:\jantero`, Visual FoxPro): pronósticos (promedios móviles, suavización simple y doble, Holt, Winters, correlograma), EOQ, vendedor de periódicos, planeación agregada (nivelación, persecución, óptimo), programa maestro (básico y ATO), MRP y secuenciación. IAQSB ya cubre todo salvo el correlograma. Luis no dio acceso de pantalla a Jantero; se compara con sus Excel.
+
+Hecho el 23 de noviembre de 2026 (versión 0.2.3):
+- **Guíame**: guía didáctica de los 28 módulos en `crates/iaqsb-core/guias/<id>.json` (formato en `guias/ESQUEMA.md`): qué es, para qué sirve, historia con fuentes, qué necesitas, pasos en IAQSB, cómo lo resuelve, cómo leer los resultados, industria, alternativas, errores comunes, sección del profesor, glosario y referencias (ids de la bibliografía; se agregaron 19 referencias, 3 por verificar). Operación `guide` de la API (`src/guias.rs` resuelve las citas a APA 7), CLI `iaqsb guia <módulo>`, herramienta MCP y del asistente `get_module_guide`, botón **Guíame** en la barra de arriba (`GuiaPanel.svelte`, `lib/guia.svelte.ts`). Las guías están solo en español (pendiente: inglés y portugués). Prueba: `crates/iaqsb-api/tests/todo/guias.rs`.
+- **Nativo** (el robot de IA Nativa) en el asistente: animaciones en `apps/desktop/public/nativo/*.webp` (webp animado con transparencia, 256 px, 20 fps; `-0.webp` quietas). Se hacen en el repositorio de Luis `C:\Users\luisf\Proyectos\ia-nativa-videos`: `personajes/panel_iaqsb.py` (Blender 5.3, tomas reposo, pensando, calculando, explicando, celebrando, confundido, saludo y chat) y `personajes/iaqsb.mjs` (ffmpeg a webp y copia a IAQSB). `chat.nativo` elige la toma según lo que pasa; `Nativo.svelte`; ajuste `ajustes.nativo`. Tono del asistente: profesional y educativo (Luis no quiere chistes ni emojis).
 
 Hecho el 23 de noviembre de 2026 (versión 0.2.2):
 - Causa de los números distintos de R en el Mac: el equipo no tenía R y el motor nativo (anofox) no es el de R. Ahora:

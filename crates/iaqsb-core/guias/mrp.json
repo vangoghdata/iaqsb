@@ -1,0 +1,329 @@
+{
+  "modulo": "mrp",
+  "titulo": "Planeación de requerimientos de materiales (MRP)",
+  "resumen": "Calcula qué componentes y materias primas hay que comprar o fabricar, cuántos y cuándo lanzar cada orden para cumplir el programa maestro. Es la herramienta de quien planea compras y producción en una empresa que fabrica productos con varias piezas.",
+  "que_es": [
+    "El MRP (Material Requirements Planning) es un método de cálculo, y también el sistema de información que lo ejecuta, que traduce el plan de productos terminados en un plan de órdenes para cada componente. Su idea fundadora es la distinción entre demanda independiente y dependiente. La demanda de bicicletas viene del mercado y hay que pronosticarla. La demanda de ruedas no se pronostica: se calcula, porque cada bicicleta lleva dos. Orlicky (1975) sostuvo que los puntos de reorden, pensados para la demanda independiente, no sirven para planear componentes.",
+    "Para que un cálculo sea un MRP necesita cinco elementos. Primero, un programa maestro de producción (PMP): cuánto de cada producto terminado se necesita en cada periodo. Segundo, una lista de materiales (BOM): qué componentes y en qué cantidad lleva cada artículo, nivel por nivel. Tercero, registros de inventario exactos: existencias, recepciones programadas y stock de seguridad. Cuarto, tiempos de entrega (lead times) de compra o de fabricación de cada artículo. Quinto, reglas de tamaño de lote que agrupan las necesidades en órdenes. Si falta uno, el resultado no es confiable.",
+    "El cálculo se llama explosión. Para cada artículo, nivel por nivel, el MRP obtiene los requerimientos brutos, les resta el inventario disponible y las recepciones programadas para hallar los requerimientos netos, agrupa los netos en recepciones planeadas según la regla de lote y las adelanta el tiempo de entrega para obtener las liberaciones planeadas: el día en que hay que emitir la orden. Las liberaciones de un padre, multiplicadas por la cantidad de la lista de materiales, son los requerimientos brutos de sus componentes. El resultado final es la lista de acciones: qué órdenes lanzar en cada periodo."
+  ],
+  "analogia": "Piensa en una cena para veinte personas. El menú y la hora son el programa maestro; la receta es la lista de materiales; la despensa es el inventario; el tiempo de ir al mercado o de hornear es el tiempo de entrega. Si la cena es el sábado a las ocho y el pernil necesita seis horas de horno y un día de marinado, sabes que debes comprarlo el jueves. El MRP hace ese razonamiento hacia atrás para miles de artículos a la vez.",
+  "para_que_sirve": [
+    {
+      "sector": "Ensamble de bicicletas y motocicletas",
+      "ejemplo": "Una ensambladora explota su programa semanal de motos en cientos de referencias de chasís, llantas y tornillería, y sabe qué pedir a cada proveedor y cuándo, sin acumular partes que no se usarán en meses."
+    },
+    {
+      "sector": "Muebles",
+      "ejemplo": "Un fabricante de muebles de madera calcula cuántos tableros, herrajes y litros de laca necesita cada semana y coordina el corte con el ensamble, reduciendo el inventario en proceso."
+    },
+    {
+      "sector": "Farmacéutica y cosmética",
+      "ejemplo": "Un laboratorio explota sus lotes de producto terminado en principios activos, excipientes, envases y etiquetas, con tiempos de importación largos, y protege la producción con stock de seguridad solo donde hace falta."
+    },
+    {
+      "sector": "Autopartes y metalmecánica",
+      "ejemplo": "Un proveedor de autopartes trabaja por pedidos de la ensambladora y usa el MRP para lanzar órdenes de fabricación de piezas y compras de lámina con la anticipación justa."
+    }
+  ],
+  "historia": [
+    {
+      "anio": "1954",
+      "hecho": "Andrew Vazsonyi propone usar matrices para calcular los requerimientos totales de una lista de materiales, el método que hoy se conoce como Gozinto.",
+      "refs": [
+        "vazsonyi1954"
+      ]
+    },
+    {
+      "anio": "1958",
+      "hecho": "Wagner y Whitin resuelven de forma óptima el tamaño de lote con demanda variable por programación dinámica; su algoritmo es una de las reglas de lote del MRP.",
+      "refs": [
+        "wagnerwhitin1958"
+      ]
+    },
+    {
+      "anio": "1968",
+      "hecho": "DeMatteis publica en el IBM Systems Journal el balanceo de periodo-parte (part-period balancing), otra regla de lote usada en los sistemas MRP.",
+      "refs": [
+        "dematteis1968"
+      ]
+    },
+    {
+      "anio": "Década de 1970",
+      "hecho": "APICS, la asociación estadounidense de profesionales de control de producción e inventarios, impulsa la llamada «cruzada MRP» para difundir el método en la industria.",
+      "refs": [
+        "olhager2013"
+      ]
+    },
+    {
+      "anio": "1975",
+      "hecho": "Joseph Orlicky publica el libro que describe en detalle la lógica del MRP: demanda dependiente, explosión por niveles, necesidades netas y órdenes planeadas.",
+      "refs": [
+        "orlicky1975"
+      ]
+    },
+    {
+      "anio": "1981",
+      "hecho": "Oliver Wight populariza el MRP II, la planeación de recursos de manufactura, que une el MRP con la capacidad, las ventas y las finanzas en un solo sistema de planeación.",
+      "refs": [
+        "wight1981"
+      ]
+    },
+    {
+      "anio": "Década de 1990",
+      "hecho": "El MRP y el MRP II se integran con contabilidad, ventas, compras y recursos humanos en los sistemas de planeación de recursos empresariales (ERP).",
+      "refs": [
+        "jacobsweston2007"
+      ]
+    },
+    {
+      "anio": "2011",
+      "hecho": "Carol Ptak y Chad Smith publican la tercera edición del libro de Orlicky, que presenta el MRP impulsado por la demanda (DDMRP).",
+      "refs": [
+        "ptaksmith2011"
+      ]
+    },
+    {
+      "anio": "2016",
+      "hecho": "Ptak y Smith publican el libro dedicado a DDMRP, con amortiguadores de inventario en puntos de desacople.",
+      "refs": [
+        "ptaksmith2016"
+      ]
+    },
+    {
+      "anio": "2021",
+      "hecho": "El profesor Jaime Antero Arango Marín enseña el procedimiento MRP paso a paso con un ejercicio de siete artículos resuelto en Excel en la Universidad Nacional de Colombia. IAQSB reproduce exactamente su solución.",
+      "refs": [
+        "arango2021mrp"
+      ]
+    }
+  ],
+  "necesitas": [
+    {
+      "dato": "Programa maestro de producción (PMP)",
+      "para_que": "Los requerimientos de productos terminados por periodo. Sale del módulo PMP o del plan de ventas. En IAQSB también puedes poner aquí la demanda independiente de un componente, como los repuestos."
+    },
+    {
+      "dato": "Lista de materiales (BOM)",
+      "para_que": "Los componentes directos de cada artículo y su cantidad por unidad del padre. La mantiene ingeniería de producto; un error aquí se multiplica en todos los niveles."
+    },
+    {
+      "dato": "Inventario disponible y recepciones programadas",
+      "para_que": "Lo que hay en bodega y las órdenes ya lanzadas que llegarán en cada periodo. Vienen del sistema de inventarios y de compras; deben ser exactos."
+    },
+    {
+      "dato": "Stock de seguridad",
+      "para_que": "La cantidad mínima que el MRP debe mantener de cada artículo. Úsalo con criterio, sobre todo en artículos con proveedores poco confiables."
+    },
+    {
+      "dato": "Tiempo de entrega",
+      "para_que": "Periodos entre emitir la orden y recibirla, de compra o de fabricación. Sale de los acuerdos con proveedores y de la ruta de producción."
+    },
+    {
+      "dato": "Regla de lote y costos",
+      "para_que": "La regla (lote a lote, cantidad fija, EOQ, POQ, Silver-Meal, Wagner-Whitin…) y, si aplica, la demanda anual, el costo de preparación, el costo anual de mantener y el costo unitario."
+    },
+    {
+      "dato": "Desperdicio, unidad de medida y capacidad (opcional)",
+      "para_que": "El porcentaje de desperdicio infla los netos; la unidad EACH, EA o UNIT redondea a enteros; la capacidad por artículo y periodo permite ver la carga de las órdenes."
+    }
+  ],
+  "supuestos": [
+    "El programa maestro es determinístico: el MRP no maneja la incertidumbre de la demanda, solo la protege con stock de seguridad.",
+    "Los tiempos de entrega son fijos y conocidos, sin importar el tamaño del lote ni la carga de la planta.",
+    "La capacidad es infinita: el MRP calcula órdenes sin verificar si la planta puede producirlas. La matriz de capacidad solo informa la carga.",
+    "La lista de materiales no tiene ciclos y los registros de inventario son exactos.",
+    "El tiempo se divide en periodos (cubetas) iguales; lo que pasa dentro de un periodo no se distingue."
+  ],
+  "pasos": [
+    {
+      "titulo": "Abre el módulo",
+      "texto": "En la barra lateral elige «Planeación de requerimientos de materiales». Pulsa «Nuevo problema» o abre un ejemplo: siete_articulos_arango (el ejercicio del curso), producto_a_render (Heizer y Render) o bicicletas_lotes (reglas de lote y capacidad). También puedes abrir un archivo .MRP de WinQSB."
+    },
+    {
+      "titulo": "Dimensiones",
+      "texto": "Indica el «Número de artículos», el «Número de períodos» y la «Unidad de tiempo» (semana). En los datos generales revisa los «Períodos por año» (52 si son semanas), que convierten los costos anuales en costos por periodo."
+    },
+    {
+      "titulo": "Maestro de artículos y lista de materiales",
+      "texto": "Para cada artículo escribe «Artículo», «Descripción» y «Componentes (id/cantidad)», por ejemplo B/2, C/3 (sin barra, la cantidad es 1). Luego «Tiempo de entrega», «Lote», «Multiplicador del lote», «Inventario de seguridad», «Inventario disponible», «Desperdicio (%)» y «Unidad de medida»."
+    },
+    {
+      "titulo": "Reglas de lote y costos",
+      "texto": "En «Lote» escribe LFL, FOQ (la cantidad va en el multiplicador), EOQ, FPR (los periodos van en el multiplicador), POQ, LUC, LTC, PPB, SM, WW o una cantidad fija. Para EOQ, POQ, LUC, LTC, PPB, SM y WW llena «Demanda anual», «Costo unitario», «Costo de preparación» y «Costo anual de mantener». Si hay atrasos de antes del periodo 1, usa «Requerimiento vencido» y «Recepción vencida»."
+    },
+    {
+      "titulo": "Programa maestro y recepciones",
+      "texto": "En la matriz «Programa maestro de producción (MPS)» escribe el requerimiento de cada producto terminado por periodo. En «Recepciones programadas» escribe las órdenes ya lanzadas. Si quieres ver la carga, llena «Capacidad (opcional)»."
+    },
+    {
+      "titulo": "Resuelve",
+      "texto": "Pulsa «Resolver». El informe tiene las pestañas «Solución», «Registros MRP», «Estructura», «Capacidad» y «Paso a paso»."
+    },
+    {
+      "titulo": "Revisa el paso a paso",
+      "texto": "Con «Mostrar paso a paso» activo verás cuatro pasos: niveles (código de nivel más bajo), requerimientos netos, lotes y liberación. Compáralos con tu cálculo a mano, artículo por artículo."
+    }
+  ],
+  "como_resuelve": [
+    "IAQSB ejecuta el MRP en Rust con la lógica de Orlicky (1975) y del módulo MRP de WinQSB. Primero asigna a cada artículo su código de nivel más bajo: el nivel más profundo en que aparece en cualquier lista de materiales. Así, un artículo que se usa en dos niveles se calcula una sola vez, cuando ya se conocen todas sus demandas. Si la lista de materiales tiene un ciclo, el módulo lo detecta y lo informa.",
+    "Para cada artículo, en orden de nivel, calcula: requerimiento bruto = programa maestro + liberaciones de los padres × cantidad por unidad. Luego recorre los periodos con el inventario disponible menos el stock de seguridad, sumando recepciones programadas y restando brutos; cuando el saldo queda negativo, ese faltante es el requerimiento neto. Si hay desperdicio, el neto se multiplica por (1 + desperdicio/100).",
+    "La regla de lote agrupa los netos en recepciones planeadas. LFL pide exactamente el neto. FOQ pide múltiplos de una cantidad fija. EOQ usa la cantidad económica √(2·S·D/H), ajustada si hay costo de faltante. FPR junta los netos de un número fijo de periodos y POQ calcula ese número con la EOQ. LUC, LTC, PPB y Silver-Meal (SM) son heurísticas que deciden cuántos periodos cubrir comparando costo de preparación y de mantener. WW (Wagner-Whitin) encuentra por programación dinámica la agrupación de menor costo total. Si la unidad es EACH, EA o UNIT, las cantidades se redondean hacia arriba.",
+    "La liberación planeada es la recepción planeada adelantada el tiempo de entrega. Si cae antes del periodo 1, aparece en la columna «Vencido»: la orden ya debió emitirse. Las liberaciones se multiplican por las cantidades de la lista de materiales y pasan a ser brutos de los componentes, y así hasta el último nivel.",
+    "Al final calcula los costos del horizonte (preparación, mantener, faltante y material) y, si diste capacidad, el porcentaje de carga de las liberaciones en cada periodo, marcando las sobrecargas. Con el ejemplo siete_articulos_arango, el resultado coincide celda por celda con la hoja de Excel del profesor Arango."
+  ],
+  "interpretar": [
+    "La «Lista de acciones: liberaciones de órdenes planeadas» es la salida operativa: cada número es una orden de compra o de fabricación que hay que emitir en ese periodo. La fila de un artículo comprado va a compras; la de uno fabricado, a producción.",
+    "La columna «Vencido» es una alarma. En el ejemplo siete_articulos_arango, el producto A arranca con 25 unidades y un stock de seguridad de 30: le faltan 5 desde antes del periodo 1, y con un tiempo de entrega de 1 la orden ya está vencida. Hay que acelerarla, reducir el tiempo de entrega o aceptar el faltante.",
+    "En «Registros MRP» cada artículo tiene su tabla con requerimiento bruto, recepción programada, inventario proyectado, requerimiento neto, recepción planeada y liberación planeada. El inventario proyectado nunca debe quedar por debajo del stock de seguridad.",
+    "La pestaña «Estructura» muestra el árbol del producto, la lista de materiales indentada con la cantidad total por unidad del producto final y la tabla «Dónde se usa cada artículo». Úsalas para revisar la lista de materiales antes de confiar en el resultado.",
+    "El «Análisis de costos del horizonte» permite comparar reglas de lote: cambia la regla de un artículo, resuelve de nuevo y compara. En la pestaña «Capacidad», una carga mayor que 100 % indica que el plan no es ejecutable sin horas extra, subcontratación o mover órdenes."
+  ],
+  "industria": [
+    {
+      "nombre": "SAP S/4HANA (MRP Live y PP/DS)",
+      "tipo": "software",
+      "uso": "MRP Live ejecuta la explosión de materiales directamente en la base de datos en memoria; PP/DS agrega programación detallada con capacidad finita. Es el estándar en grandes manufactureras."
+    },
+    {
+      "nombre": "Oracle Fusion Cloud Supply Planning",
+      "tipo": "software",
+      "uso": "Planeación de suministro y de materiales en la nube, con restricciones de capacidad y varias plantas."
+    },
+    {
+      "nombre": "Microsoft Dynamics 365 Supply Chain Management",
+      "tipo": "software",
+      "uso": "Planeación maestra y MRP con su motor Planning Optimization, para empresas medianas y grandes."
+    },
+    {
+      "nombre": "Odoo y ERPNext",
+      "tipo": "software",
+      "uso": "ERP de código abierto o de bajo costo con listas de materiales, órdenes de fabricación y reabastecimiento; muy usados por pymes en Latinoamérica."
+    },
+    {
+      "nombre": "Kinaxis, o9 Solutions y Siemens Opcenter APS",
+      "tipo": "software",
+      "uso": "Sistemas de planeación avanzada (APS) que recalculan el plan con capacidad finita y escenarios, encima del ERP."
+    },
+    {
+      "nombre": "DDMRP (Demand Driven Institute)",
+      "tipo": "metodologia",
+      "uso": "Método que coloca amortiguadores de inventario en puntos de desacople y planea por consumo real, para reducir el nerviosismo del MRP clásico."
+    },
+    {
+      "nombre": "HiGHS, Gurobi y Google OR-Tools",
+      "tipo": "libreria",
+      "uso": "Solucionadores para planeación basada en optimización: modelos de lotificación de varios niveles con capacidad que el MRP clásico no resuelve."
+    }
+  ],
+  "alternativas": [
+    "DDMRP: en lugar de explotar un pronóstico por toda la lista de materiales, protege puntos estratégicos con amortiguadores y repone según la demanda real. Conviene cuando hay mucha variabilidad, tiempos de entrega largos y el MRP cambia el plan cada semana.",
+    "Kanban y sistemas de jalón (JIT): para producción repetitiva y estable, las tarjetas reemplazan las órdenes planeadas y el control es visual.",
+    "Punto de reorden o revisión periódica: sigue siendo adecuado para artículos de demanda independiente, repuestos y consumibles (módulo INV).",
+    "APS con capacidad finita: cuando la capacidad es el cuello de botella, programan órdenes respetando máquinas, turnos y secuencias.",
+    "Optimización (programación entera de lotificación con capacidad en varios niveles): cuando los costos de preparación y la capacidad pesan mucho y se busca el plan de menor costo, no solo uno factible.",
+    "MRP II (módulo mrp2): cuando además de los materiales quieres ver la carga de los departamentos y el ajuste por calidad."
+  ],
+  "errores_comunes": [
+    "Confiar en registros de inventario o listas de materiales inexactos. El MRP amplifica cualquier error: una cantidad mal escrita en el nivel 1 se multiplica en todos los niveles inferiores.",
+    "Inflar los tiempos de entrega «por si acaso». Eso adelanta todas las órdenes, aumenta el inventario y esconde los problemas reales del proveedor.",
+    "Poner stock de seguridad en todos los niveles. Se acumula inventario en cada nivel; concéntralo en productos terminados o en componentes críticos.",
+    "Olvidar las recepciones programadas, con lo que el MRP pide de nuevo lo que ya viene en camino.",
+    "Ignorar la columna «Vencido» o las sobrecargas de capacidad: el plan se ve completo pero no es ejecutable.",
+    "Esperar costos sin haberlos dado: en el ejemplo del curso el costo total es 0 porque no se ingresaron costos; para comparar reglas de lote hay que llenarlos."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Distinguir demanda independiente de dependiente y explicar por qué el MRP no pronostica componentes.",
+      "Construir a mano el registro MRP de un artículo: brutos, recepciones programadas, inventario proyectado, netos con stock de seguridad, recepciones y liberaciones planeadas.",
+      "Explotar una lista de materiales de varios niveles con código de nivel más bajo.",
+      "Comparar reglas de tamaño de lote por su costo y su efecto en el inventario.",
+      "Explicar la evolución MRP, MRP II, ERP y las alternativas actuales como DDMRP y APS."
+    ],
+    "actividades": [
+      "Con siete_articulos_arango (hojas «ejemplo programacion mrp» y su solución), los estudiantes resuelven a mano los artículos A y B, luego comparan con «Registros MRP» y explican la liberación vencida de A.",
+      "Con producto_a_render, dibujar el árbol del producto, calcular la lista de materiales indentada y verificarla en la pestaña «Estructura».",
+      "Con bicicletas_lotes, cambiar la regla de lote de un artículo (LFL, POQ, SM, WW), resolver de nuevo y comparar el «Análisis de costos del horizonte». Discutir por qué WW, óptimo para un artículo aislado en un horizonte fijo, no garantiza el menor costo de todo el producto ni cuando el plan se recalcula cada semana.",
+      "Caso de discusión: una empresa con MRP que cambia el plan cada semana. ¿Qué haría con DDMRP, con barreras de tiempo en el PMP o con reglas de lote más estables?",
+      "Este módulo reemplaza el MRP del programa Jantero y del módulo MRP de WinQSB, cuyos archivos abre y guarda. Con el asistente de IA, la CLI o el servidor MCP (link_models) se encadena el PMP con el MRP."
+    ],
+    "preguntas": [
+      "¿Por qué no conviene usar un punto de reorden para las ruedas de una bicicleta?",
+      "¿Qué pasa con las liberaciones de los componentes si el padre cambia de lote a lote a lote fijo de 100?",
+      "¿Qué significa una liberación en la columna «Vencido» y qué decisiones puede tomar el planeador?",
+      "¿Por qué el MRP supone capacidad infinita y cómo lo corrigen MRP II y los APS?",
+      "¿En qué se diferencia DDMRP del MRP clásico y en qué tipo de empresa conviene cada uno?"
+    ]
+  },
+  "glosario": [
+    {
+      "termino": "Demanda dependiente",
+      "definicion": "Demanda de un artículo que se calcula a partir de la demanda de los artículos que lo usan."
+    },
+    {
+      "termino": "Lista de materiales (BOM)",
+      "definicion": "Estructura que indica los componentes de cada artículo y la cantidad por unidad del padre."
+    },
+    {
+      "termino": "Código de nivel más bajo",
+      "definicion": "Nivel más profundo en que aparece un artículo en cualquier lista de materiales; define el orden de cálculo."
+    },
+    {
+      "termino": "Explosión de materiales",
+      "definicion": "Cálculo que baja por la lista de materiales convirtiendo órdenes de los padres en requerimientos de los componentes."
+    },
+    {
+      "termino": "Requerimiento bruto",
+      "definicion": "Cantidad total que se necesita de un artículo en un periodo, antes de descontar el inventario."
+    },
+    {
+      "termino": "Requerimiento neto",
+      "definicion": "Lo que falta después de usar el inventario disponible y las recepciones programadas, manteniendo el stock de seguridad."
+    },
+    {
+      "termino": "Recepción planeada",
+      "definicion": "Cantidad que el MRP propone recibir en un periodo para cubrir los netos según la regla de lote."
+    },
+    {
+      "termino": "Liberación planeada",
+      "definicion": "Recepción planeada adelantada el tiempo de entrega: el momento de emitir la orden."
+    },
+    {
+      "termino": "Tiempo de entrega (lead time)",
+      "definicion": "Tiempo entre emitir una orden de compra o fabricación y recibir el material."
+    },
+    {
+      "termino": "Wagner-Whitin (WW)",
+      "definicion": "Algoritmo de programación dinámica que agrupa los netos con el menor costo de preparar y mantener."
+    },
+    {
+      "termino": "MRP II",
+      "definicion": "Planeación de recursos de manufactura: MRP más capacidad, ventas y finanzas en un circuito cerrado."
+    },
+    {
+      "termino": "ERP",
+      "definicion": "Sistema que integra el MRP con contabilidad, compras, ventas y recursos humanos."
+    },
+    {
+      "termino": "DDMRP",
+      "definicion": "MRP impulsado por la demanda, con amortiguadores de inventario en puntos de desacople."
+    }
+  ],
+  "referencias": [
+    "orlicky1975",
+    "arango2021mrp",
+    "vollmann2005",
+    "heizerrender2014",
+    "heizer2017",
+    "wagnerwhitin1958",
+    "silvermeal1973",
+    "dematteis1968",
+    "vazsonyi1954",
+    "olhager2013",
+    "wight1981",
+    "jacobsweston2007",
+    "ptaksmith2011",
+    "ptaksmith2016",
+    "chang2003"
+  ]
+}

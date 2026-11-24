@@ -158,6 +158,7 @@
             <div class="fila-tema"><SelectorTemaCompacto /><button class="btn" onclick={() => (ui.apariencia = true)}><Icon name="paleta" size={15} />{t('Personalizar colores y fondo…')}</button></div>
           </div>
           <label class="check"><input type="checkbox" checked={ui.fijado} onchange={(e) => ui.fijar(e.currentTarget.checked)} />{t('Barra lateral de módulos siempre visible')}</label>
+          <label class="check"><input type="checkbox" bind:checked={ajustes.nativo} onchange={() => guardar()} />{t('Animaciones de Nativo, el robot del asistente (piensa, calcula, explica y celebra)')}</label>
         {:else if ajustes.seccion === 'numeros'}
           <div class="grupo">
             <h4>{t('Decimales')}</h4>

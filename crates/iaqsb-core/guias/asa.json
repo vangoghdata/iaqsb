@@ -1,0 +1,108 @@
+{
+  "modulo": "asa",
+  "titulo": "Muestreo de aceptación (ASA)",
+  "resumen": "Decide si se acepta o se rechaza un lote a partir de una muestra, y mide qué tan bien protege ese plan al productor y al cliente. Es para compras, recepción técnica, aseguramiento de calidad y auditoría de proveedores.",
+  "que_es": [
+    "Un plan de muestreo de aceptación es una regla: toma n unidades del lote, cuenta los defectuosos y acepta si hay c o menos. No mejora la calidad del producto; decide qué hacer con un lote que ya existe. Su valor está en que inspeccionar todo es caro, lento o destructivo, y no inspeccionar nada es arriesgado.",
+    "Todo plan comete dos errores posibles. El riesgo del productor (α) es rechazar un lote bueno, con calidad igual al nivel aceptable AQL. El riesgo del consumidor (β) es aceptar un lote malo, con calidad igual al nivel rechazable RQL o LTPD. La curva característica de operación (OC) resume el plan: da la probabilidad de aceptar el lote para cada porcentaje de defectuosos. A partir de ella se calculan la calidad media de salida (AOQ) y su máximo (AOQL), la inspección total media (ATI) y el tamaño medio de muestra (ASN)."
+  ],
+  "analogia": "Es como probar una cucharada de sopa para decidir si toda la olla está bien de sal. Una sola cucharada puede engañarte; diez cucharadas te dan más certeza pero toman más tiempo. El plan de muestreo dice cuántas cucharadas probar y cuántas saladas toleras antes de botar la olla.",
+  "para_que_sirve": [
+    { "sector": "Recepción de materias primas", "ejemplo": "Una fábrica de calzado recibe lotes de 2000 suelas. Con un plan simple decide en minutos si el lote entra a producción o se devuelve al proveedor." },
+    { "sector": "Farmacéutica y dispositivos médicos", "ejemplo": "Se inspeccionan muestras de jeringas o empaques según planes normalizados, y el plan queda documentado ante la autoridad sanitaria." },
+    { "sector": "Producción continua", "ejemplo": "En una línea de envasado sin lotes definidos, un plan CSP-1 alterna inspección al 100 % e inspección de una fracción según se encuentren defectos." },
+    { "sector": "Ensayos destructivos", "ejemplo": "La resistencia de un cable o de un concreto solo se mide rompiendo la pieza. Un plan por variables decide con muestras pequeñas usando la media y la desviación." },
+    { "sector": "Proveedores con historial bueno", "ejemplo": "Con muestreo por saltos de lotes (SkSP-2) se inspecciona solo una fracción de los lotes de un proveedor confiable y se ahorra costo de recepción." }
+  ],
+  "historia": [
+    { "anio": "1943", "hecho": "Harold Dodge publica el plan CSP-1 para producción continua: inspección al 100 % hasta ver i unidades buenas seguidas y luego una fracción f.", "refs": ["dodge1943"] },
+    { "anio": "1947", "hecho": "Abraham Wald publica el análisis secuencial: se inspecciona unidad por unidad y se decide en cuanto la evidencia cruza una de dos rectas. Ahorra muestra frente a los planes fijos.", "refs": ["wald1947"] },
+    { "anio": "1955", "hecho": "Dodge propone el muestreo en cadena (ChSP-1), que usa muestras pequeñas con c = 0 y mira los resultados de los lotes anteriores.", "refs": ["dodge1955"] },
+    { "anio": "1959", "hecho": "Dodge y Romig publican la segunda edición de sus tablas de muestreo simple y doble, con los conceptos de AOQL e inspección total media.", "refs": ["dodgeromig1959"] },
+    { "anio": "1973", "hecho": "R. L. Perry formaliza los planes por saltos de lotes SkSP-2.", "refs": ["perry1973"] },
+    { "anio": "2018", "hecho": "ASQ reafirma las normas ANSI/ASQ Z1.4 (atributos) y Z1.9 (variables), las tablas que usan hoy muchas empresas para escoger planes por AQL.", "refs": ["ansiz14", "ansiz19"] }
+  ],
+  "necesitas": [
+    { "dato": "AQL y RQL (LTPD)", "para_que": "Los niveles de calidad, en % defectuoso, que se quieren aceptar y rechazar. Se pactan en el contrato con el proveedor." },
+    { "dato": "Riesgos α y β", "para_que": "Probabilidades de error que se toleran. Lo usual es α = 5 % y β = 10 %." },
+    { "dato": "Plan: tamaño de muestra n y número de aceptación c", "para_que": "Si ya tienes un plan, lo analizas. Si no, IAQSB lo busca a partir de AQL, RQL, α y β." },
+    { "dato": "Tamaño del lote N", "para_que": "Sirve para la distribución hipergeométrica, para la AOQ con inspección rectificadora y para la ATI." },
+    { "dato": "Costos (opcional)", "para_que": "Costo por unidad muestreada, por unidad inspeccionada al 100 %, del productor y del consumidor por defectuoso. Permiten comparar planes en dinero." },
+    { "dato": "Para variables: σ, especificaciones y medias", "para_que": "La desviación del proceso, el límite de especificación (LSL o USL) y la media aceptable y la rechazable." }
+  ],
+  "supuestos": [
+    "La muestra es aleatoria y representa todo el lote.",
+    "Con la distribución binomial se supone un lote grande frente a la muestra; si no, conviene la hipergeométrica.",
+    "Los planes por variables suponen que la característica sigue una distribución normal.",
+    "Por defecto la inspección es perfecta; IAQSB permite introducir errores de inspección (buenos clasificados como malos y viceversa).",
+    "La inspección rectificadora supone que los lotes rechazados se inspeccionan al 100 % y los defectuosos se reemplazan."
+  ],
+  "pasos": [
+    { "titulo": "Elige el tipo de plan", "texto": "Entra a «Muestreo de aceptación» y en «Problema nuevo» escoge uno de los 11 tipos: «Muestreo simple (atributos)», «Muestreo doble (atributos)», «Muestreo múltiple (atributos)», «Muestreo secuencial (atributos)», «Muestreo en cadena ChSP-1», «Muestreo continuo CSP-1», «Muestreo por saltos de lotes SkSP-2», «Media de la muestra (variables)», «Fracción defectuosa, método k (variables)», «Fracción defectuosa, método M (variables)» o «Muestreo secuencial (variables)». Los ejemplos muestreo_simple, muestreo_doble, secuencial_atributos, continuo_csp1, media_variables y metodo_k sirven de punto de partida." },
+    { "titulo": "Escribe el plan", "texto": "En la tabla «Plan» pon el «Tamaño de muestra (n)» y el «Número de aceptación (c)». En los planes doble y múltiple cada etapa lleva además el «Número de rechazo (r)». En CSP-1 escribe el «% de unidades inspeccionadas (f)» y el «Número de liberación (i)»." },
+    { "titulo": "Define calidad, riesgos y lote", "texto": "En «Calidad y riesgos» escribe la «Calidad aceptable AQL (% defectuoso)», la «Calidad rechazable RQL o LTPD (% defectuoso)», el «Riesgo del productor α (%)», el «Riesgo del consumidor β (%)», el «Tamaño del lote (N)» y la «Distribución»: Binomial, Hipergeométrica, Poisson, Normal o elegida por el programa." },
+    { "titulo": "Agrega costos y errores si los tienes", "texto": "En «Costos (opcionales)» y «Errores de inspección» completa lo que aplique. Deja marcada la «Inspección rectificadora» si los lotes rechazados se inspeccionan completos." },
+    { "titulo": "Elige qué hacer", "texto": "En las opciones, «Hacer» permite «Analizar el plan» o «Buscar el plan (AQL, RQL, α, β)». Al buscar, escoge el «Criterio de búsqueda»: «Cumplir α y β», «Menor desviación ponderada de α y β» o «AOQL máximo». Con «Qué pasa si» evalúas un % defectuoso puntual, y con «Curvas desde», «Curvas hasta» y «Puntos de las curvas» fijas el rango de las gráficas. En los planes secuenciales, «Datos para el proceso secuencial» recibe los resultados unidad por unidad." },
+    { "titulo": "Resuelve y revisa el paso a paso", "texto": "Pulsa «Resolver». Revisa la «Solución» con α y β reales, las «Curvas» OC, AOQ, ASN, ATI y de costo, la «Tabla» de desempeño y el «Paso a paso» con los cálculos de probabilidad." }
+  ],
+  "como_resuelve": [
+    "Para atributos, la probabilidad de aceptar Pa se calcula con la distribución elegida. En un plan simple binomial, Pa = P(X ≤ c) con X binomial (n, p). En los planes doble y múltiple se suman las probabilidades de todas las trayectorias que terminan en aceptación.",
+    "Con Pa se obtienen las demás curvas. En un plan simple: AOQ = Pa·p·(N − n)/N con inspección rectificadora; ATI = n + (1 − Pa)(N − n); ASN es el número esperado de unidades inspeccionadas antes de decidir. El AOQL es el máximo de la curva AOQ.",
+    "El muestreo secuencial usa las rectas de Wald, cuya pendiente y cortes salen de AQL, RQL, α y β. Los planes por variables usan la distribución normal: el método k compara (USL − X̄)/σ o (X̄ − LSL)/σ con un valor crítico k; el método M estima la fracción defectuosa y la compara con un máximo M.",
+    "La búsqueda del plan, con el criterio «Cumplir α y β», prueba c = 0, 1, 2… y para cada c halla por bisección el menor n que deja β en el RQL; se queda con el primer plan que además cumple α en el AQL. La tabla «Planes evaluados» muestra los candidatos. Son cálculos de probabilidad con la librería statrs; no se usa HiGHS."
+  ],
+  "interpretar": [
+    "Compara los riesgos reales con los deseados. En el ejemplo muestreo_simple (n = 50, c = 1, AQL 1 %, RQL 8 %), α real es 8.94 %: el plan rechaza demasiados lotes buenos frente al 5 % pactado, aunque protege bien al cliente con β = 8.27 %.",
+    "Al pedir «Buscar el plan» con los mismos datos, IAQSB propone n = 65 y c = 2, con α = 2.76 % y β = 9.91 %. Muestrear 15 unidades más resuelve el conflicto con el proveedor.",
+    "El AOQL es la peor calidad promedio que sale de la recepción con inspección rectificadora, sin importar cómo llegue el lote. Es el número que interesa a la planta que recibe.",
+    "La ATI y la curva de costo dicen cuánto trabajo de inspección generará el plan según la calidad que mande el proveedor; úsalas para presupuestar personal de recepción."
+  ],
+  "industria": [
+    { "nombre": "ANSI/ASQ Z1.4 e ISO 2859-1", "tipo": "metodologia", "uso": "Tablas normalizadas por atributos con niveles de inspección y cambio entre inspección normal, rigurosa y reducida." },
+    { "nombre": "ANSI/ASQ Z1.9 e ISO 3951-1", "tipo": "metodologia", "uso": "Planes por variables para porcentaje no conforme." },
+    { "nombre": "Minitab Statistical Software", "tipo": "software", "uso": "Crea y compara planes por atributos y por variables con sus curvas OC, AOQ y ATI." },
+    { "nombre": "SAP S/4HANA Quality Management", "tipo": "software", "uso": "Gestiona lotes de inspección en la recepción con procedimientos de muestreo y reglas de dinamización según el historial del proveedor." },
+    { "nombre": "Paquetes AcceptanceSampling y Dodge de R", "tipo": "libreria", "uso": "Curvas OC, búsqueda de planes y planes de Dodge en R." }
+  ],
+  "alternativas": [
+    "Control estadístico del proceso en la planta del proveedor (módulo QCC): previene defectos en lugar de detectarlos y, con buena capacidad, reduce la inspección de recepción.",
+    "Certificación del proveedor y auditorías: con historial confiable se pasa a saltos de lotes o a inspección reducida.",
+    "Inspección al 100 % automatizada con visión artificial cuando el costo por unidad inspeccionada es casi nulo.",
+    "Planes por variables en lugar de atributos: con la misma protección piden muestras más pequeñas, a cambio de suponer normalidad."
+  ],
+  "errores_comunes": [
+    "Creer que aceptar un lote garantiza que no tiene defectuosos. Solo dice que, con cierta probabilidad, su calidad es aceptable.",
+    "Confundir el AQL con el porcentaje de defectuosos que se tolera en el producto final. Es un punto de la curva OC, no un permiso para entregar defectos.",
+    "Tomar la muestra de la parte de arriba de la estiba. La muestra debe ser aleatoria en todo el lote.",
+    "Usar la binomial cuando la muestra es una fracción grande del lote. En lotes pequeños usa la hipergeométrica.",
+    "Escoger un plan por costumbre (por ejemplo n = 50, c = 1) sin revisar sus riesgos reales con la curva OC."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Construir e interpretar la curva OC de un plan simple y de uno doble.",
+      "Calcular α y β reales, AOQ, AOQL, ATI y ASN.",
+      "Diseñar un plan que cumpla AQL, RQL, α y β, y justificarlo ante un proveedor."
+    ],
+    "actividades": [
+      "Con muestreo_simple, calcular a mano Pa en el AQL con la binomial y compararlo con la «Tabla» de IAQSB.",
+      "Comparar el plan simple con el doble del ejemplo muestreo_doble: ¿cuál inspecciona menos en promedio (ASN) con la misma protección?",
+      "Simular en clase un lote con fichas de dos colores, aplicar el plan y repetir 20 veces para comparar la frecuencia de aceptación con la curva OC."
+    ],
+    "preguntas": [
+      "¿Por qué el plan con c = 0 castiga mucho al productor aunque proteja al consumidor?",
+      "¿En qué casos conviene un plan secuencial y qué inconveniente práctico tiene?",
+      "¿Cómo cambia la AOQ si la inspección no es rectificadora?"
+    ]
+  },
+  "glosario": [
+    { "termino": "AQL", "definicion": "Nivel de calidad aceptable: % defectuoso que el plan debe aceptar con probabilidad alta, normalmente 1 − α." },
+    { "termino": "RQL o LTPD", "definicion": "Nivel de calidad rechazable: % defectuoso que el plan debe aceptar con probabilidad baja, normalmente β." },
+    { "termino": "Curva OC", "definicion": "Probabilidad de aceptar el lote en función de su porcentaje de defectuosos." },
+    { "termino": "AOQ", "definicion": "Calidad media de salida: porcentaje de defectuosos que en promedio pasa después de la inspección." },
+    { "termino": "AOQL", "definicion": "Valor máximo de la AOQ sobre todos los niveles de calidad de entrada." },
+    { "termino": "ATI", "definicion": "Inspección total media: unidades inspeccionadas en promedio por lote, contando la inspección de los rechazados." },
+    { "termino": "ASN", "definicion": "Tamaño medio de muestra hasta tomar la decisión." },
+    { "termino": "Inspección rectificadora", "definicion": "Política en la que los lotes rechazados se inspeccionan al 100 % y los defectuosos se cambian por buenos." }
+  ],
+  "referencias": ["montgomery2020", "montgomery2004", "dodgeromig1959", "dodge1943", "dodge1955", "dodge1955skip", "perry1973", "wald1947", "ansiz14", "ansiz19", "chang2003", "statrs"]
+}

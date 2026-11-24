@@ -16,6 +16,7 @@
 
 import { bytesToBase64, call, inTauri, type Imported } from './backend';
 import { ejecutarPython, ejecutarR, type Archivo } from './motores_web.svelte';
+import { TOMAS, type TomaNativo } from './nativo';
 import { bloques as bloquesAdjuntos, leerArchivo, leerPegada, sinDatos, type Adjunto } from './adjuntos';
 import { ajustes } from './ajustes.svelte';
 import { i18n, t, type Lang } from './i18n.svelte';
@@ -439,6 +440,12 @@ function definiciones(): Herramienta[] {
       }
     },
     {
+      name: 'get_module_guide',
+      description:
+        'Teaching guide of an IAQSB module, as Markdown: what it is, real-life uses, history with sources (APA 7), required data, how to use it step by step in the app, how the engine solves it, how to read the results, software and libraries used in industry today, alternatives, common mistakes, ideas for professors and a glossary. Call it whenever the user wants to learn or teach a topic or asks what a module is for, and build your explanation on it.',
+      input_schema: { type: 'object', properties: { module }, required: ['module'] }
+    },
+    {
       name: 'run_r',
       description:
         'Runs R code in the R built into IAQSB (webR: the official R compiled to WebAssembly, with CRAN packages such as forecast, readxl, ggplot2, fpp2; it gives the same numbers as desktop R). Use it whenever an exercise is written for R (ts, window, ses, holt, hw, naive, snaive, tbats, auto.arima, ets, Acf, accuracy, checkresiduals, read_excel…) so the results match R exactly. Files the user attached are in the working directory with their original names (e.g. read_excel("Clientes.xlsx")). print() or cat() every value you need, with enough digits (print(x, digits = 10)); plots are shown to the user. Missing packages are installed automatically. Each call starts with a clean session: include all the code needed.',
@@ -486,6 +493,8 @@ function etiquetaBase(nombre: string, entrada: string, estado: EstadoHerramienta
       return listo ? t('Análisis de qué pasa si: {0}', mod) : t('Analizando qué pasa si cambia un dato…');
     case 'link_models':
       return listo ? t('Niveles de la planificación enlazados') : t('Pasando el resultado al siguiente nivel…');
+    case 'get_module_guide':
+      return listo ? t('Guía leída: {0}', mod) : t('Leyendo la guía del módulo…');
     case 'run_r':
       return listo ? t('Código de R ejecutado') : t('Ejecutando código de R…');
     case 'run_python':
@@ -547,6 +556,10 @@ class Chat {
   verHistorial = $state(false);
   /** Identificador de la conversación actual (nombre del archivo donde se guarda). */
   id = $state(nuevoId());
+  /** Una toma de Nativo que se muestra una vez (saludo al abrir, celebración al terminar). */
+  private eventoNativo = $state<TomaNativo | null>(null);
+  private relojNativo: ReturnType<typeof setTimeout> | null = null;
+  private abiertoAntes = false;
 
   private historial: MensajeApi[] = [];
   /**
@@ -589,8 +602,37 @@ class Chat {
   >();
 
   abrir() {
+    if (!this.abierto) {
+      // la primera vez hace de todo un poco; después solo saluda
+      this.mostrarNativo(this.abiertoAntes ? 'saludo' : 'chat');
+      this.abiertoAntes = true;
+    }
     this.abierto = true;
     this.foco++;
+  }
+
+  /** Lo que está haciendo Nativo según lo que pasa en la conversación. */
+  get nativo(): TomaNativo {
+    if (this.ocupado) {
+      const ult = this.mensajes.at(-1);
+      const partes = ult?.rol === 'asistente' ? ult.partes : [];
+      if (partes.some((p) => p.tipo === 'herramienta' && p.estado === 'corriendo')) return 'calculando';
+      const fin = partes.at(-1);
+      if (fin?.tipo === 'texto' && fin.texto.trim()) return 'explicando';
+      return 'pensando';
+    }
+    if (this.error) return 'confundido';
+    return this.eventoNativo ?? 'reposo';
+  }
+
+  /** Muestra una toma una vez y vuelve al reposo. */
+  private mostrarNativo(toma: TomaNativo) {
+    if (this.relojNativo) clearTimeout(this.relojNativo);
+    this.eventoNativo = toma;
+    this.relojNativo = setTimeout(() => {
+      this.eventoNativo = null;
+      this.relojNativo = null;
+    }, TOMAS[toma].ms);
   }
 
   cerrar() {
@@ -830,6 +872,9 @@ class Chat {
           }
           if (ctrl.signal.aborted) throw new DOMException('abort', 'AbortError');
           continue;
+        }
+        if (r.stop !== 'tool_use' && r.stop !== 'max_tokens' && r.stop !== 'refusal' && r.bloques.length) {
+          if (msg.partes.some((p) => p.tipo === 'herramienta' && p.estado === 'ok')) this.mostrarNativo('celebrando');
         }
         if (r.stop === 'tool_use') msg.partes.push({ tipo: 'aviso', texto: t('El modelo siguió pidiendo herramientas después del límite de rondas. Pregúntale de nuevo o más concreto.') });
         else if (r.stop === 'max_tokens') msg.partes.push({ tipo: 'aviso', texto: t('La respuesta se cortó por su longitud. Escribe «continúa» para que siga.') });
@@ -1305,6 +1350,10 @@ class Chat {
       }
       case 'load_model_into_editor':
         return this.cargarEnEditor(modulo, a.model, a.solve === true);
+      case 'get_module_guide': {
+        const r = await call<{ markdown: string }>('guide', { module: modulo });
+        return r.markdown;
+      }
       case 'run_r':
       case 'run_python': {
         const codigo = typeof a.code === 'string' ? a.code : '';
@@ -1431,7 +1480,13 @@ class Chat {
       .join('\n');
     const posgrado = ajustes.nivel === 'posgrado';
     return [
-      'You are the AI assistant built into IAQSB, an open-source, AI-native operations research application (a modern rebuild of WinQSB in Rust) used at Latin-American universities, from undergraduate to PhD level. You help students and teachers formulate problems, solve them with the app’s engine, and understand the results.',
+      'You are Nativo, the AI assistant built into IAQSB, an open-source, AI-native operations research application (a modern rebuild of WinQSB in Rust) made by IA Nativa and used at Latin-American universities, from undergraduate to PhD level. You help students and teachers formulate problems, solve them with the app’s engine, understand the results and learn the topics.',
+      '',
+      '# Who you are',
+      'Your name is Nativo, the assistant of IA Nativa (the company that makes IAQSB); in the app the user sees you as an animated robot. Your tone is professional, clear and educational: a mix of a senior operations consultant and an excellent university professor. No jokes, no emojis, no small talk. Use your name only when greeting or when asked who you are.',
+      '',
+      '# Teaching a topic',
+      'IAQSB is meant to let a student learn a topic on their own and to let professors replace older teaching software. When the user wants to learn a topic or a module (e.g. “¿qué es el MRP?”, “explícame el símplex”, “guíame por el módulo de colas”), call get_module_guide first and build on it: (1) what it is and the decision it supports, (2) real-life uses in companies, (3) a small worked example solved with the engine (solve, or run_r for R methods) so the numbers are real, walking through it step by step, (4) the formal idea or formulas, (5) how industry does it today (software and libraries) and the alternatives, (6) common mistakes, and (7) one short question to check understanding. Cite the guide’s references (APA 7) as given. Offer to load the example into the editor.',
       '',
       `# Language\nThe app’s interface is in ${NOMBRE_IDIOMA[l]}. Always answer in ${NOMBRE_IDIOMA[l]}, unless the user clearly writes in another language.`,
       '',

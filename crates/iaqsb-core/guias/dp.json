@@ -1,0 +1,109 @@
+{
+  "modulo": "dp",
+  "titulo": "Programación dinámica (DP)",
+  "resumen": "Resuelve decisiones que se toman por etapas, donde lo que decides hoy cambia las opciones de mañana: rutas por tramos, carga de una mochila o un plan de producción mes a mes. Entrega la política óptima para cada situación posible, no solo una respuesta.",
+  "que_es": [
+    "La programación dinámica divide un problema grande en etapas. En cada etapa el sistema está en un estado (el nodo donde estás, la capacidad que queda, el inventario con que empiezas el mes) y tomas una decisión que te lleva a un estado de la etapa siguiente con cierto costo o beneficio.",
+    "La idea central es el principio de optimalidad de Bellman: sin importar cómo llegaste a un estado, lo que hagas desde ahí en adelante debe ser óptimo. Por eso se resuelve hacia atrás. Primero se calcula el mejor valor desde cada estado de la última etapa, luego desde la penúltima usando esos valores, y así hasta el inicio. Cada cálculo se guarda en una tabla y no se repite.",
+    "La función recursiva tiene la forma f*(estado) = mejor sobre las decisiones de [valor de la decisión + f* del estado al que lleva]. Al final, f* del estado inicial es el óptimo, y siguiendo las decisiones guardadas se arma el plan completo."
+  ],
+  "analogia": "Es como planear un viaje por carretera desde el final. Si ya sabes cuánto tardas como mínimo desde cada pueblo intermedio hasta tu destino, en cada cruce solo comparas el tramo siguiente más lo que falta desde allí. No necesitas probar todas las rutas completas.",
+  "para_que_sirve": [
+    { "sector": "Manufactura", "ejemplo": "Plan de producción por periodos con costo de preparación y de almacenamiento: decide en qué meses producir y cuánto, equilibrando alistamientos e inventario. Es la lógica del lote dinámico de Wagner y Whitin." },
+    { "sector": "Logística", "ejemplo": "Ruta de menor costo en una red por etapas, como un despacho que pasa por un centro regional y luego por un punto de cruce antes de llegar al cliente." },
+    { "sector": "Transporte de carga", "ejemplo": "Cuántas unidades de cada artículo cargar en un contenedor o un avión para maximizar el valor transportado sin exceder la capacidad." },
+    { "sector": "Mantenimiento", "ejemplo": "Cuándo reemplazar un equipo según su edad, su costo de operación creciente y el precio de reventa." },
+    { "sector": "Finanzas y presupuestos", "ejemplo": "Asignar un presupuesto entre proyectos o regiones cuando el rendimiento de cada uno no es lineal." },
+    { "sector": "Tecnología", "ejemplo": "La misma idea está detrás de los navegadores de rutas, del alineamiento de secuencias genéticas y del aprendizaje por refuerzo." }
+  ],
+  "historia": [
+    { "anio": "1957", "hecho": "Richard Bellman publica «Dynamic programming», donde formula el principio de optimalidad y la ecuación recursiva por etapas.", "refs": ["bellman1957"] },
+    { "anio": "1958", "hecho": "Bellman aplica la programación dinámica al problema de rutas, base del algoritmo de Bellman-Ford para la ruta más corta.", "refs": ["bellman1958"] },
+    { "anio": "1958", "hecho": "Harvey Wagner y Thomson Whitin resuelven con programación dinámica el tamaño de lote óptimo con demanda variable por periodo.", "refs": ["wagnerwhitin1958"] },
+    { "anio": "1962", "hecho": "Michael Held y Richard Karp resuelven el agente viajero exacto por programación dinámica, un ejemplo de cómo el número de estados limita el método.", "refs": ["heldkarp1962"] }
+  ],
+  "necesitas": [
+    { "dato": "Etapas y estados", "para_que": "Cómo se divide el problema (tramos, artículos, meses) y qué describe la situación en cada etapa. En IAQSB vienen dados por el tipo de problema." },
+    { "dato": "Diligencia: red y distancias", "para_que": "Los nodos y la distancia, el costo o el tiempo de cada arco. Salen de mapas, tarifas de fletes o tiempos medidos." },
+    { "dato": "Mochila: capacidad y artículos", "para_que": "Capacidad total; para cada artículo, cuánta capacidad usa por unidad, cuántas unidades hay disponibles y su rendimiento en función de las unidades (por ejemplo 50X o 3X + 100)." },
+    { "dato": "Producción: datos por periodo", "para_que": "Demanda, capacidad de producción y de almacén, costo de preparación y costo variable en función de la producción P, el inventario final H y los pedidos pendientes B. Salen del plan de ventas y de contabilidad de costos." },
+    { "dato": "Inventario inicial", "para_que": "Las unidades disponibles al empezar el primer periodo." }
+  ],
+  "supuestos": [
+    "El problema se puede dividir en etapas, y el estado resume todo lo necesario del pasado.",
+    "El costo total es la suma de los costos de cada etapa.",
+    "Los datos son determinísticos: demanda, costos y distancias se conocen con certeza.",
+    "Las decisiones y los estados son enteros; el tamaño de las tablas crece con el número de estados posibles."
+  ],
+  "pasos": [
+    { "titulo": "Abre el módulo y un ejemplo", "texto": "En la barra lateral elige «Programación dinámica». En «Ejemplos» puedes cargar «La diligencia (Hillier)», «Carga de un avión» o «Plan de producción de cuatro meses»." },
+    { "titulo": "Elige el tipo de problema", "texto": "Pulsa «Nuevo problema» y elige «Diligencia (ruta más corta)», «Mochila» o «Producción e inventario». Indica el «Número de nodos», el «Número de artículos» o el «Número de periodos», y pulsa «Crear problema»." },
+    { "titulo": "Diligencia", "texto": "En la matriz «Desde» por «Hasta» escribe la «Distancia» de cada arco; deja vacía la celda si no hay conexión. En «Parámetros del análisis» puedes fijar el «Nodo de origen» y el «Nodo de destino» (vacío = el primero y el último). También puedes dibujar la red en el «Editor visual»." },
+    { "titulo": "Mochila", "texto": "Escribe la «Capacidad de la mochila». Para cada artículo llena «Artículo», «Unidades disponibles» (vacío = las que quepan), «Capacidad por unidad» y «Rendimiento (X = unidades)», por ejemplo 31X o 2.15X^2+5." },
+    { "titulo": "Producción e inventario", "texto": "Escribe el «Inventario inicial». Para cada «Periodo» llena «Demanda», «Capacidad de producción», «Capacidad de almacén», «Costo de preparación» y «Costo variable (P, H, B)», por ejemplo 5P+2H+10B." },
+    { "titulo": "Resuelve y revisa", "texto": "Deja activo «Mostrar paso a paso» y pulsa «Resolver». Revisa «Solución», la «Red» en la diligencia y el «Paso a paso» con la tabla de cada etapa. En mochila y producción, «Decisiones fijadas (¿qué pasa si?)» obliga decisiones en algunas etapas, por ejemplo «2, , 3», para ver cuánto cuesta apartarse del óptimo." }
+  ],
+  "como_resuelve": [
+    "IAQSB resuelve los tres tipos por recursión hacia atrás, de forma exacta, y muestra las tablas de cada etapa como en los libros: estado s, valor de cada decisión x, f*(s) y decisión óptima x*.",
+    "En la diligencia, f*(destino) = 0 y para cada nodo i se calcula f*(i) = mínimo sobre j de [c(i, j) + f*(j)], de la última etapa a la primera. Si hay empates, el informe muestra todas las rutas óptimas.",
+    "En la mochila, cada etapa es un artículo y el estado es la capacidad que queda; la decisión es cuántas unidades cargar, y el rendimiento puede ser cualquier función de las unidades, no solo lineal.",
+    "En producción e inventario, cada etapa es un periodo y el estado es el inventario inicial. La decisión es cuánto producir, y el costo del periodo suma el costo de preparación (si se produce algo) y el costo variable evaluado en P, H y B, respetando las capacidades."
+  ],
+  "interpretar": [
+    "En la diligencia, el encabezado da la distancia mínima y las rutas óptimas. En el ejemplo de Hillier la distancia es 11 y hay tres rutas empatadas, entre ellas A → C → E → H → J.",
+    "Las tablas del «Paso a paso» son una política completa: dicen qué hacer desde cualquier nodo, no solo desde el origen. Si un tramo se cierra, ya sabes la mejor alternativa desde donde estés.",
+    "En la mochila, el encabezado da el rendimiento máximo y cuántas unidades llevar de cada artículo. En «Carga de un avión», lo mejor es 62 con dos unidades del artículo 1.",
+    "En producción, la tabla «Plan de producción» muestra por periodo la producción, el inventario final, los pendientes y los costos. En el ejemplo de cuatro meses se produce 2, 5, 0 y 4 con costo total 21: en el mes 2 se produce de más para no pagar otra preparación en el mes 3.",
+    "Fijar decisiones con «Decisiones fijadas» y comparar el costo con el óptimo mide el costo de una restricción gerencial, como no producir en un mes de vacaciones."
+  ],
+  "industria": [
+    { "nombre": "Python (functools.lru_cache)", "tipo": "libreria", "uso": "La librería estándar de Python permite memorizar una función recursiva y así implementar programación dinámica en pocas líneas." },
+    { "nombre": "MDPtoolbox", "tipo": "libreria", "uso": "Paquete para R y Python que resuelve procesos de decisión de Markov por iteración de valores y de políticas, la versión estocástica de la programación dinámica." },
+    { "nombre": "Gymnasium y Stable-Baselines3", "tipo": "libreria", "uso": "Entornos y algoritmos de aprendizaje por refuerzo en Python, que aproximan la programación dinámica cuando hay demasiados estados." },
+    { "nombre": "Google OR-Tools", "tipo": "libreria", "uso": "Incluye un resolvedor de mochila y herramientas de ruteo y programación entera que reemplazan a la programación dinámica cuando los estados son demasiados." },
+    { "nombre": "Gurobi y CPLEX", "tipo": "software", "uso": "En la industria, muchos problemas de lote dinámico y de mochila se modelan como programas enteros mixtos y se resuelven con estos motores." },
+    { "nombre": "Programación dinámica aproximada", "tipo": "metodologia", "uso": "Enfoque usado en planeación de flotas, energía y finanzas para problemas estocásticos grandes, con funciones de valor aproximadas." }
+  ],
+  "alternativas": [
+    "Programación entera (LP-ILP): la mochila y el lote dinámico se pueden escribir como modelos enteros y resolver con HiGHS, útil cuando hay muchas restricciones adicionales.",
+    "Ruta más corta en el módulo de redes (NET): Dijkstra resuelve redes sin estructura de etapas y de mayor tamaño.",
+    "Heurísticas de lote como Silver-Meal o balanceo de periodos, del módulo MRP, cuando se quiere una regla simple y rápida.",
+    "Procesos de decisión de Markov cuando la demanda o las transiciones son aleatorias."
+  ],
+  "errores_comunes": [
+    "Definir mal el estado: si no resume todo lo necesario del pasado, la recursión da un resultado incorrecto.",
+    "Resolver hacia adelante con la fórmula pensada para ir hacia atrás, o mezclar los sentidos en la misma tabla.",
+    "Olvidar el costo de preparación en los periodos en que se produce, o cobrarlo cuando la producción es cero.",
+    "Confundir la capacidad por unidad con la capacidad total en la mochila.",
+    "Esperar que el método escale sin límite: con muchos estados las tablas crecen demasiado y conviene la programación entera."
+  ],
+  "profesor": {
+    "objetivos": [
+      "Identificar etapas, estados, decisiones y la función recursiva de un problema.",
+      "Aplicar el principio de optimalidad para resolver a mano una red por etapas.",
+      "Leer una tabla de etapa y reconstruir la política óptima completa.",
+      "Comparar la programación dinámica con la programación entera en el mismo problema."
+    ],
+    "actividades": [
+      "Resolver a mano la diligencia y comparar cada tabla con el «Paso a paso» de IAQSB.",
+      "En el plan de cuatro meses, fijar «0» en el mes 2 con «Decisiones fijadas» y explicar el aumento de costo.",
+      "Plantear la carga del avión como programa entero en LP-ILP y comprobar que da el mismo rendimiento.",
+      "Con datos de una empresa local, armar un plan de producción de seis meses con costo de preparación y discutir la política resultante."
+    ],
+    "preguntas": [
+      "Enuncia el principio de optimalidad con tus palabras.",
+      "¿Por qué la diligencia se resuelve hacia atrás y qué se gana con ello?",
+      "¿Qué información guarda el estado en el problema de producción e inventario?",
+      "¿Por qué crece tan rápido el esfuerzo de cálculo cuando aumentan los estados?"
+    ]
+  },
+  "glosario": [
+    { "termino": "Etapa", "definicion": "Cada uno de los pasos en que se divide la decisión." },
+    { "termino": "Estado", "definicion": "Situación del sistema al empezar una etapa, que resume lo que importa del pasado." },
+    { "termino": "Función recursiva", "definicion": "Fórmula que da el mejor valor de un estado a partir de los valores de la etapa siguiente." },
+    { "termino": "Principio de optimalidad", "definicion": "Toda parte final de una política óptima es óptima desde el estado donde empieza." },
+    { "termino": "Política", "definicion": "Regla que dice qué decisión tomar en cada estado." },
+    { "termino": "Costo de preparación", "definicion": "Costo fijo que se paga cada vez que se produce, sin importar la cantidad." }
+  ],
+  "referencias": ["bellman1957", "bellman1958", "wagnerwhitin1958", "heldkarp1962", "hillier2015en", "taha2012", "winston2004", "chang2003"]
+}
