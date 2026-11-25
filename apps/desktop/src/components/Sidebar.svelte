@@ -1,5 +1,6 @@
 <script lang="ts">
   import { cursos } from '../lib/cursos.svelte';
+  import { creador } from '../lib/creador.svelte';
   import { MARCA } from '../lib/marca';
   // Menú lateral al estilo de IA Nativa: marca, buscador y módulos agrupados con ícono.
   import Logo from './Logo.svelte';
@@ -45,6 +46,7 @@
 
   function elegir(id: string) {
     shell.module = id;
+    creador.ocultar();
     q = '';
     if (!ui.fijado) {
       buscador?.blur();
@@ -141,6 +143,10 @@
   </nav>
 
   <div class="pie">
+    <button class="item connect" class:on={creador.abierto} title={t('Arma un curso propio con el asistente (a partir de diapositivas, libros o programas), pruébalo y compártelo como .ncourse')} onclick={() => creador.mostrar()}>
+      <span class="ic"><Icon name="nuevo" size={16} /></span>
+      <span class="nm">{creador.actual ? t('Curso: {0}', creador.actual.curso?.titulo || creador.actual.id) : t('Crear un curso…')}</span>
+    </button>
     <button class="item connect" title={t('Instala un curso (.ncourse) que te compartieron: sus temas aparecen aquí como módulos')} onclick={() => cursos.elegir()} disabled={cursos.instalando}>
       <span class="ic"><Icon name="abrir" size={16} /></span>
       <span class="nm">{cursos.instalando ? t('Instalando…') : t('Instalar un curso…')}</span>

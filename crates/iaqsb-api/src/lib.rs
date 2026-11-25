@@ -930,7 +930,7 @@ pub fn call(op: &str, args: Value) -> Result<Value> {
         Ok(mut v) => {
             // los archivos y el BibTeX se devuelven tal cual
             match op {
-                "import_text" | "export_text" | "bibtex" | "render" | "digest" | "export_report" | "export_xlsx" | "echo_text" | "xlsx_text" => {}
+                "import_text" | "export_text" | "bibtex" | "render" | "digest" | "export_report" | "export_xlsx" | "echo_text" | "xlsx_text" | "office_text" | "course_format" | "draft_read" | "draft_pack" | "course_pack" => {}
                 // en la lista de ejemplos, «name» es la clave del ejemplo: no se traduce
                 "examples" => {
                     for e in v.as_array_mut().into_iter().flatten() {
@@ -953,6 +953,7 @@ fn call_es(op: &str, args: Value, lang: Lang) -> Result<Value> {
     let s = |k: &str| args.get(k).and_then(|v| v.as_str()).map(|s| s.to_string());
     let module = || s("module").unwrap_or_else(|| "lp".into());
     let need = |k: &str| args.get(k).cloned().ok_or_else(|| ApiError::BadInput(format!("falta {k}")));
+    let need_s = |k: &str| s(k).filter(|x| !x.is_empty()).ok_or_else(|| ApiError::BadInput(format!("falta {k}")));
     // los temas de los cursos instalados se atienden aparte
     if cursos::es_tema(&module()) {
         match op {
@@ -1004,6 +1005,36 @@ fn call_es(op: &str, args: Value, lang: Lang) -> Result<Value> {
             let d = std::path::PathBuf::from(s("dir").ok_or_else(|| ApiError::BadInput("falta dir (dónde crear el curso)".into()))?);
             cursos::nuevo(&d, &s("id").unwrap_or_else(|| "mi-curso".into()), &s("title").unwrap_or_else(|| "Mi curso".into()))
         }
+        "course_format" => Ok(json!({"markdown": cursos::FORMATO})),
+        "office_text" => {
+            let b = s("base64").ok_or_else(|| ApiError::BadInput("falta base64".into()))?;
+            let max = args.get("max_chars").and_then(|v| v.as_u64()).unwrap_or(200_000) as usize;
+            cursos::borradores::texto_office(&base64_decode(&b)?, max)
+        }
+        "draft_list" => Ok(json!({"carpeta": cursos::borradores::carpeta_borradores().to_string_lossy(), "borradores": cursos::borradores::lista()})),
+        "draft_new" => cursos::borradores::nuevo(&s("title").unwrap_or_default(), &s("from").unwrap_or_else(|| "vacio".into())),
+        "draft_import" => {
+            let bytes = if let Some(b) = s("base64") {
+                base64_decode(&b)?
+            } else if let Some(p) = s("path") {
+                std::fs::read(&p).map_err(|e| ApiError::BadInput(format!("{p}: {e}")))?
+            } else {
+                return Err(ApiError::BadInput("falta base64 o path (el archivo .ncourse)".into()));
+            };
+            cursos::borradores::importar(&bytes)
+        }
+        "draft_read" => cursos::borradores::ver(&need_s("id")?, s("path").as_deref()),
+        "draft_write" => cursos::borradores::escribir(&need_s("id")?, &need_s("path")?, s("content").as_deref(), s("base64").as_deref()),
+        "draft_delete" => cursos::borradores::borrar(&need_s("id")?, &need_s("path")?),
+        "draft_add_topic" => cursos::borradores::nuevo_tema(&need_s("id")?, &s("title").unwrap_or_default(), &s("kind").unwrap_or_else(|| "leccion".into())),
+        "draft_validate" => cursos::borradores::revisar(&need_s("id")?),
+        "draft_install" => cursos::borradores::instalar(&need_s("id")?),
+        "draft_test" => cursos::borradores::probar(&need_s("id")?, s("topic").as_deref(), lang),
+        "draft_pack" => {
+            let bytes = cursos::borradores::paquete(&need_s("id")?)?;
+            Ok(json!({"base64": iaqsb_render::base64(&bytes), "bytes": bytes.len()}))
+        }
+        "draft_remove" => cursos::borradores::quitar(&need_s("id")?, args.get("with_preview").and_then(|v| v.as_bool()).unwrap_or(false)),
         "describe_module" => describe_module(&module()),
         "guide" => {
             let id = module_id(&module()).unwrap_or_else(module);

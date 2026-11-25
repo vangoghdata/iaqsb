@@ -4,6 +4,7 @@
 //   Las grandes se reducen a 1568 px de lado, lo que los modelos aprovechan, y pesan menos.
 // - PDF: va como documento (Claude, OpenAI, Gemini y OpenRouter lo leen; el texto y las figuras).
 // - Excel (.xlsx): el núcleo lo convierte en tablas de texto (cada hoja en TSV).
+// - Diapositivas (.pptx) y Word (.docx): el núcleo saca el texto (y las notas del orador).
 // - CSV, TXT, Markdown, JSON: como texto.
 // - Archivos de WinQSB y de IAQSB (.LPP, .NET, .PMP, .iaqsb, MPS, LP…): el núcleo los lee y
 //   el asistente recibe el modelo ya listo para resolverlo o abrirlo en el editor.
@@ -43,7 +44,7 @@ const MODELOS = [
   'vrp', 'mod', 'inv', 'fin', 'alm', 'kpi', 'pmp', 'mr2', 'sts', 'iaqsb', 'mps', 'lp'
 ];
 const TEXTOS = ['csv', 'tsv', 'txt', 'md', 'json', 'tex', 'r', 'py'];
-export const ACEPTA = ['image/*', '.pdf', '.xlsx', ...TEXTOS.map((e) => '.' + e), ...MODELOS.map((e) => '.' + e)].join(',');
+export const ACEPTA = ['image/*', '.pdf', '.xlsx', '.pptx', '.docx', ...TEXTOS.map((e) => '.' + e), ...MODELOS.map((e) => '.' + e)].join(',');
 
 let n = 0;
 
@@ -154,10 +155,17 @@ export async function leerArchivo(f: File): Promise<Adjunto> {
   if (TEXTOS.includes(ext) || f.type.startsWith('text/') || f.type === 'application/json') {
     return { id: ++n, nombre: f.name, clase: 'texto', mime: f.type || 'text/plain', texto: recortar(await leerTexto(f)), bytes: f.size };
   }
-  if (ext === 'xls' || ext === 'doc' || ext === 'docx' || ext === 'pptx') {
+  if (ext === 'pptx' || ext === 'docx') {
+    // diapositivas y documentos de Word: el núcleo saca el texto (con las notas del orador)
+    const base64 = bytesToBase64(new Uint8Array(await f.arrayBuffer()));
+    const r = await call<{ text: string; diapositivas: number }>('office_text', { base64, max_chars: MAX_TEXTO * 2 });
+    if (!r.text.trim()) throw new Error(t('«{0}» no tiene texto que se pueda leer (si son imágenes, guárdalo como PDF).', f.name));
+    return { id: ++n, nombre: f.name, clase: 'texto', mime: 'text/markdown', texto: r.text, bytes: f.size };
+  }
+  if (ext === 'xls' || ext === 'doc' || ext === 'ppt') {
     throw new Error(t('«{0}»: guarda el archivo como PDF, .xlsx o imagen y adjúntalo de nuevo.', f.name));
   }
-  throw new Error(t('«{0}»: este tipo de archivo no se puede adjuntar (sí: imágenes, PDF, Excel .xlsx, CSV, texto y archivos de WinQSB o de IAQSB).', f.name));
+  throw new Error(t('«{0}»: este tipo de archivo no se puede adjuntar (sí: imágenes, PDF, Excel .xlsx, diapositivas .pptx, Word .docx, CSV, texto y archivos de WinQSB o de IAQSB).', f.name));
 }
 
 /** Imagen pegada desde el portapapeles (captura de pantalla). */

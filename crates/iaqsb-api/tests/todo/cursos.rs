@@ -64,7 +64,77 @@ fn ciclo_completo_de_un_curso() {
 
     cursos::quitar("ejemplo-nativo").unwrap();
     assert!(cursos::instalados().is_empty());
+
+    // el asistente de creación: borrador → temas → validar → vista previa → probar → exportar
+    let borradores = dir.join("borradores");
+    unsafe { std::env::set_var("IAQSB_BORRADORES", &borradores) };
+    let b = api::call("draft_new", json!({"title": "Producción y logística"})).unwrap();
+    let id = b["id"].as_str().unwrap().to_string();
+    assert_eq!(id, "produccion-y-logistica");
+    // vacío: no tiene temas y no es válido todavía
+    let v = api::call("draft_validate", json!({"id": id})).unwrap();
+    assert_eq!(v["ok"], false);
+    let t1 = api::call("draft_add_topic", json!({"id": id, "title": "¿Qué es un MRP?", "kind": "leccion"})).unwrap();
+    assert_eq!(t1["id"], "que-es-un-mrp");
+    let t2 = api::call("draft_add_topic", json!({"id": id, "title": "Mezcla óptima", "kind": "algebra"})).unwrap();
+    for k in ["python", "r"] {
+        api::call("draft_add_topic", json!({"id": id, "title": format!("Calculadora {k}"), "kind": k})).unwrap();
+    }
+    api::call("draft_write", json!({"id": id, "path": "curso.json", "content": serde_json::to_string(&{
+        let mut c = api::call("draft_read", json!({"id": id})).unwrap()["curso"].clone();
+        c["descripcion"] = json!("Curso de prueba");
+        c["autores"] = json!([{"nombre": "Prueba"}]);
+        c
+    }).unwrap()})).unwrap();
+    // un JSON roto no se guarda, ni una ruta que se sale del borrador
+    assert!(api::call("draft_write", json!({"id": id, "path": "temas/x/tema.json", "content": "{roto"})).is_err());
+    assert!(api::call("draft_write", json!({"id": id, "path": "../fuera.md", "content": "x"})).is_err());
+    assert!(api::call("draft_write", json!({"id": id, "path": "temas/a/programa.exe", "content": "x"})).is_err());
+    let r = api::call("draft_read", json!({"id": id})).unwrap();
+    assert_eq!(r["validacion"]["ok"], true, "{}", r["validacion"]);
+    assert_eq!(r["temas"].as_array().unwrap().len(), 4);
+    let leccion = api::call("draft_read", json!({"id": id, "path": "temas/que-es-un-mrp/leccion.md"})).unwrap();
+    assert!(leccion["texto"].as_str().unwrap().starts_with("# ¿Qué es un MRP?"));
+    // probar instala la vista previa y resuelve los ejemplos (el modelo algebraico sin depender del equipo)
+    let p = api::call("draft_test", json!({"id": id, "topic": t2["id"]})).unwrap();
+    assert_eq!(p["resultados"][0]["ok"], true, "{}", p);
+    assert!(cursos::tema(&format!("c.produccion-y-logistica.{}", t2["id"].as_str().unwrap())).is_some());
+    assert_eq!(api::call("draft_list", json!({})).unwrap()["borradores"][0]["instalado"], true);
+    // exportar y volver a abrir como borrador
+    let pk = api::call("draft_pack", json!({"id": id})).unwrap();
+    let bytes = api::base64_decode(pk["base64"].as_str().unwrap()).unwrap();
+    let otro = cursos::borradores::importar(&bytes).unwrap();
+    assert_eq!(otro["id"], "produccion-y-logistica-2");
+    api::call("draft_delete", json!({"id": "produccion-y-logistica-2", "path": "temas/que-es-un-mrp"})).unwrap();
+    assert_eq!(api::call("draft_validate", json!({"id": "produccion-y-logistica-2"})).unwrap()["ok"], false);
+    api::call("draft_remove", json!({"id": "produccion-y-logistica-2"})).unwrap();
+    api::call("draft_remove", json!({"id": id, "with_preview": true})).unwrap();
+    assert!(cursos::instalados().is_empty());
+    assert_eq!(api::call("draft_list", json!({})).unwrap()["borradores"].as_array().unwrap().len(), 0);
+    unsafe { std::env::remove_var("IAQSB_BORRADORES") };
     let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn texto_de_diapositivas_y_word() {
+    let mut z = iaqsb_core::zip::ZipWriter::new();
+    z.add("ppt/slides/slide2.xml", br#"<p:sld><a:p><a:r><a:t>MRP II</a:t></a:r></a:p><a:p><a:r><a:t>Capacidad &amp; carga</a:t></a:r></a:p></p:sld>"#);
+    z.add("ppt/slides/slide1.xml", br#"<p:sld><a:p><a:r><a:t>Planeaci&#243;n</a:t></a:r><a:r><a:t> de la producci&#xF3;n</a:t></a:r></a:p></p:sld>"#);
+    z.add("ppt/notesSlides/notesSlide2.xml", br#"<p:notes><a:p><a:r><a:t>Explicar el CRP</a:t></a:r></a:p></p:notes>"#);
+    let r = cursos::borradores::texto_office(&z.finish(), 10_000).unwrap();
+    let t = r["text"].as_str().unwrap();
+    assert_eq!(r["diapositivas"], 2);
+    let i1 = t.find("## Diapositiva 1").unwrap();
+    let i2 = t.find("## Diapositiva 2").unwrap();
+    assert!(i1 < i2, "{t}");
+    assert!(t.contains("MRP II
+Capacidad & carga"), "{t}");
+    assert!(t.contains("Notas: Explicar el CRP"), "{t}");
+    let mut z = iaqsb_core::zip::ZipWriter::new();
+    z.add("word/document.xml", br#"<w:document><w:body><w:p><w:r><w:t>Hola</w:t></w:r><w:r><w:t xml:space="preserve"> mundo</w:t></w:r></w:p><w:p><w:r><w:t>Fin</w:t></w:r></w:p></w:body></w:document>"#);
+    let r = cursos::borradores::texto_office(&z.finish(), 10_000).unwrap();
+    assert_eq!(r["text"].as_str().unwrap().trim(), "Hola mundo
+Fin");
 }
 
 #[test]

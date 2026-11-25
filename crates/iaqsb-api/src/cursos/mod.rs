@@ -17,6 +17,8 @@
 //! Cada tema se ve como un módulo más, con el id `c.<curso>.<tema>`: la app lo abre con la misma
 //! pantalla de datos, el mismo informe y el mismo Guíame que los módulos incluidos.
 
+pub mod borradores;
+
 use crate::{ApiError, Result};
 use iaqsb_core::ejecutor::{self, Programa};
 use iaqsb_core::i18n::Lang;
@@ -27,10 +29,10 @@ const AYUDA_PY: &str = include_str!("nativo.py");
 const AYUDA_R: &str = include_str!("nativo.R");
 const MARCA_INFORME: &str = "@@NATIVO_INFORME@@";
 /// Tamaño máximo de un curso (descomprimido).
-const MAX_BYTES: usize = 60 * 1024 * 1024;
-const EXTENSIONES: &[&str] = &["json", "md", "txt", "py", "r", "iaqsb", "csv", "tsv", "xlsx", "png", "jpg", "jpeg", "webp", "svg", "gif", "pdf"];
+pub(crate) const MAX_BYTES: usize = 60 * 1024 * 1024;
+pub(crate) const EXTENSIONES: &[&str] = &["json", "md", "txt", "py", "r", "iaqsb", "csv", "tsv", "xlsx", "png", "jpg", "jpeg", "webp", "svg", "gif", "pdf"];
 
-fn malo<T>(m: impl Into<String>) -> Result<T> {
+pub(crate) fn malo<T>(m: impl Into<String>) -> Result<T> {
     Err(ApiError::BadInput(m.into()))
 }
 
@@ -52,16 +54,16 @@ pub fn carpeta() -> PathBuf {
     base.join(id).join("cursos")
 }
 
-fn id_valido(s: &str) -> bool {
+pub(crate) fn id_valido(s: &str) -> bool {
     (2..=48).contains(&s.len()) && s.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-') && !s.starts_with('-')
 }
 
-fn leer_json(p: &Path) -> std::result::Result<Value, String> {
+pub(crate) fn leer_json(p: &Path) -> std::result::Result<Value, String> {
     let t = std::fs::read_to_string(p).map_err(|e| format!("{}: {e}", p.display()))?;
     serde_json::from_str(t.trim_start_matches('\u{feff}')).map_err(|e| format!("{}: JSON no válido: {e}", p.display()))
 }
 
-fn texto(v: &Value, k: &str) -> String {
+pub(crate) fn texto(v: &Value, k: &str) -> String {
     v[k].as_str().unwrap_or("").trim().to_string()
 }
 
@@ -326,7 +328,7 @@ pub fn validar(dir: &Path) -> (Vec<String>, Vec<String>) {
     (err, avi)
 }
 
-fn archivos(dir: &Path) -> Vec<PathBuf> {
+pub(crate) fn archivos(dir: &Path) -> Vec<PathBuf> {
     let mut v = vec![];
     let mut pila = vec![dir.to_path_buf()];
     while let Some(d) = pila.pop() {
@@ -365,7 +367,7 @@ pub fn empaquetar(dir: &Path) -> Result<Vec<u8>> {
 }
 
 /// Desempaca un `.ncourse` en una carpeta temporal (rutas seguras y tamaño máximo).
-fn desempacar(bytes: &[u8]) -> Result<PathBuf> {
+pub(crate) fn desempacar(bytes: &[u8]) -> Result<PathBuf> {
     if !iaqsb_core::zip::is_zip(bytes) {
         return malo("no es un paquete .ncourse (debe ser un zip)");
     }
@@ -481,7 +483,7 @@ pub fn nuevo(dir: &Path, id: &str, titulo: &str) -> Result<Value> {
         "options": []
     })))?;
     w("temas/calculadora/ejemplos/ejemplo.json", &j(json!({"name": "Ejemplo", "problem_type": "basico", "factor": 2, "valores": [{"nombre": "A", "valor": 3}, {"nombre": "B", "valor": 5}]})))?;
-    w("temas/calculadora/calcular.py", "from nativo import modelo, Informe\n\nfactor = float(modelo.get(\"factor\") or 1)\nfilas = [(v.get(\"nombre\", \"\"), float(v.get(\"valor\") or 0) * factor) for v in modelo.get(\"valores\", [])]\ntotal = sum(x for _, x in filas)\n\ninf = Informe(f\"Total = {total:g}\")\ninf.metricas([(\"Total\", total), (\"Valores\", len(filas))])\ninf.tabla([\"Nombre\", \"Valor × factor\"], [list(f) for f in filas], titulo=\"Valores\")\ninf.grafica({\"Valor\": [(i, x) for i, (_, x) in enumerate(filas)]}, titulo=\"Valores\", x=\"Valor\", y=\"Cantidad\", tipo=\"bar\", categorias=[n for n, _ in filas])\ninf.paso(\"Suma\", \" + \".join(f\"{x:g}\" for _, x in filas) + f\" = {total:g}\")\ninf.publicar()\n")?;
+    w("temas/calculadora/calcular.py", FORMATO_PY)?;
     Ok(json!({"carpeta": dir.to_string_lossy(), "id": id}))
 }
 
@@ -783,3 +785,9 @@ pub fn guia(modulo: &str, lang: Lang) -> Result<Value> {
     let fuentes: Vec<Value> = leer_json(&curso_dir.join("fuentes.json")).ok().and_then(|v| v.as_array().cloned()).unwrap_or_default();
     Ok(iaqsb_core::guias::resolver(g, lang, &fuentes))
 }
+
+/// El formato de los cursos (docs/CURSOS.md), para el asistente de creación.
+pub const FORMATO: &str = include_str!("../../../../docs/CURSOS.md");
+
+/// La calculadora de ejemplo en Python (plantilla de los temas nuevos).
+pub const FORMATO_PY: &str = "from nativo import modelo, Informe\n\nfactor = float(modelo.get(\"factor\") or 1)\nfilas = [(v.get(\"nombre\", \"\"), float(v.get(\"valor\") or 0) * factor) for v in modelo.get(\"valores\", [])]\ntotal = sum(x for _, x in filas)\n\ninf = Informe(f\"Total = {total:g}\")\ninf.metricas([(\"Total\", total), (\"Valores\", len(filas))])\ninf.tabla([\"Nombre\", \"Valor × factor\"], [list(f) for f in filas], titulo=\"Valores\")\ninf.grafica({\"Valor\": [(i, x) for i, (_, x) in enumerate(filas)]}, titulo=\"Valores\", x=\"Valor\", y=\"Cantidad\", tipo=\"bar\", categorias=[n for n, _ in filas])\ninf.paso(\"Suma\", \" + \".join(f\"{x:g}\" for _, x in filas) + f\" = {total:g}\")\ninf.publicar()\n";

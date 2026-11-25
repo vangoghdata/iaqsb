@@ -9,6 +9,7 @@
   import { shell } from '../lib/shell.svelte';
   import { ui } from '../lib/ui.svelte';
   import { chat } from '../lib/chat.svelte';
+  import { creador } from '../lib/creador.svelte';
   import { t } from '../lib/i18n.svelte';
   import { ajustes } from '../lib/ajustes.svelte';
 
@@ -80,6 +81,12 @@
   </div>
 
   <div class="der">
+    {#if creador.actual}
+      <button class="btn volver" title={t('Vuelve al editor del curso que estás armando')} onclick={() => creador.mostrar()}>
+        <Icon name="izquierda" size={15} />
+        <span class="txt">{t('Volver al curso')}</span>
+      </button>
+    {/if}
     <button class="btn ghost guiame" class:nueva={!guia.vistas.includes(shell.module)} title={t('Guíame: qué es este módulo, para qué sirve en la vida real, su historia, cómo usarlo y qué se usa hoy en la industria')} onclick={() => guia.abrir(shell.module)}>
       <Icon name="info" size={17} />
       <span class="txt">{t('Guíame')}</span>

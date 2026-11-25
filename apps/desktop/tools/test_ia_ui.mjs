@@ -139,6 +139,17 @@ const servidor = http.createServer(async (req, res) => {
     const code = 'library(forecast)\nd <- c(621.6,621.6,1716.8,2545.6,2604.8,1539.2,236.8,2516,29.6,118.4,621.6,207.2,1302.4,2575.2,1006.4,2812,1835.2,2456.8,2693.6,2693.6,2072,2664,947.2,621.6,2841.6,1213.6,1509.6,2486.4,1243.2,2841.6,532.8,1805.6,1657.6,2397.6,2634.4,947.2,2960,1657.6,355.2,769.6)\ny <- ts(d, start = c(2021, 5), frequency = 12)\ntr <- window(y, end = c(2023, 12)); te <- window(y, start = c(2024, 1))\ncat(sprintf("%.4f", accuracy(ses(tr, h = 8), te)[2, "RMSE"]))\nplot(tr)';
     return enviar(res, [chunk({ tool_calls: [{ index: 0, id: 'call_r1', type: 'function', function: { name: 'run_r', arguments: JSON.stringify({ code }) } }] }), chunk({}, 'tool_calls'), 'data: [DONE]\n\n']);
   }
+  if (b.model === 'mock/creador') {
+    // asistente de creación de cursos: lee el borrador, escribe una lección, prueba y responde
+    sse(res);
+    const nTool = msgs.filter((m) => m.role === 'tool').length;
+    const llamar = (id, name, args) =>
+      enviar(res, [chunk({ tool_calls: [{ index: 0, id, type: 'function', function: { name, arguments: JSON.stringify(args) } }] }), chunk({}, 'tool_calls'), 'data: [DONE]\n\n']);
+    if (nTool === 0) return llamar('call_c1', 'get_course', {});
+    if (nTool === 1) return llamar('call_c2', 'write_course_file', { path: 'temas/introduccion/introduccion.md', content: '# Introducción\n\nLECCION-DEL-ASISTENTE: qué es un curso.\n' });
+    if (nTool === 2) return llamar('call_c3', 'test_course', {});
+    return enviar(res, [chunk({ content: 'CURSO-LISTO: ' + String(msgs.at(-1).content).replace(/\s+/g, ' ').slice(0, 400) }), chunk({}, 'stop'), 'data: [DONE]\n\n']);
+  }
   if (b.model === 'mock/lento') {
     // respuesta larga: se detiene desde la app
     sse(res);
@@ -453,6 +464,49 @@ await page.screenshot({ path: join(OUT, `${modo[0]}_6_historial.png`) });
 await page.locator('aside.chat .historial li .conv').filter({ hasText: 'Resuelve el ejercicio en R' }).first().click();
 await esperarTexto('R-LISTO', 5000).catch(() => {});
 ok(await page.locator('aside.chat').getByText('R-LISTO').first().isVisible().catch(() => false), 'abrir una conversación guardada la muestra');
+
+console.log('· Asistente de creación de cursos');
+await usarModelo('mock/creador');
+page.on('dialog', (d) => d.accept());
+await page.getByRole('button', { name: 'Crear un curso…' }).click();
+await page.locator('.creador input.campo').first().fill('Curso de prueba e2e');
+await page.locator('.creador select.campo').first().selectOption('plantilla');
+await page.locator('.creador').getByRole('button', { name: 'Crear', exact: true }).click();
+await page.locator('.creador .barra h1').waitFor({ timeout: 15000 });
+ok((await page.locator('.creador .barra h1').innerText()) === 'Curso de prueba e2e', 'el borrador nuevo se abre en el editor');
+ok(await page.locator('.creador .barra .estado.ok').isVisible(), 'el borrador con temas de ejemplo es válido');
+if (!(await page.locator('aside.chat').isVisible().catch(() => false))) await page.locator('.creador .barra').getByRole('button', { name: 'Asistente' }).click();
+await page.locator('aside.chat').getByText('Armemos el curso').waitFor({ timeout: 5000 }).catch(() => {});
+ok(await page.locator('aside.chat').getByText('Armemos el curso').isVisible().catch(() => false), 'el asistente pasa a modo creación');
+await preguntar('Mejora la introducción y prueba el curso');
+await esperarTexto('CURSO-LISTO', 90000).catch(() => {});
+const textoC = await page.locator('aside.chat .asistente').last().innerText().catch(() => '');
+ok(/OK calculadora \/ Ejemplo: Total = 16/.test(textoC), 'test_course corre el ejemplo en Python (3·2 + 5·2 = 16): ' + textoC.slice(0, 300));
+const pc = pedidos.filter((p) => p.url === '/v1/chat/completions' && p.cuerpo?.model === 'mock/creador').at(-1)?.cuerpo;
+ok((pc?.tools ?? []).some((x) => x.function?.name === 'write_course_file'), 'en el creador el modelo tiene las herramientas de los cursos');
+ok(String(pc?.messages?.[0]?.content ?? '').includes('COURSE CREATOR'), 'en el creador las instrucciones son las de creación');
+await page.locator('.creador .tema summary', { hasText: 'Introducción' }).first().click();
+await page.locator('.creador .estructura button', { hasText: 'introduccion.md' }).first().click();
+await page.waitForTimeout(300);
+ok((await page.locator('.creador textarea.codigo').inputValue().catch(() => '')).includes('LECCION-DEL-ASISTENTE'), 'lo que escribió el asistente se ve en el editor');
+ok((await page.locator('.creador .pruebas li').count()) >= 1, 'el panel muestra la prueba de los ejemplos');
+await page.screenshot({ path: join(OUT, `${modo[0]}_7_creador.png`) });
+await page.locator('.creador .barra').getByRole('button', { name: 'Vista previa' }).click();
+await page.getByRole('button', { name: 'Volver al curso' }).waitFor({ timeout: 15000 }).catch(() => {});
+ok(await page.locator('.side .gtit', { hasText: 'Curso de prueba e2e' }).isVisible().catch(() => false), 'la vista previa pone el curso en la barra lateral');
+await page.screenshot({ path: join(OUT, `${modo[0]}_8_vista_previa.png`) });
+await page.getByRole('button', { name: 'Volver al curso' }).click();
+await page.locator('.creador .barra').getByRole('button', { name: 'Cerrar' }).click();
+await page.locator('.creador .borradores').waitFor({ timeout: 10000 }).catch(() => {});
+await page.locator('aside.chat .estado', { hasText: 'Asistente IA' }).waitFor({ timeout: 5000 }).catch(() => {});
+ok(await page.locator('aside.chat .estado', { hasText: 'Asistente IA' }).isVisible().catch(() => false), 'al cerrar el borrador, el asistente vuelve a ser el tutor: ' + (await page.locator('aside.chat .estado').innerText().catch(() => '?')));
+// limpieza: se borra el borrador y su vista previa
+await page.locator('.creador .borradores li', { hasText: 'Curso de prueba e2e' }).first().getByRole('button', { name: 'Borrar el borrador' }).click();
+await page.locator('.creador .borradores li', { hasText: 'Curso de prueba e2e' }).first().waitFor({ state: 'detached', timeout: 15000 }).catch(() => {});
+await page.screenshot({ path: join(OUT, `${modo[0]}_9_borrado.png`) });
+ok(!(await page.locator('.creador .borradores li', { hasText: 'Curso de prueba e2e' }).count()), 'el borrador se borra');
+ok(!(await page.locator('.side .gtit', { hasText: 'Curso de prueba e2e' }).count()), 'y su vista previa sale de la barra lateral');
+await page.locator('.side').getByText('Programación lineal').first().click().catch(() => {});
 
 console.log('· Clave equivocada');
 await page.evaluate(() => {

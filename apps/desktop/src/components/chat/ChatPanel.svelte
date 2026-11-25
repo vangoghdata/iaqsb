@@ -14,6 +14,7 @@
   import { ACEPTA, tamano } from '../../lib/adjuntos';
   import { motoresWeb } from '../../lib/motores_web.svelte';
   import Nativo from './Nativo.svelte';
+  import { creador } from '../../lib/creador.svelte';
 
   let lista: HTMLElement | undefined = $state();
   let entrada: HTMLTextAreaElement | undefined = $state();
@@ -62,6 +63,12 @@
       resuelto ? t('¿Qué pasa con el resultado si cambia uno de los datos?') : t('¿Cómo se pronostica la demanda con suavización exponencial?')
     ]
   );
+  const sugerenciasCreador = $derived([
+    t('Propón la estructura del curso: qué temas debería tener, de qué tipo y qué calcula cada uno.'),
+    t('Arma un tema a partir del material que te adjunto: lección, guía con historia y bibliografía, y una calculadora con un ejemplo.'),
+    t('Convierte el programa que te adjunto en una calculadora del curso, con su pantalla de datos y un ejemplo probado.'),
+    t('Revisa el curso: valida, prueba los ejemplos, comprueba los números y dime qué falta.')
+  ]);
   /** Temas para aprender con Nativo (ejemplo resuelto con el motor, paso a paso). */
   const TEMAS = $derived([
     t('el método símplex'),
@@ -226,7 +233,7 @@
       <div class="ctit">
         <div class="nombre">
           <strong>Nativo</strong>
-          <span class="estado" aria-live="polite">{estadoNativo || t('Asistente IA')}</span>
+          <span class="estado" aria-live="polite">{estadoNativo || (chat.modo === 'creador' ? t('Asistente de creación de cursos') : t('Asistente IA'))}</span>
         </div>
         <button class="modelo" title={t('Cambiar el proveedor o el modelo')} onclick={() => ajustes.abrir('ia')}>
           {ajustes.iaLista ? ajustes.iaNombre : t('Sin conectar')}<Icon name="abajo" size={11} />
@@ -280,7 +287,18 @@
         </section>
       {/if}
 
-      {#if !chat.mensajes.length && chat.tieneClave && !conectando}
+      {#if !chat.mensajes.length && chat.tieneClave && !conectando && chat.modo === 'creador'}
+        <div class="vacio">
+          <Nativo toma={chat.nativo} tam={120} titulo="Nativo" />
+          <h3>{t('Armemos el curso «{0}»', creador.actual?.curso?.titulo || '')}</h3>
+          <p class="muted">{t('Adjunta tus diapositivas (.pptx), libros o apuntes (PDF), programas (.py, .R) o datos (.xlsx) y dime qué tema quieres enseñar. Escribo las lecciones, la guía con su bibliografía, la pantalla de datos y el cálculo; después lo valido, pruebo los ejemplos y te muestro la vista previa.')}</p>
+          <div class="sug">
+            {#each sugerenciasCreador as s (s)}
+              <button class="opc" onclick={() => enviar(s)}>{s}</button>
+            {/each}
+          </div>
+        </div>
+      {:else if !chat.mensajes.length && chat.tieneClave && !conectando}
         <div class="vacio">
           <Nativo toma={chat.nativo} tam={136} titulo="Nativo" />
           <h3>{t('¡Hola! Soy Nativo. ¿En qué te ayudo?')}</h3>

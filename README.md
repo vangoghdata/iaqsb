@@ -12,7 +12,7 @@ Free software (MIT license) in Spanish, English and Portuguese, designed for stu
 | --- | --- |
 | [docs/DOCENTES.md](docs/DOCENTES.md) | Guide for instructors: how to use IAQSB in undergraduate, master's and doctoral courses, activities and computer labs |
 | [docs/LENGUAJE.md](docs/LENGUAJE.md) | Reference for the algebraic modeling language (with 29 tested models) |
-| [docs/CURSOS.md](docs/CURSOS.md) | Courses (`.ncourse`, Spanish): how to create, share and install your own topics, by hand or with AI |
+| [docs/CURSOS.md](docs/CURSOS.md) | Courses (`.ncourse`, Spanish): how to create, share and install your own topics, by hand, with the in-app creation assistant or with AI agents |
 | [docs/FUENTES.md](docs/FUENTES.md) | Bibliography in APA 7 and the origin of each example |
 | [COMPATIBILIDAD.md](COMPATIBILIDAD.md) | Compatibility with WinQSB files, module by module |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to report bugs, propose improvements, translate and contribute code |

@@ -20,6 +20,8 @@
   import GuiaPanel from './components/GuiaPanel.svelte';
   import TemaPage from './components/TemaPage.svelte';
   import { cursos } from './lib/cursos.svelte';
+  import { creador } from './lib/creador.svelte';
+  import CreadorPage from './components/creador/CreadorPage.svelte';
 
   onMount(() => ui.iniciar());
   // el núcleo puede pedir el R de la app (series de tiempo sin R instalado)
@@ -68,6 +70,9 @@
   {/if}
   <Sidebar />
   <div class="main-col">
+    {#if creador.abierto}
+      <CreadorPage />
+    {:else}
     <TopBar />
     {#if shell.module === 'lp'}
       <LpWorkbench />
@@ -79,6 +84,7 @@
       {#key shell.module}
         <GenericWorkbench id={shell.module} />
       {/key}
+    {/if}
     {/if}
   </div>
 </div>
