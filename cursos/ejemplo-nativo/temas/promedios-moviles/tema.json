@@ -1,0 +1,9 @@
+{
+  "id": "promedios-moviles",
+  "titulo": "Pronóstico con promedios móviles (en R)",
+  "resumen": "El pronóstico más simple: el promedio de los últimos n periodos. Calcula los pronósticos, los errores (MAD, MSE, MAPE) y la gráfica, con R.",
+  "tipo": "calculadora",
+  "lecciones": [{ "titulo": "Promedios móviles", "archivo": "leccion.md" }],
+  "calculo": { "lenguaje": "r", "archivo": "calcular.R", "pantalla": "pantalla.json" },
+  "ejemplos": [{ "nombre": "Ventas mensuales", "archivo": "ejemplos/ventas.json" }]
+}

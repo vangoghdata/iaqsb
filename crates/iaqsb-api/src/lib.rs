@@ -10,6 +10,7 @@ use serde_json::{json, Value};
 pub use iaqsb_core as core;
 mod cadena;
 mod compare;
+pub mod cursos;
 mod excel;
 mod informe;
 pub mod whatif;
@@ -158,6 +159,9 @@ pub fn list_modules() -> Value {
             json!({"id": m.id, "winqsb": m.winqsb, "name": m.name, "solves": m.solves, "file_ext": ext, "available": is_available(m.id)})
         })
         .collect();
+    let mut mods = mods;
+    // los temas de los cursos instalados, como módulos (c.<curso>.<tema>)
+    mods.extend(cursos::modulos());
     json!({ "product": PRODUCT, "version": VERSION, "tagline": TAGLINE, "modules": mods })
 }
 
@@ -949,8 +953,57 @@ fn call_es(op: &str, args: Value, lang: Lang) -> Result<Value> {
     let s = |k: &str| args.get(k).and_then(|v| v.as_str()).map(|s| s.to_string());
     let module = || s("module").unwrap_or_else(|| "lp".into());
     let need = |k: &str| args.get(k).cloned().ok_or_else(|| ApiError::BadInput(format!("falta {k}")));
+    // los temas de los cursos instalados se atienden aparte
+    if cursos::es_tema(&module()) {
+        match op {
+            "describe_module" => return cursos::describir(&module()),
+            "spec" => return cursos::spec(&module()),
+            "template" => return cursos::plantilla(&module(), &s("problem_type").unwrap_or_default()),
+            "solve" => return cursos::resolver(&module(), need("model")?, args.get("options").cloned(), lang),
+            "examples" => return cursos::ejemplos(&module()),
+            "guide" => {
+                let g = cursos::guia(&module(), lang)?;
+                let md = iaqsb_core::guias::markdown(&g);
+                return Ok(json!({"module": module(), "guide": g, "markdown": md}));
+            }
+            "export_text" => return Ok(json!({"content": serde_json::to_string_pretty(&json!({"nativo_tema": module(), "model": need("model")?})).unwrap()})),
+            _ => {}
+        }
+    }
     match op {
         "list_modules" => Ok(list_modules()),
+        "list_courses" => Ok(json!({"carpeta": cursos::carpeta().to_string_lossy(), "cursos": cursos::lista()})),
+        "course_install" => {
+            let bytes = if let Some(b) = s("base64") {
+                base64_decode(&b)?
+            } else if let Some(p) = s("path") {
+                std::fs::read(&p).map_err(|e| ApiError::BadInput(format!("{p}: {e}")))?
+            } else {
+                return Err(ApiError::BadInput("falta base64 o path (el archivo .ncourse)".into()));
+            };
+            cursos::instalar(&bytes)
+        }
+        "course_remove" => cursos::quitar(&s("id").ok_or_else(|| ApiError::BadInput("falta id".into()))?),
+        "course_validate" => {
+            let d = std::path::PathBuf::from(s("dir").ok_or_else(|| ApiError::BadInput("falta dir (la carpeta del curso)".into()))?);
+            let (errores, avisos) = cursos::validar(&d);
+            Ok(json!({"ok": errores.is_empty(), "errores": errores, "avisos": avisos}))
+        }
+        "course_pack" => {
+            let d = std::path::PathBuf::from(s("dir").ok_or_else(|| ApiError::BadInput("falta dir (la carpeta del curso)".into()))?);
+            let bytes = cursos::empaquetar(&d)?;
+            match s("out") {
+                Some(o) => {
+                    std::fs::write(&o, &bytes).map_err(|e| ApiError::BadInput(format!("{o}: {e}")))?;
+                    Ok(json!({"archivo": o, "bytes": bytes.len()}))
+                }
+                None => Ok(json!({"base64": iaqsb_render::base64(&bytes), "bytes": bytes.len()})),
+            }
+        }
+        "course_new" => {
+            let d = std::path::PathBuf::from(s("dir").ok_or_else(|| ApiError::BadInput("falta dir (dónde crear el curso)".into()))?);
+            cursos::nuevo(&d, &s("id").unwrap_or_else(|| "mi-curso".into()), &s("title").unwrap_or_else(|| "Mi curso".into()))
+        }
         "describe_module" => describe_module(&module()),
         "guide" => {
             let id = module_id(&module()).unwrap_or_else(module);

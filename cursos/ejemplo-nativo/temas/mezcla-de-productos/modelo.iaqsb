@@ -1,0 +1,12 @@
+# Mezcla de productos. Las llaves dobles se llenan con los datos de la pantalla.
+set P = { {{productos.nombre}} };
+param u{P} = [ {{productos.utilidad}} ];
+param m{P} = [ {{productos.horas_maquina}} ];
+param h{P} = [ {{productos.horas_mano}} ];
+param dmax{P} = [ {{productos.demanda_maxima}} ];
+var x{P} >= 0;
+maximize utilidad: sum{p in P} u[p]*x[p];
+subject to
+  maquina: sum{p in P} m[p]*x[p] <= {{horas_maquina}};
+  mano_de_obra: sum{p in P} h[p]*x[p] <= {{horas_mano}};
+  demanda{p in P}: x[p] <= dmax[p];

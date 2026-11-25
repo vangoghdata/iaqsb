@@ -4,6 +4,7 @@
   // usa hoy en la industria, alternativas, errores comunes, sección para el profesor y glosario.
   import Icon from './Icon.svelte';
   import Nativo from './chat/Nativo.svelte';
+  import Markdown from './chat/Markdown.svelte';
   import { guia } from '../lib/guia.svelte';
   import { chat } from '../lib/chat.svelte';
   import { shell } from '../lib/shell.svelte';
@@ -16,6 +17,7 @@
 
   const SECCIONES = $derived(
     [
+      { id: 'lecciones', titulo: t('Lecciones'), hay: !!g?.lecciones?.length },
       { id: 'que', titulo: t('Qué es'), hay: !!g?.que_es?.length },
       { id: 'sirve', titulo: t('Para qué sirve'), hay: !!g?.para_que_sirve?.length },
       { id: 'historia', titulo: t('Historia'), hay: !!g?.historia?.length },
@@ -85,7 +87,7 @@
     <header>
       <Nativo toma={guia.cargando ? 'pensando' : 'explicando'} tam={64} titulo="Nativo" />
       <div class="tit">
-        <span class="kicker">{t('Guíame')} · {info?.winqsb ?? guia.modulo}</span>
+        <span class="kicker">{t('Guíame')} · {g?.curso?.titulo ?? info?.winqsb ?? guia.modulo}</span>
         <h2 id="guia-tit">{g?.titulo ?? info?.name ?? ''}</h2>
         {#if g?.resumen}<p class="resumen">{g.resumen}</p>{/if}
       </div>
@@ -108,6 +110,11 @@
           {/each}
         </nav>
         <div class="texto" bind:this={cuerpo} onscroll={alDesplazar}>
+          {#if g.lecciones?.length}
+            <section id="guia-lecciones">
+              {#each g.lecciones as l, i (i)}<div class="leccion"><Markdown texto={l.markdown} /></div>{/each}
+            </section>
+          {/if}
           {#if g.que_es?.length}
             <section id="guia-que">
               <h3>{t('Qué es')}</h3>
@@ -414,6 +421,11 @@
   }
   .pasos p {
     margin: 2px 0 0;
+  }
+  .leccion {
+    border-bottom: 0.5px solid var(--rule);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
   }
   .refs li {
     margin-bottom: 6px;

@@ -7,6 +7,7 @@
 // traduce por su cuenta los informes, los ejemplos y las fuentes: cada llamada
 // le manda el idioma (ver backend.ts).
 
+import { marca } from './marca';
 import { en } from './i18n/en';
 import { pt } from './i18n/pt';
 
@@ -53,7 +54,7 @@ export const i18n = new I18n();
 /** Texto en el idioma activo. La clave es el texto en español. */
 export function t(es: string, ...args: unknown[]): string {
   const l = i18n.lang;
-  const s = l === 'en' ? (en[es] ?? es) : l === 'pt' ? (pt[es] ?? es) : es;
+  const s = marca(l === 'en' ? (en[es] ?? es) : l === 'pt' ? (pt[es] ?? es) : es);
   return args.length ? s.replace(/\{(\d+)\}/g, (_, k) => String(args[Number(k)] ?? '')) : s;
 }
 

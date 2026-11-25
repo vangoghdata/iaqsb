@@ -1,0 +1,12 @@
+{
+  "formato": 1,
+  "id": "ejemplo-nativo",
+  "titulo": "Curso de muestra: ERP, equilibrio y planeación",
+  "version": "1.0.0",
+  "descripcion": "Un curso corto que muestra las cuatro clases de temas que se pueden crear en Nativo: una lección (qué es un ERP y cómo se usa), una calculadora en Python (punto de equilibrio), un modelo de optimización en el lenguaje algebraico (mezcla de productos) y una calculadora en R (promedios móviles). Sirve de plantilla para crear cursos propios.",
+  "autores": [{ "nombre": "IA Nativa", "institucion": "Nativo" }],
+  "licencia": "CC BY 4.0 (contenido) y MIT (código)",
+  "idioma": "es",
+  "area": "Ingeniería industrial",
+  "temas": ["que-es-un-erp", "punto-de-equilibrio", "mezcla-de-productos", "promedios-moviles"]
+}

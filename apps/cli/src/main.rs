@@ -47,8 +47,44 @@ struct Cli {
     /// Idioma de la salida: es (español), en (inglés) o pt (portugués). También: variable IAQSB_LANG.
     #[arg(long, global = true)]
     lang: Option<String>,
+    /// Ejecuta el código de Python o de R de los temas de cursos con el Python o el R del equipo
+    /// (solo si confías en el autor del curso: ese código puede leer y escribir archivos).
+    #[arg(long, global = true)]
+    confiar: bool,
     #[command(subcommand)]
     cmd: Cmd,
+}
+
+#[derive(Subcommand)]
+enum CursoCmd {
+    /// Crea la carpeta de un curso nuevo con un tema de lección y uno de calculadora en Python.
+    Nuevo {
+        /// Carpeta donde se crea.
+        carpeta: PathBuf,
+        /// Identificador (letras minúsculas, números y guiones), p. ej. mrp-ii.
+        #[arg(long)]
+        id: String,
+        /// Título del curso.
+        #[arg(long)]
+        titulo: String,
+    },
+    /// Revisa una carpeta de curso: errores y avisos.
+    Validar { carpeta: PathBuf },
+    /// Empaqueta una carpeta de curso en un archivo .ncourse para compartirlo.
+    Empaquetar {
+        carpeta: PathBuf,
+        /// Archivo de salida (por defecto <id>.ncourse).
+        #[arg(long)]
+        salida: Option<PathBuf>,
+    },
+    /// Instala un .ncourse (o una carpeta de curso) para usarlo en la app, la CLI y el MCP.
+    Instalar { ruta: PathBuf },
+    /// Quita un curso instalado.
+    Quitar { id: String },
+    /// Lista los cursos instalados y sus temas.
+    Lista,
+    /// Resuelve los ejemplos de cada tema que calcula, para probar el curso antes de compartirlo.
+    Probar { carpeta: PathBuf },
 }
 
 #[derive(Subcommand)]
@@ -199,6 +235,11 @@ enum Cmd {
         /// Con --graficas, guarda también cada gráfica en SVG.
         #[arg(long)]
         svg: bool,
+    },
+    /// Cursos (.ncourse): crear, validar, empaquetar, instalar y probar temas que hacen profesores y estudiantes.
+    Curso {
+        #[command(subcommand)]
+        cmd: CursoCmd,
     },
     /// Guía de un módulo para aprender o enseñar el tema: qué es, para qué sirve, historia con fuentes, cómo usarlo, industria y más.
     Guia {
@@ -1044,6 +1085,77 @@ fn run(cli: Cli) -> Result<(), String> {
                 save_figures(&r, &dir, pasos, svg, cli.json)?;
             }
         }
+        Cmd::Curso { cmd } => {
+            let ver = |v: Value| -> std::result::Result<(), String> {
+                if cli.json {
+                    out(&v);
+                } else {
+                    println!("{}", serde_json::to_string_pretty(&v).unwrap_or_default());
+                }
+                Ok(())
+            };
+            match cmd {
+                CursoCmd::Nuevo { carpeta, id, titulo } => {
+                    let v = api::cursos::nuevo(&carpeta, &id, &titulo).map_err(|e| e.to_string())?;
+                    if !cli.json {
+                        println!("Curso creado en {}. Edítalo, revísalo con `iaqsb curso validar` y pruébalo con `iaqsb curso probar`.", carpeta.display());
+                        return Ok(());
+                    }
+                    ver(v)?;
+                }
+                CursoCmd::Validar { carpeta } => {
+                    let (err, avi) = api::cursos::validar(&carpeta);
+                    if cli.json {
+                        out(&json!({"ok": err.is_empty(), "errores": err, "avisos": avi}));
+                    } else {
+                        for e in &err {
+                            println!("error: {e}");
+                        }
+                        for a in &avi {
+                            println!("aviso: {a}");
+                        }
+                        println!("{}", if err.is_empty() { "El curso está bien." } else { "El curso tiene errores." });
+                    }
+                    if !err.is_empty() {
+                        return Err(format!("{} errores", err.len()));
+                    }
+                }
+                CursoCmd::Empaquetar { carpeta, salida } => {
+                    let bytes = api::cursos::empaquetar(&carpeta).map_err(|e| e.to_string())?;
+                    let id = api::cursos::leer(&carpeta).map(|c| c.def["id"].as_str().unwrap_or("curso").to_string()).unwrap_or_else(|_| "curso".into());
+                    let f = salida.unwrap_or_else(|| PathBuf::from(format!("{id}.ncourse")));
+                    std::fs::write(&f, &bytes).map_err(|e| format!("{}: {e}", f.display()))?;
+                    if cli.json {
+                        out(&json!({"archivo": f.to_string_lossy(), "bytes": bytes.len()}));
+                    } else {
+                        println!("{} ({} KB)", f.display(), bytes.len() / 1024 + 1);
+                    }
+                }
+                CursoCmd::Instalar { ruta } => {
+                    let bytes = if ruta.is_dir() { api::cursos::empaquetar(&ruta).map_err(|e| e.to_string())? } else { std::fs::read(&ruta).map_err(|e| format!("{}: {e}", ruta.display()))? };
+                    ver(api::cursos::instalar(&bytes).map_err(|e| e.to_string())?)?;
+                }
+                CursoCmd::Quitar { id } => ver(api::cursos::quitar(&id).map_err(|e| e.to_string())?)?,
+                CursoCmd::Lista => ver(api::cursos::lista())?,
+                CursoCmd::Probar { carpeta } => {
+                    let (err, _) = api::cursos::validar(&carpeta);
+                    if !err.is_empty() {
+                        return Err(format!("el curso tiene errores:\n- {}", err.join("\n- ")));
+                    }
+                    let r = api::cursos::probar(&carpeta).map_err(|e| e.to_string())?;
+                    if cli.json {
+                        out(&r);
+                    } else {
+                        for t in r.as_array().into_iter().flatten() {
+                            println!("{} {} · {}: {}", if t["ok"].as_bool() == Some(true) { "bien " } else { "FALLA" }, t["tema"].as_str().unwrap_or(""), t["ejemplo"].as_str().unwrap_or(""), t["resultado"].as_str().unwrap_or(""));
+                        }
+                    }
+                    if r.as_array().is_some_and(|a| a.iter().any(|t| t["ok"].as_bool() != Some(true))) {
+                        return Err("algún ejemplo falló".into());
+                    }
+                }
+            }
+        }
         Cmd::Guia { modulo } => match modulo {
             None => {
                 for m in api::core::guias::modulos() {
@@ -1140,6 +1252,10 @@ fn main() -> ExitCode {
         default(info);
     }));
     let cli = Cli::parse();
+    if cli.confiar {
+        // SAFETY: al principio, antes de crear hilos.
+        unsafe { std::env::set_var("IAQSB_CONFIAR_CODIGO", "1") };
+    }
     let _ = LANG.set(Lang::parse(cli.lang.clone().or_else(|| std::env::var("IAQSB_LANG").ok()).as_deref()));
     let json = cli.json;
     match run(cli) {

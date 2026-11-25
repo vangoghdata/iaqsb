@@ -1,0 +1,6 @@
+{
+  "modulo": "punto-de-equilibrio",
+  "titulo": "Punto de equilibrio",
+  "resumen": "Cuántas unidades hay que vender para no perder.",
+  "referencias": ["render2012"]
+}

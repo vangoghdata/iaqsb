@@ -3154,6 +3154,7 @@
 "Motor de pronóstico": "Motor de previsão",
 "Motor nativo de pronósticos en Rust": "Motor nativo de previsões em Rust",
 "Motor por defecto; libre (MIT), sin límites de tamaño.": "Solver padrão; livre (MIT), sem limites de tamanho.",
+"Motor propio en Rust (ETS traducido de forecast; ARIMA, TBATS y Theta con anofox-forecast)": "Motor próprio em Rust (ETS traduzido do forecast; ARIMA, TBATS e Theta com anofox-forecast)",
 "Motor/Uniform/1.2/1.8": "Motor/Uniform/1.2/1.8",
 "Motor: {0}": "Solver: {0}",
 "Motor: {0}.": "Motor: {0}.",

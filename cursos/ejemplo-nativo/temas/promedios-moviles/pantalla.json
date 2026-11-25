@@ -1,0 +1,28 @@
+{
+  "problem_types": [
+    {
+      "id": "promedio",
+      "label": "Promedio móvil",
+      "description": "Una serie de datos y el número de periodos del promedio",
+      "dims": [],
+      "layout": [
+        {
+          "type": "params",
+          "title": "Pronóstico",
+          "fields": [{ "key": "n", "label": "Periodos del promedio (n)", "kind": { "type": "integer" }, "default": 3 }]
+        },
+        {
+          "type": "records",
+          "title": "Datos",
+          "path": "datos",
+          "add_label": "Añadir periodo",
+          "columns": [
+            { "key": "periodo", "label": "Periodo", "kind": { "type": "text" } },
+            { "key": "valor", "label": "Valor", "kind": { "type": "number" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "options": []
+}

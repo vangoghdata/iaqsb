@@ -1,4 +1,6 @@
-# IAQSB
+# Nativo
+
+*Antes IAQSB; «Nativo» é um nome provisório. O comando da linha de comando continua sendo `iaqsb`.*
 
 Para aprender e aplicar a engenharia de produção, com IA. Feito por IA Nativa.
 
@@ -10,6 +12,7 @@ Software livre (licença MIT) em espanhol, inglês e português, pensado para es
 | --- | --- |
 | [docs/DOCENTES.md](docs/DOCENTES.md) | Guia para professores: como usar o IAQSB na graduação, no mestrado e no doutorado, atividades e laboratórios de informática |
 | [docs/LENGUAJE.md](docs/LENGUAJE.md) | Referência da linguagem de modelagem algébrica (com 29 modelos testados) |
+| [docs/CURSOS.md](docs/CURSOS.md) | Cursos (`.ncourse`, em espanhol): como criar, compartilhar e instalar temas próprios, à mão ou com IA |
 | [docs/FUENTES.md](docs/FUENTES.md) | Bibliografia em APA 7 e origem de cada exemplo |
 | [COMPATIBILIDAD.md](COMPATIBILIDAD.md) | Compatibilidade com os arquivos do WinQSB, módulo por módulo |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Como relatar erros, propor melhorias, traduzir e contribuir com código |

@@ -1,0 +1,9 @@
+{
+  "id": "mezcla-de-productos",
+  "titulo": "Mezcla de productos",
+  "resumen": "Cuánto fabricar de cada producto para ganar lo máximo sin pasarse de las horas de máquina y de mano de obra: un modelo de programación lineal escrito en el lenguaje algebraico y resuelto con HiGHS.",
+  "tipo": "modelo",
+  "lecciones": [{ "titulo": "La mezcla de productos", "archivo": "leccion.md" }],
+  "calculo": { "lenguaje": "algebra", "archivo": "modelo.iaqsb", "pantalla": "pantalla.json" },
+  "ejemplos": [{ "nombre": "Taller de muebles", "archivo": "ejemplos/muebles.json" }]
+}

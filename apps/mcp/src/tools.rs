@@ -68,7 +68,7 @@ Language: every tool accepts language = \"en\" to get reports, examples and sour
 Idioma: todas as ferramentas aceitam language = \"pt\" para receber relatórios, exemplos e fontes em português.";
 
 fn module_prop() -> Value {
-    json!({"type": "string", "description": "Módulo: lp, net, pert, gp, qp, nlp, dp, ap, pmp, da, mkp, its, fc, st, qa, qss, job, mrp, mrp2, fll, qcc, asa, vrp, modo, inv, fin, alm o kpi (también vale el nombre de WinQSB, p. ej. \"LP-ILP\")"})
+    json!({"type": "string", "description": "Módulo: lp, net, pert, gp, qp, nlp, dp, ap, pmp, da, mkp, its, fc, st, qa, qss, job, mrp, mrp2, fll, qcc, asa, vrp, modo, inv, fin, alm o kpi (también vale el nombre de WinQSB, p. ej. \"LP-ILP\"), o un tema de un curso instalado: c.<curso>.<tema> (ver courses con action=list)"})
 }
 
 fn view_props() -> Value {
@@ -306,6 +306,20 @@ fn tools_es() -> Value {
                 "path": {"type": "string", "description": "Ruta donde guardar (opcional)"}
             }, "required": ["module", "model"]},
             "annotations": {"readOnlyHint": false, "destructiveHint": true, "openWorldHint": false}
+        },
+        {
+            "name": "courses",
+            "title": "Cursos (.ncourse)",
+            "description": "Cursos de Nativo: paquetes de temas (lecciones, calculadoras en Python o R y modelos en el lenguaje algebraico) que crean profesores, estudiantes o una IA. action=list: los instalados y sus temas (cada tema se usa como módulo c.<curso>.<tema> en describe_module, solve y get_module_guide). action=new (dir, id, title): crea la carpeta de un curso nuevo con un tema de lección y uno de calculadora. action=validate (dir): errores y avisos. action=test (dir): resuelve los ejemplos de cada tema. action=pack (dir, out): crea el archivo .ncourse para compartir. action=install (path): instala un .ncourse o una carpeta. action=remove (id). El formato está en docs/CURSOS.md del repositorio.",
+            "inputSchema": {"type": "object", "properties": {
+                "action": {"type": "string", "enum": ["list", "new", "validate", "test", "pack", "install", "remove"]},
+                "dir": {"type": "string", "description": "Carpeta del curso (new, validate, test, pack)"},
+                "id": {"type": "string", "description": "Id del curso (new, remove): letras minúsculas, números y guiones"},
+                "title": {"type": "string", "description": "Título del curso (new)"},
+                "out": {"type": "string", "description": "Archivo .ncourse de salida (pack)"},
+                "path": {"type": "string", "description": "Archivo .ncourse o carpeta (install)"}
+            }, "required": ["action"]},
+            "annotations": {"readOnlyHint": false, "destructiveHint": false, "openWorldHint": false}
         },
         {
             "name": "get_module_guide",
@@ -654,6 +668,34 @@ Los modelos completos están en el resultado estructurado (models[].model): resu
             } else {
                 Ok(Reply { content: vec![text(api::formats::decode_ansi(&bytes))], structured: None })
             }
+        }
+        "courses" => {
+            let a = s("action").unwrap_or("list");
+            let dir = || s("dir").map(std::path::PathBuf::from).ok_or_else(|| "falta dir (la carpeta del curso)".to_string());
+            let v = match a {
+                "list" => api::call("list_courses", json!({})).map_err(|e| e.to_string())?,
+                "new" => api::cursos::nuevo(&dir()?, s("id").unwrap_or("mi-curso"), s("title").unwrap_or("Mi curso")).map_err(|e| e.to_string())?,
+                "validate" => {
+                    let (e, w) = api::cursos::validar(&dir()?);
+                    json!({"ok": e.is_empty(), "errores": e, "avisos": w})
+                }
+                "test" => api::cursos::probar(&dir()?).map_err(|e| e.to_string())?,
+                "pack" => {
+                    let d = dir()?;
+                    let bytes = api::cursos::empaquetar(&d).map_err(|e| e.to_string())?;
+                    let out = s("out").map(std::path::PathBuf::from).unwrap_or_else(|| d.with_extension("ncourse"));
+                    std::fs::write(&out, &bytes).map_err(|e| format!("{}: {e}", out.display()))?;
+                    json!({"archivo": out.to_string_lossy(), "bytes": bytes.len()})
+                }
+                "install" => {
+                    let p = std::path::PathBuf::from(s("path").ok_or("falta path")?);
+                    let bytes = if p.is_dir() { api::cursos::empaquetar(&p).map_err(|e| e.to_string())? } else { std::fs::read(&p).map_err(|e| format!("{}: {e}", p.display()))? };
+                    api::cursos::instalar(&bytes).map_err(|e| e.to_string())?
+                }
+                "remove" => api::cursos::quitar(s("id").ok_or("falta id")?).map_err(|e| e.to_string())?,
+                o => return Err(format!("acción desconocida: {o}")),
+            };
+            Ok(Reply { content: vec![text(serde_json::to_string_pretty(&v).unwrap_or_default())], structured: if v.is_object() { Some(v) } else { None } })
         }
         "get_module_guide" => {
             let lc = match lang() {

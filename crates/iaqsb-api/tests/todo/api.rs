@@ -42,7 +42,8 @@ fn nombres_de_modulo_de_winqsb() {
     assert!(api::describe_module("LP-ILP").is_ok());
     // los 19 módulos de WinQSB y los 9 que agrega IAQSB (6 de logística, el programa maestro, el MRP II por matrices y las series de tiempo) están disponibles
     let list = api::list_modules();
-    let mods = list["modules"].as_array().unwrap();
+    // sin los temas de cursos instalados (c.<curso>.<tema>)
+    let mods: Vec<&serde_json::Value> = list["modules"].as_array().unwrap().iter().filter(|m| m.get("curso").is_none()).collect();
     assert_eq!(mods.len(), 28);
     assert_eq!(mods.iter().filter(|m| m["winqsb"] != "Nuevo").count(), 19);
     assert!(mods.iter().all(|m| m["available"] == true), "{list}");

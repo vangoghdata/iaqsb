@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { cursos } from '../lib/cursos.svelte';
+  import { MARCA } from '../lib/marca';
   // Menú lateral al estilo de IA Nativa: marca, buscador y módulos agrupados con ícono.
   import Logo from './Logo.svelte';
   import Icon from './Icon.svelte';
@@ -27,12 +29,16 @@
     const pasa = (m: (typeof disponibles)[number]) =>
       !qn || sinTildes(`${m.name} ${m.winqsb} ${m.solves} ${m.file_ext}`).includes(qn);
     const usados = new Set(GRUPOS.flatMap((g) => g.ids));
-    const lista = GRUPOS.map((g) => ({
+    const lista: { titulo: string; mods: typeof disponibles; curso?: boolean }[] = GRUPOS.map((g) => ({
       titulo: g.titulo,
       mods: g.ids.map((id) => disponibles.find((m) => m.id === id)).filter((m) => m && pasa(m)) as typeof disponibles
     }));
-    const otros = disponibles.filter((m) => !usados.has(m.id) && pasa(m));
+    const otros = disponibles.filter((m) => !usados.has(m.id) && !m.curso && pasa(m));
     if (otros.length) lista.push({ titulo: 'Otros', mods: otros });
+    // un grupo por curso instalado (.ncourse)
+    const porCurso = new Map<string, typeof disponibles>();
+    for (const m of disponibles) if (m.curso && pasa(m)) porCurso.set(m.curso.titulo, [...(porCurso.get(m.curso.titulo) ?? []), m]);
+    for (const [titulo, mods] of porCurso) lista.push({ titulo, mods, curso: true });
     return lista.filter((g) => g.mods.length);
   });
   const plano = $derived(grupos.flatMap((g) => g.mods));
@@ -88,7 +94,7 @@
   <div class="brand">
     <Logo size={30} color="var(--menu-on-fg)" />
     <div class="brand-txt">
-      <div class="word">IAQSB</div>
+      <div class="word">{MARCA}</div>
       <div class="tag">{t('Hecho por IA Nativa')}</div>
     </div>
   </div>
@@ -110,7 +116,7 @@
   <nav class="mods" aria-label={t('Módulos')}>
     {#each grupos as g (g.titulo)}
       <div class="grupo">
-        <h2 class="gtit">{t(g.titulo)}</h2>
+        <h2 class="gtit">{g.curso ? g.titulo : t(g.titulo)}</h2>
         <ul>
           {#each g.mods as m (m.id)}
             <li>
@@ -121,9 +127,9 @@
                 title={m.solves}
                 onclick={() => elegir(m.id)}
               >
-                <span class="ic"><Icon name={m.id} size={16} /></span>
+                <span class="ic"><Icon name={m.curso ? (m.leccion ? 'libro' : 'tabla') : m.id} size={16} /></span>
                 <span class="nm">{m.name}</span>
-                <span class="wq">{m.winqsb}</span>
+                {#if !m.curso}<span class="wq">{m.winqsb}</span>{/if}
               </button>
             </li>
           {/each}
@@ -135,6 +141,10 @@
   </nav>
 
   <div class="pie">
+    <button class="item connect" title={t('Instala un curso (.ncourse) que te compartieron: sus temas aparecen aquí como módulos')} onclick={() => cursos.elegir()} disabled={cursos.instalando}>
+      <span class="ic"><Icon name="abrir" size={16} /></span>
+      <span class="nm">{cursos.instalando ? t('Instalando…') : t('Instalar un curso…')}</span>
+    </button>
     <button class="item connect" title={t('Conectar con Claude')} onclick={() => (app.connectOpen = true)}>
       <span class="ic"><Icon name="chispa" size={16} /></span>
       <span class="nm">{t('Conectar con Claude')}</span>

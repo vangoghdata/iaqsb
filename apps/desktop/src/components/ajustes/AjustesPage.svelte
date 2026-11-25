@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { MARCA } from '../../lib/marca';
   // Ajustes de IAQSB: idioma, nivel, apariencia, números, motor, archivos,
   // informes, inteligencia artificial, atajos y «acerca de» (cómo citar, licencia).
   import Icon from '../Icon.svelte';
@@ -77,8 +78,8 @@
   ]);
 
   // APA 7: el título va en su idioma original; «Versión» sí se traduce
-  const CITA_APA = $derived(`IA Nativa. (2026). *IAQSB: investigación de operaciones nativa para IA* (${t('Versión')} ${VERSION}) [Software].`);
-  const CITA_BIB = `@software{iaqsb2026,\n  author = {{IA Nativa}},\n  year = {2026},\n  version = {${VERSION}},\n  title = {{IAQSB}: investigación de operaciones nativa para {IA}},\n  note = {Licencia MIT}\n}`;
+  const CITA_APA = $derived(`IA Nativa. (2026). *${MARCA}: para aprender y aplicar la ingeniería industrial con IA* (${t('Versión')} ${VERSION}) [Software].`);
+  const CITA_BIB = `@software{iaqsb2026,\n  author = {{IA Nativa}},\n  year = {2026},\n  version = {${VERSION}},\n  title = {{${MARCA}}: para aprender y aplicar la ingeniería industrial con {IA}},\n  note = {Licencia MIT}\n}`;
 
   async function copiar(texto: string) {
     try {
@@ -259,7 +260,7 @@
           <p class="ayuda">{t('En macOS, Cmd en lugar de Ctrl.')}</p>
         {:else if ajustes.seccion === 'acerca'}
           <div class="grupo">
-            <h4>IAQSB {VERSION}</h4>
+            <h4>{MARCA} {VERSION}</h4>
             <p>{t('Investigación de operaciones nativa para IA. Reimplementa los 19 módulos de WinQSB, abre y guarda sus archivos y agrega módulos de logística, un motor moderno (HiGHS, con conectores para Gurobi, CPLEX, SCIP, CBC y GLPK), un lenguaje de modelado algebraico y un servidor MCP para la IA.')}</p>
             <p>{t('Hecho por IA Nativa. Código abierto con licencia MIT: puedes usarlo, estudiarlo, modificarlo y compartirlo en tu universidad, de pregrado a doctorado.')}</p>
           </div>

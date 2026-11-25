@@ -1,0 +1,9 @@
+{
+  "id": "punto-de-equilibrio",
+  "titulo": "Punto de equilibrio",
+  "resumen": "Cuántas unidades hay que vender para cubrir los costos fijos, con el margen de contribución, la gráfica de ingresos y costos y la utilidad a la capacidad.",
+  "tipo": "calculadora",
+  "lecciones": [{ "titulo": "El punto de equilibrio", "archivo": "leccion.md" }],
+  "calculo": { "lenguaje": "python", "archivo": "calcular.py", "pantalla": "pantalla.json" },
+  "ejemplos": [{ "nombre": "Taller de muebles", "archivo": "ejemplos/muebles.json" }]
+}

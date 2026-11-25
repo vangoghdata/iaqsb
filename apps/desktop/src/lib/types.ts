@@ -158,4 +158,8 @@ export interface ModuleInfo {
   solves: string;
   file_ext: string;
   available: boolean;
+  /** Tema de un curso instalado (.ncourse): id c.<curso>.<tema>. */
+  curso?: { id: string; titulo: string };
+  /** El tema es solo lección (no calcula). */
+  leccion?: boolean;
 }

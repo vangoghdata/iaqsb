@@ -128,7 +128,7 @@ impl Motor {
                 },
             },
             Motor::Python => py_info().map(|v| format!("Python · statsforecast {v}")).unwrap_or_else(|| "Python (statsforecast)".into()),
-            Motor::Nativo => "IAQSB nativo en Rust (ETS traducido de forecast; ARIMA, TBATS y Theta con anofox-forecast)".into(),
+            Motor::Nativo => "Motor propio en Rust (ETS traducido de forecast; ARIMA, TBATS y Theta con anofox-forecast)".into(),
         }
     }
 }

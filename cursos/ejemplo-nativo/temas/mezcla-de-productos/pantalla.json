@@ -1,0 +1,34 @@
+{
+  "problem_types": [
+    {
+      "id": "mezcla",
+      "label": "Mezcla de productos",
+      "description": "Productos con su utilidad, horas de máquina y de mano de obra, y la capacidad de la planta",
+      "dims": [],
+      "layout": [
+        {
+          "type": "params",
+          "title": "Capacidad de la planta (horas del periodo)",
+          "fields": [
+            { "key": "horas_maquina", "label": "Horas de máquina disponibles", "kind": { "type": "number" }, "default": 100 },
+            { "key": "horas_mano", "label": "Horas de mano de obra disponibles", "kind": { "type": "number" }, "default": 120 }
+          ]
+        },
+        {
+          "type": "records",
+          "title": "Productos",
+          "path": "productos",
+          "add_label": "Añadir producto",
+          "columns": [
+            { "key": "nombre", "label": "Producto", "kind": { "type": "text" } },
+            { "key": "utilidad", "label": "Utilidad por unidad", "kind": { "type": "number" } },
+            { "key": "horas_maquina", "label": "Horas de máquina por unidad", "kind": { "type": "number" } },
+            { "key": "horas_mano", "label": "Horas de mano de obra por unidad", "kind": { "type": "number" } },
+            { "key": "demanda_maxima", "label": "Demanda máxima", "kind": { "type": "number" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "options": []
+}

@@ -71,7 +71,11 @@
     <span class="mico"><Icon name={shell.module} size={15} /></span>
     <span class="mnom">{info?.name ?? t('Programación lineal y entera')}</span>
     {#if info}
-      <span class="chip" title={t('Módulo de WinQSB y extensión de sus archivos')}>{info.winqsb} · .{info.file_ext}</span>
+      {#if info.curso}
+        <span class="chip" title={t('Tema de un curso instalado')}>{info.curso.titulo}</span>
+      {:else}
+        <span class="chip" title={t('Módulo de WinQSB y extensión de sus archivos')}>{info.winqsb} · .{info.file_ext}</span>
+      {/if}
     {/if}
   </div>
 

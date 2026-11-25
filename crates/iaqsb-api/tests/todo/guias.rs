@@ -10,6 +10,9 @@ fn cada_modulo_tiene_su_guia() {
     let mods = api::list_modules();
     for m in mods["modules"].as_array().unwrap() {
         let id = m["id"].as_str().unwrap();
+        if id.starts_with("c.") {
+            continue; // temas de cursos instalados: su guía es del curso
+        }
         assert!(guias::modulos().contains(&id), "el módulo {id} no tiene guía en crates/iaqsb-core/guias/{id}.json");
     }
 }
@@ -42,6 +45,6 @@ fn la_guia_sale_por_la_api_con_las_referencias_en_apa() {
     assert_eq!(r["module"], "mrp");
     assert!(r["guide"]["referencias_apa"].as_array().is_some_and(|a| !a.is_empty()));
     let md = r["markdown"].as_str().unwrap();
-    assert!(md.contains("## Referencias (APA 7)") && md.contains("## Cómo usarlo en IAQSB"));
+    assert!(md.contains("## Referencias (APA 7)") && md.contains("## Cómo usarlo en Nativo"));
     assert!(api::call("guide", json!({"module": "no_existe"})).is_err());
 }

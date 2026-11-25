@@ -1,0 +1,10 @@
+{
+  "id": "que-es-un-erp",
+  "titulo": "Qué es un ERP y cómo se usa",
+  "resumen": "El sistema que integra compras, inventario, producción, ventas y finanzas de una empresa en una sola base de datos: qué módulos tiene, qué debe tener uno bueno y el recorrido de un pedido de punta a punta.",
+  "tipo": "leccion",
+  "lecciones": [
+    { "titulo": "Qué es un ERP", "archivo": "01-que-es.md" },
+    { "titulo": "Cómo se usa: un pedido de punta a punta", "archivo": "02-como-se-usa.md" }
+  ]
+}

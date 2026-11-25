@@ -9,6 +9,7 @@
 //! - `winqsb`: utilidades para leer y escribir los archivos de WinQSB.
 
 pub mod biblio;
+pub mod ejecutor;
 pub mod expr;
 pub mod guias;
 pub mod i18n;

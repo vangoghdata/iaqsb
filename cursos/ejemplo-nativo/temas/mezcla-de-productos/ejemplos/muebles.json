@@ -1,0 +1,11 @@
+{
+  "name": "Taller de muebles",
+  "problem_type": "mezcla",
+  "horas_maquina": 100,
+  "horas_mano": 120,
+  "productos": [
+    { "nombre": "Mesa", "utilidad": 40, "horas_maquina": 2, "horas_mano": 3, "demanda_maxima": 30 },
+    { "nombre": "Silla", "utilidad": 30, "horas_maquina": 1, "horas_mano": 2, "demanda_maxima": 60 },
+    { "nombre": "Estante", "utilidad": 50, "horas_maquina": 3, "horas_mano": 2, "demanda_maxima": 20 }
+  ]
+}

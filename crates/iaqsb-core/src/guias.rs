@@ -32,7 +32,10 @@ pub fn cruda(modulo: &str) -> Option<Value> {
     serde_json::from_str(txt).ok()
 }
 
-fn cita(id: &str, lang: Lang) -> Value {
+fn cita(id: &str, lang: Lang, extra: &[Value]) -> Value {
+    if let Some(r) = extra.iter().find(|r| r["id"].as_str() == Some(id)) {
+        return json!({"id": id, "cita": r["cita"], "apa": r["apa"], "verificada": r["verificada"].as_bool().unwrap_or(true), "enlace": r.get("enlace").cloned().unwrap_or(Value::Null)});
+    }
     match biblio::get(id) {
         Some(r) => json!({"id": id, "cita": biblio::cite_l(r, lang), "apa": biblio::apa_l(r, lang), "verificada": biblio::verified(r), "enlace": biblio::link(r)}),
         None => json!({"id": id, "cita": id, "apa": id, "verificada": false}),
@@ -41,7 +44,12 @@ fn cita(id: &str, lang: Lang) -> Value {
 
 /// La guía con las referencias resueltas: `historia[].citas` y `referencias_apa`.
 pub fn guia(modulo: &str, lang: Lang) -> Option<Value> {
-    let mut g = cruda(modulo)?;
+    Some(resolver(cruda(modulo)?, lang, &[]))
+}
+
+/// Resuelve las referencias de una guía con la bibliografía de Nativo y, si las hay, las
+/// referencias propias de un curso (`extra`: {id, cita, apa, verificada?, enlace?}).
+pub fn resolver(mut g: Value, lang: Lang, extra: &[Value]) -> Value {
     let mut ids: Vec<String> = g["referencias"].as_array().map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect()).unwrap_or_default();
     if let Some(h) = g["historia"].as_array_mut() {
         for e in h.iter_mut() {
@@ -51,13 +59,13 @@ pub fn guia(modulo: &str, lang: Lang) -> Option<Value> {
                     ids.push(r.clone());
                 }
             }
-            e["citas"] = Value::Array(refs.iter().map(|r| cita(r, lang)).collect());
+            e["citas"] = Value::Array(refs.iter().map(|r| cita(r, lang, extra)).collect());
         }
     }
-    let mut apa: Vec<Value> = ids.iter().map(|r| cita(r, lang)).collect();
+    let mut apa: Vec<Value> = ids.iter().map(|r| cita(r, lang, extra)).collect();
     apa.sort_by(|a, b| a["apa"].as_str().unwrap_or("").to_lowercase().cmp(&b["apa"].as_str().unwrap_or("").to_lowercase()));
     g["referencias_apa"] = Value::Array(apa);
-    Some(g)
+    g
 }
 
 fn textos(v: &Value) -> Vec<&str> {
@@ -75,6 +83,9 @@ pub fn markdown(g: &Value) -> String {
     }
     if !s("analogia").is_empty() {
         let _ = writeln!(m, "> {}\n", s("analogia"));
+    }
+    for l in g["lecciones"].as_array().into_iter().flatten() {
+        let _ = writeln!(m, "## Lección: {}\n\n{}\n", l["titulo"].as_str().unwrap_or(""), l["markdown"].as_str().unwrap_or("").trim());
     }
     if let Some(a) = g["para_que_sirve"].as_array().filter(|a| !a.is_empty()) {
         let _ = writeln!(m, "## Para qué sirve en la vida real\n");

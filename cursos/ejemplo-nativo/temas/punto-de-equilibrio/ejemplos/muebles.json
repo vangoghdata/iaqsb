@@ -1,0 +1,9 @@
+{
+  "name": "Taller de muebles",
+  "problem_type": "equilibrio",
+  "costo_fijo": 12000000,
+  "precio": 180000,
+  "costo_variable": 110000,
+  "capacidad": 260,
+  "unidad": "mesas"
+}

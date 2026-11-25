@@ -1,0 +1,15 @@
+{
+  "name": "Ventas mensuales",
+  "problem_type": "promedio",
+  "n": 3,
+  "datos": [
+    { "periodo": "Ene", "valor": 120 },
+    { "periodo": "Feb", "valor": 132 },
+    { "periodo": "Mar", "valor": 125 },
+    { "periodo": "Abr", "valor": 140 },
+    { "periodo": "May", "valor": 138 },
+    { "periodo": "Jun", "valor": 150 },
+    { "periodo": "Jul", "valor": 145 },
+    { "periodo": "Ago", "valor": 158 }
+  ]
+}

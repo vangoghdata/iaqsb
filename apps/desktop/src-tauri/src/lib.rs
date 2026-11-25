@@ -166,6 +166,10 @@ fn initial_file() -> Option<Value> {
     if !p.is_file() {
         return None;
     }
+    // un curso: la ventana lo instala
+    if arg.to_lowercase().ends_with(".ncourse") {
+        return Some(json!({ "ncourse": arg }));
+    }
     let mut v = read_sync(&arg).ok()?;
     v["path"] = json!(arg);
     Some(v)
@@ -183,6 +187,8 @@ pub fn run() {
         .setup(|app| {
             // si el equipo no tiene R con forecast, las series de tiempo usan el R de la app (webR)
             puentes::registrar_webr(app.handle().clone());
+            // el código de los temas de cursos corre aislado en la ventana (Pyodide y webR)
+            puentes::registrar_codigo(app.handle().clone());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

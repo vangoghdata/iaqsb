@@ -1,0 +1,11 @@
+{
+  "modulo": "que-es-un-erp",
+  "titulo": "Qué es un ERP y cómo se usa",
+  "resumen": "El sistema que integra los procesos de una empresa en una sola base de datos.",
+  "historia": [
+    { "anio": "1975", "hecho": "Orlicky describe la lógica del MRP, el núcleo de planeación del que nacen los ERP.", "refs": ["orlicky1975"] },
+    { "anio": "Década de 1980", "hecho": "El MRP II agrega capacidad, ventas y finanzas al MRP.", "refs": ["jacobsweston2007"] },
+    { "anio": "Década de 1990", "hecho": "MRP y MRP II se integran con contabilidad, recursos humanos y el resto de la empresa: nace el ERP.", "refs": ["jacobsweston2007"] }
+  ],
+  "referencias": ["jacobsweston2007", "orlicky1975", "olhager2013"]
+}

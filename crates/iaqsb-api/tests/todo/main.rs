@@ -3,6 +3,7 @@ mod algebraico;
 mod api;
 mod clase_inventarios;
 mod comparar;
+mod cursos;
 mod fuentes;
 mod guias;
 mod idioma;

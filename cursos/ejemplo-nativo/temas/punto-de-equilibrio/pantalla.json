@@ -1,0 +1,24 @@
+{
+  "problem_types": [
+    {
+      "id": "equilibrio",
+      "label": "Punto de equilibrio",
+      "description": "Un producto con costos fijos, precio y costo variable",
+      "dims": [],
+      "layout": [
+        {
+          "type": "params",
+          "title": "Datos",
+          "fields": [
+            { "key": "costo_fijo", "label": "Costos fijos del periodo", "kind": { "type": "number" }, "default": 5000, "help": "Arriendo, administración, depreciación…" },
+            { "key": "precio", "label": "Precio de venta por unidad", "kind": { "type": "number" }, "default": 10 },
+            { "key": "costo_variable", "label": "Costo variable por unidad", "kind": { "type": "number" }, "default": 6, "help": "Materiales, mano de obra directa, empaque…" },
+            { "key": "capacidad", "label": "Capacidad o ventas esperadas (unidades)", "kind": { "type": "number" }, "default": 2000 },
+            { "key": "unidad", "label": "Nombre de la unidad", "kind": { "type": "text" }, "default": "unidades" }
+          ]
+        }
+      ]
+    }
+  ],
+  "options": []
+}

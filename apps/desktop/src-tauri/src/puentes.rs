@@ -43,6 +43,28 @@ pub fn registrar_webr(app: AppHandle) {
     );
 }
 
+/// El código de Python y de R de los temas de cursos (.ncourse) corre aislado en la ventana
+/// (Pyodide y webR): no puede tocar los archivos del equipo.
+pub fn registrar_codigo(app: AppHandle) {
+    iaqsb_api::core::ejecutor::registrar(Box::new(move |p| {
+        let id = SIGUIENTE.fetch_add(1, Ordering::Relaxed);
+        let (tx, rx) = channel();
+        PENDIENTES.lock().map_err(|e| e.to_string())?.get_or_insert_with(HashMap::new).insert(id, tx);
+        let archivos: Vec<Value> = p.archivos.iter().map(|(n, d)| json!({"nombre": n, "base64": iaqsb_api::render::base64(d)})).collect();
+        if let Err(e) = app.emit("codigo-ejecutar", json!({ "id": id, "lenguaje": p.lenguaje, "codigo": p.codigo, "archivos": archivos })) {
+            quitar(id);
+            return Err(format!("no se pudo pedir el cálculo a la ventana: {e}"));
+        }
+        match rx.recv_timeout(Duration::from_secs(900)) {
+            Ok(r) => r,
+            Err(_) => {
+                quitar(id);
+                Err("el cálculo del tema no respondió a tiempo".into())
+            }
+        }
+    }));
+}
+
 fn quitar(id: u64) -> Option<Sender<Result<String, String>>> {
     PENDIENTES.lock().ok()?.as_mut()?.remove(&id)
 }

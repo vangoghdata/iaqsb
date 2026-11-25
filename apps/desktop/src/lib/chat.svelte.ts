@@ -17,6 +17,7 @@
 import { bytesToBase64, call, inTauri, type Imported } from './backend';
 import { ejecutarPython, ejecutarR, type Archivo } from './motores_web.svelte';
 import { TOMAS, type TomaNativo } from './nativo';
+import { marca } from './marca';
 import { bloques as bloquesAdjuntos, leerArchivo, leerPegada, sinDatos, type Adjunto } from './adjuntos';
 import { ajustes } from './ajustes.svelte';
 import { i18n, t, type Lang } from './i18n.svelte';
@@ -263,21 +264,21 @@ export async function resumir(informe: unknown, detalle: 'summary' | 'steps' | '
 // Textos para la IA (no son de la interfaz: van en el idioma en que debe contestar).
 const INSTRUCCION: Record<Lang, (mod: string, posgrado: boolean) => string> = {
   es: (mod, pg) =>
-    `Actúa como tutor de investigación de operaciones. Explícale a un estudiante de ${pg ? 'posgrado' : 'pregrado'} el resultado que obtuve con IAQSB (software libre de investigación de operaciones, sucesor de WinQSB) en el módulo «${mod}». ` +
+    `Actúa como tutor de investigación de operaciones. Explícale a un estudiante de ${pg ? 'posgrado' : 'pregrado'} el resultado que obtuve con IAQSB (software libre de IA Nativa para aprender y aplicar la ingeniería industrial) en el módulo «${mod}». ` +
     `Explica qué significa la solución, cómo se interpreta cada número importante, qué decisión recomienda y qué supuestos o límites tiene` +
     (pg
       ? '. Hazlo con rigor técnico y de forma concisa (dualidad, condiciones de optimalidad, sensibilidad, complejidad del método cuando aplique).'
       : ', paso a paso, con lenguaje sencillo y definiendo cada término la primera vez que aparece.') +
     ` Si el informe trae el paso a paso, recórrelo. Usa solo los datos de abajo: no inventes cifras y cita las fuentes tal como aparecen (APA 7). Responde en español.`,
   en: (mod, pg) =>
-    `Act as an operations research tutor. Explain to a${pg ? ' graduate' : 'n undergraduate'} student the result I got with IAQSB (open-source operations research software, successor of WinQSB) in the “${mod}” module. ` +
+    `Act as an operations research tutor. Explain to a${pg ? ' graduate' : 'n undergraduate'} student the result I got with IAQSB (open-source software by IA Nativa to learn and apply industrial engineering) in the “${mod}” module. ` +
     `Explain what the solution means, how to interpret each important number, which decision it recommends and what assumptions or limits it has` +
     (pg
       ? '. Be technically rigorous and concise (duality, optimality conditions, sensitivity, complexity of the method when relevant).'
       : ', step by step, in plain language, defining each term the first time it appears.') +
     ` If the report includes the step-by-step, walk through it. Use only the data below: do not invent numbers, and cite the sources as given (APA 7). Answer in English.`,
   pt: (mod, pg) =>
-    `Atue como tutor de pesquisa operacional. Explique a um estudante de ${pg ? 'pós-graduação' : 'graduação'} o resultado que obtive com o IAQSB (software livre de pesquisa operacional, sucessor do WinQSB) no módulo «${mod}». ` +
+    `Atue como tutor de pesquisa operacional. Explique a um estudante de ${pg ? 'pós-graduação' : 'graduação'} o resultado que obtive com o IAQSB (software livre da IA Nativa para aprender e aplicar a engenharia de produção) no módulo «${mod}». ` +
     `Explique o que a solução significa, como interpretar cada número importante, que decisão ela recomenda e quais suposições ou limites ela tem` +
     (pg
       ? '. Faça isso com rigor técnico e de forma concisa (dualidade, condições de otimalidade, sensibilidade, complexidade do método quando couber).'
@@ -318,8 +319,8 @@ export async function promptParaCopiar(f: Fuente, detalle: 'summary' | 'steps'):
   const { informe, modelo } = await armarContexto(f, detalle);
   const tt = TITULOS[l];
   return [
-    INSTRUCCION[l](nombreModulo(f.modulo), ajustes.nivel === 'posgrado'),
-    `## ${tt.informe}`,
+    marca(INSTRUCCION[l](nombreModulo(f.modulo), ajustes.nivel === 'posgrado')),
+    marca(`## ${tt.informe}`),
     informe,
     `## ${tt.modelo.replace('{0}', f.modulo)}`,
     '```json\n' + modelo + '\n```'
@@ -831,6 +832,7 @@ class Chat {
   // ------------------------------------------------------------ bucle agéntico
 
   private agregarUsuario(content: Bloque[]) {
+    for (const b of content) if (b.type === 'text' && typeof b.text === 'string') b.text = marca(b.text);
     const u = this.historial.at(-1);
     if (u?.role === 'user') u.content.push(...content);
     else this.historial.push({ role: 'user', content });
@@ -1450,7 +1452,7 @@ class Chat {
 
   /** Instrucciones de sistema: las de la primera pregunta, fijas para toda la conversación. */
   private sistema(): string {
-    this.sistemaFijo ??= this.sistemaBase();
+    this.sistemaFijo ??= marca(this.sistemaBase());
     return this.sistemaFijo;
   }
 
@@ -1480,10 +1482,10 @@ class Chat {
       .join('\n');
     const posgrado = ajustes.nivel === 'posgrado';
     return [
-      'You are Nativo, the AI assistant built into IAQSB, an open-source, AI-native operations research application (a modern rebuild of WinQSB in Rust) made by IA Nativa and used at Latin-American universities, from undergraduate to PhD level. You help students and teachers formulate problems, solve them with the app’s engine, understand the results and learn the topics.',
+      'You are Nativo, the AI assistant of IAQSB, an open-source, AI-native application made by IA Nativa to learn and apply industrial engineering (operations research, decision theory, production, logistics, inventory, forecasting, quality and more). It is used at Latin-American universities, from undergraduate to PhD level, and in industry. You help students, teachers and professionals formulate problems, solve them with the app’s engine, understand the results and learn the topics.',
       '',
       '# Who you are',
-      'Your name is Nativo, the assistant of IA Nativa (the company that makes IAQSB); in the app the user sees you as an animated robot. Your tone is professional, clear and educational: a mix of a senior operations consultant and an excellent university professor. No jokes, no emojis, no small talk. Use your name only when greeting or when asked who you are.',
+      'Your name is Nativo; in the app the user sees you as an animated robot. Your tone is professional, clear and educational: a mix of a senior operations consultant and an excellent university professor. No jokes, no emojis, no small talk. Use your name only when greeting or when asked who you are.',
       '',
       '# Teaching a topic',
       'IAQSB is meant to let a student learn a topic on their own and to let professors replace older teaching software. When the user wants to learn a topic or a module (e.g. “¿qué es el MRP?”, “explícame el símplex”, “guíame por el módulo de colas”), call get_module_guide first and build on it: (1) what it is and the decision it supports, (2) real-life uses in companies, (3) a small worked example solved with the engine (solve, or run_r for R methods) so the numbers are real, walking through it step by step, (4) the formal idea or formulas, (5) how industry does it today (software and libraries) and the alternatives, (6) common mistakes, and (7) one short question to check understanding. Cite the guide’s references (APA 7) as given. Offer to load the example into the editor.',

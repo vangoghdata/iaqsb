@@ -80,10 +80,26 @@ function paquetesR(codigo: string): string[] {
   return [...v].filter((p) => !base.has(p));
 }
 
-async function escribirArchivos(fs: { writeFile: (ruta: string, datos: Uint8Array) => Promise<unknown> | unknown }, dir: string, archivos: Archivo[]) {
+type FS = { writeFile: (ruta: string, datos: Uint8Array) => Promise<unknown> | unknown; mkdir?: (ruta: string) => Promise<unknown> | unknown };
+
+/** Escribe los archivos en la carpeta de trabajo (con sus subcarpetas: «datos/ventas.csv»). */
+async function escribirArchivos(fs: FS, dir: string, archivos: Archivo[]) {
+  const hechas = new Set<string>();
   for (const a of archivos) {
-    const nombre = a.nombre.replace(/[/\\]/g, '_');
-    await fs.writeFile(`${dir}/${nombre}`, a.datos);
+    const partes = a.nombre.replace(/\\/g, '/').split('/').filter((x) => x && x !== '..' && x !== '.');
+    let ruta = dir;
+    for (const p of partes.slice(0, -1)) {
+      ruta += '/' + p;
+      if (!hechas.has(ruta)) {
+        hechas.add(ruta);
+        try {
+          await fs.mkdir?.(ruta);
+        } catch {
+          /* ya existe */
+        }
+      }
+    }
+    await fs.writeFile(`${ruta}/${partes.at(-1) ?? 'archivo'}`, a.datos);
   }
 }
 
@@ -147,6 +163,17 @@ export async function escucharPedidosR() {
 async function escuchar() {
   const { listen } = await import('@tauri-apps/api/event');
   const { invoke } = await import('@tauri-apps/api/core');
+  // el núcleo pide ejecutar el código de un tema de curso (Python o R), aislado aquí
+  await listen<{ id: number; lenguaje: string; codigo: string; archivos: { nombre: string; base64: string }[] }>('codigo-ejecutar', async (ev) => {
+    const { id, lenguaje, codigo, archivos } = ev.payload;
+    try {
+      const fs = archivos.map((a) => ({ nombre: a.nombre, datos: Uint8Array.from(atob(a.base64), (c) => c.charCodeAt(0)) }));
+      const r = lenguaje === 'r' ? await ejecutarR(codigo, fs, false) : await ejecutarPython(codigo, fs);
+      await invoke('r_resultado', { id, ok: true, salida: r.salida + (r.error ? `\n${r.error}` : '') });
+    } catch (e) {
+      await invoke('r_resultado', { id, ok: false, salida: e instanceof Error ? e.message : String(e) });
+    }
+  });
   await listen<{ id: number; programa: string }>('r-ejecutar', async (ev) => {
     const { id, programa } = ev.payload;
     try {

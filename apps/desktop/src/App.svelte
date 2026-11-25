@@ -18,10 +18,22 @@
   import { onMount } from 'svelte';
   import { escucharPedidosR, motoresWeb } from './lib/motores_web.svelte';
   import GuiaPanel from './components/GuiaPanel.svelte';
+  import TemaPage from './components/TemaPage.svelte';
+  import { cursos } from './lib/cursos.svelte';
 
   onMount(() => ui.iniciar());
   // el núcleo puede pedir el R de la app (series de tiempo sin R instalado)
   onMount(() => void escucharPedidosR());
+  // arrastrar un curso (.ncourse) a la ventana lo instala
+  function soltarCurso(e: DragEvent) {
+    const f = [...(e.dataTransfer?.files ?? [])].find((x) => x.name.toLowerCase().endsWith('.ncourse'));
+    if (!f) return;
+    e.preventDefault();
+    void cursos.instalar(f);
+  }
+  function sobreCurso(e: DragEvent) {
+    if ([...(e.dataTransfer?.items ?? [])].some((i) => i.kind === 'file')) e.preventDefault();
+  }
 
   // si se abrió la app con doble clic en un archivo de WinQSB, cargarlo
   onMount(async () => {
@@ -30,6 +42,11 @@
     if (inTauri) {
       const { invoke } = await import('@tauri-apps/api/core');
       f = await invoke<{ module: string; layout: 'matrix' | 'normal'; model: any; path: string } | null>('initial_file');
+      // abrir la app con doble clic en un curso: se instala
+      if (f && (f as { ncourse?: string }).ncourse) {
+        await cursos.instalar((f as unknown as { ncourse: string }).ncourse);
+        f = null;
+      }
     }
     // el trabajo de la sesión anterior (aunque no se haya guardado)
     const habia = await sesion.recuperar();
@@ -42,6 +59,8 @@
   });
 </script>
 
+<svelte:window ondrop={soltarCurso} ondragover={sobreCurso} />
+
 <div class="shell" class:fijo={ui.fijado} class:con-chat={chat.abierto} style:--chat-espacio="{chat.ancho}px">
   {#if !ui.fijado}
     <!-- borde izquierdo: al llegar con el mouse aparece la barra lateral -->
@@ -52,6 +71,10 @@
     <TopBar />
     {#if shell.module === 'lp'}
       <LpWorkbench />
+    {:else if shell.modules.find((m) => m.id === shell.module)?.leccion}
+      {#key shell.module}
+        <TemaPage id={shell.module} />
+      {/key}
     {:else}
       {#key shell.module}
         <GenericWorkbench id={shell.module} />

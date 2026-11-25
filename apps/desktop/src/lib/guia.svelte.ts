@@ -24,6 +24,9 @@ export interface Guia {
   profesor?: { objetivos?: string[]; actividades?: string[]; preguntas?: string[] };
   glosario?: { termino: string; definicion: string }[];
   referencias_apa?: { id: string; cita: string; apa: string; verificada: boolean; enlace?: string | null }[];
+  /** Lecciones de un tema de curso (Markdown). */
+  lecciones?: { titulo: string; markdown: string }[];
+  curso?: { id: string; titulo: string };
 }
 
 const CLAVE_VISTAS = 'iaqsb.guia.vistas';

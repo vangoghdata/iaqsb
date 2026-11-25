@@ -687,9 +687,36 @@ fn polish(s: String) -> String {
 }
 
 /// Traduce un texto (o lo deja igual si está en español o no hay traducción).
-pub fn translate(s: &str, lang: Lang) -> String {
-    if lang == Lang::Es || !has_letters(s) || is_code(s) {
+/// Nombre del programa que ve el usuario (provisional: cuando sea definitivo, se cambia aquí y en
+/// `apps/desktop/src/lib/marca.ts`). Los nombres internos (comando `iaqsb`, servidor MCP, formatos
+/// de archivo como «IAQSB-ST») no cambian.
+pub const MARCA: &str = "Nativo";
+
+/// Cambia «IAQSB» por el nombre del programa (no en «IAQSB-ST», «IAQSB_…» ni dentro de palabras).
+pub fn marca(s: &str) -> String {
+    if MARCA == "IAQSB" || !s.contains("IAQSB") {
         return s.to_string();
+    }
+    let mut out = String::with_capacity(s.len());
+    let mut resto = s;
+    while let Some(i) = resto.find("IAQSB") {
+        let antes = resto[..i].chars().next_back();
+        let despues = resto[i + 5..].chars().next();
+        let palabra = |c: Option<char>| c.is_some_and(|c| c.is_alphanumeric() || c == '_' || c == '-');
+        out.push_str(&resto[..i]);
+        out.push_str(if palabra(antes) || palabra(despues) { "IAQSB" } else { MARCA });
+        resto = &resto[i + 5..];
+    }
+    out.push_str(resto);
+    out
+}
+
+pub fn translate(s: &str, lang: Lang) -> String {
+    if !has_letters(s) || is_code(s) {
+        return s.to_string();
+    }
+    if lang == Lang::Es {
+        return marca(s);
     }
     let key = (lang, s.to_string());
     if let Some(x) = memo().lock().ok().and_then(|m| m.get(&key).cloned()) {
@@ -698,7 +725,7 @@ pub fn translate(s: &str, lang: Lang) -> String {
     let prev = CUR.with(|c| c.replace(lang));
     WORK.with(|w| w.set(0));
     let raw = tr(s, 0);
-    let out = if lang == Lang::Pt { polish_pt(raw) } else { polish(raw) };
+    let out = marca(&if lang == Lang::Pt { polish_pt(raw) } else { polish(raw) });
     CUR.with(|c| c.set(prev));
     if let Ok(mut m) = memo().lock() {
         if m.len() > 200_000 {
@@ -741,9 +768,6 @@ fn translate_refs(s: &str, lang: Lang) -> String {
 /// Traduce en el sitio todos los textos de un valor JSON (informes, ejemplos,
 /// especificaciones, bibliografía), sin tocar las claves protegidas.
 pub fn translate_value(v: &mut Value, lang: Lang) {
-    if lang == Lang::Es {
-        return;
-    }
     walk(v, lang, false);
 }
 
@@ -821,7 +845,7 @@ fn walk(v: &mut Value, lang: Lang, protected: bool) {
 /// celda por celda; los bloques de código quedan igual.
 pub fn translate_markdown(md: &str, lang: Lang) -> String {
     if lang == Lang::Es {
-        return md.to_string();
+        return marca(md);
     }
     let mut code = false;
     let mut out = Vec::new();
@@ -843,7 +867,7 @@ pub fn translate_markdown(md: &str, lang: Lang) -> String {
         };
         out.push(format!("{pre}{t}"));
     }
-    out.join("\n")
+    marca(&out.join("\n"))
 }
 
 fn pad(orig: &str, t: &str) -> String {
