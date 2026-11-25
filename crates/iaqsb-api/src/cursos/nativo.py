@@ -25,6 +25,9 @@ modelo = _E.get("model") or {}
 opciones = _E.get("options") or {}
 #: Idioma de la interfaz: "es", "en" o "pt".
 idioma = _E.get("lang") or "es"
+#: En un tema basado en un módulo de Nativo (tipo «modulo» con «ajuste»): el informe que dio el
+#: módulo, para cambiarlo o completarlo con Informe.desde(base).
+base = _E.get("base")
 
 _TONOS = {"normal", "accent", "highlight", "good", "bad", "muted", "total"}
 
@@ -54,6 +57,25 @@ class Informe:
         self._orden = []
         self._pasos = []
         self._datos = {}
+        self._extra = {}
+
+    @classmethod
+    def desde(cls, informe):
+        """Un Informe que empieza con todo lo del informe de un módulo (secciones, paso a paso y
+        datos): se le agregan tablas, métricas o pasos, o se cambia el titular, y se publica."""
+        informe = informe or {}
+        inf = cls(informe.get("headline", ""), informe.get("status", "solved"))
+        for s in informe.get("sections") or []:
+            if s.get("id") == "pasos":
+                for b in s.get("blocks") or []:
+                    if b.get("type") == "steps":
+                        inf._pasos.extend(b.get("steps") or [])
+                continue
+            inf._secciones[s["id"]] = {"id": s["id"], "title": s.get("title", s["id"]), "blocks": list(s.get("blocks") or [])}
+            inf._orden.append(s["id"])
+        inf._datos.update(informe.get("data") or {})
+        inf._extra = {k: v for k, v in informe.items() if k not in ("sections", "headline", "status", "data", "module", "problem")}
+        return inf
 
     def _poner(self, seccion, bloque, titulo_seccion=None):
         if seccion not in self._secciones:
@@ -131,7 +153,7 @@ class Informe:
         secciones = [self._secciones[s] for s in self._orden]
         if self._pasos:
             secciones.append({"id": "pasos", "title": "Paso a paso", "blocks": [{"type": "steps", "steps": self._pasos}]})
-        return {"module": "", "problem": str(modelo.get("name", "")), "status": self.estado, "headline": self.titular, "sections": secciones, "data": self._datos}
+        return {**self._extra, "module": "", "problem": str(modelo.get("name", "")), "status": self.estado, "headline": self.titular, "sections": secciones, "data": self._datos}
 
     def publicar(self):
         print("@@NATIVO_INFORME@@" + _json.dumps(self.como_dict(), ensure_ascii=False, allow_nan=False, default=str))

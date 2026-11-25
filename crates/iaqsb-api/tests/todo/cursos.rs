@@ -108,6 +108,68 @@ fn ciclo_completo_de_un_curso() {
     api::call("draft_delete", json!({"id": "produccion-y-logistica-2", "path": "temas/que-es-un-mrp"})).unwrap();
     assert_eq!(api::call("draft_validate", json!({"id": "produccion-y-logistica-2"})).unwrap()["ok"], false);
     api::call("draft_remove", json!({"id": "produccion-y-logistica-2"})).unwrap();
+
+    // temas de la biblioteca: un módulo de Nativo como base, con ajuste, y la copia de un tema de otro curso
+    cursos::instalar(&paquete).unwrap();
+    let lib = api::call("topic_library", json!({})).unwrap();
+    assert!(lib["modulos"].as_array().unwrap().iter().any(|m| m["desde"] == "modulo:mrp2"));
+    assert!(!lib["modulos"].as_array().unwrap().iter().any(|m| m["id"] == "lp"));
+    assert!(lib["temas"].as_array().unwrap().iter().any(|t| t["desde"] == "c.ejemplo-nativo.punto-de-equilibrio"));
+    let b2 = api::call("draft_new", json!({"title": "Biblioteca"})).unwrap();
+    let id2 = b2["id"].as_str().unwrap().to_string();
+    let m = api::call("draft_import_topic", json!({"id": id2, "from": "modulo:mrp2", "title": "MRP II en matrices"})).unwrap();
+    assert_eq!(m["id"], "mrp2");
+    assert!(api::call("draft_import_topic", json!({"id": id2, "from": "modulo:lp"})).is_err());
+    let cp = api::call("draft_import_topic", json!({"id": id2, "from": "c.ejemplo-nativo.punto-de-equilibrio"})).unwrap();
+    let tema_cp = api::call("draft_read", json!({"id": id2, "path": "temas/punto-de-equilibrio/tema.json"})).unwrap();
+    assert!(tema_cp["texto"].as_str().unwrap().contains("\"curso\": \"ejemplo-nativo\""), "{tema_cp}");
+    assert_eq!(cp["id"], "punto-de-equilibrio");
+    // una guía con campos inventados no pasa la validación
+    api::call("draft_write", json!({"id": id2, "path": "temas/mrp2/guia.json", "content": "{\"usos_reales\": [\"x\"], \"historia\": [\"1954: algo\"]}"})).unwrap();
+    let v = api::call("draft_validate", json!({"id": id2})).unwrap();
+    let errs = v["errores"].to_string();
+    assert!(errs.contains("campo desconocido «usos_reales»") && errs.contains("«historia» debe ser una lista de objetos"), "{errs}");
+    api::call("draft_write", json!({"id": id2, "path": "temas/mrp2/guia.json", "content": "{\"resumen\": \"El MRP II como se ve en este curso.\", \"errores_comunes\": [\"Trasponer la matriz.\"]}"})).unwrap();
+    let mut c = api::call("draft_read", json!({"id": id2})).unwrap()["curso"].clone();
+    c["descripcion"] = json!("Prueba de la biblioteca");
+    c["autores"] = json!([{"nombre": "Prueba"}]);
+    api::call("draft_write", json!({"id": id2, "path": "curso.json", "content": c.to_string()})).unwrap();
+    let v = api::call("draft_validate", json!({"id": id2})).unwrap();
+    assert_eq!(v["ok"], true, "{v}");
+    let p2 = api::call("draft_test", json!({"id": id2, "topic": "mrp2"})).unwrap();
+    // el ejemplo de los estantes del módulo, resuelto por el módulo, con el id del tema
+    assert_eq!(p2["resultados"][0]["ok"], true, "{p2}");
+    let tm = "c.biblioteca.mrp2";
+    let r = api::call("solve", json!({"module": tm, "model": api::call("examples", json!({"module": tm})).unwrap()[0]["model"]})).unwrap();
+    assert_eq!(r["module"], tm);
+    assert!(r["headline"].as_str().unwrap().contains("-111.25"), "{}", r["headline"]);
+    // la pantalla, la plantilla y lo demás son los del módulo
+    assert_eq!(api::call("spec", json!({"module": tm})).unwrap()["base"], "mrp2");
+    assert_eq!(api::call("spec", json!({"module": tm})).unwrap()["name"], "MRP II en matrices");
+    assert!(api::call("template", json!({"module": tm, "problem_type": "gozinto", "dims": {"items": 2, "periods": 2, "departments": 1}})).is_ok());
+    // la guía es la del módulo con lo que cambió el curso
+    let g = api::call("guide", json!({"module": tm})).unwrap();
+    assert_eq!(g["guide"]["resumen"], "El MRP II como se ve en este curso.");
+    assert!(g["guide"]["historia"].as_array().is_some_and(|h| !h.is_empty()));
+    assert_eq!(g["guide"]["errores_comunes"], json!(["Trasponer la matriz."]));
+    assert!(api::list_modules()["modules"].as_array().unwrap().iter().any(|m| m["id"] == tm && m["base"] == "mrp2" && m["file_ext"] != "NCDATA"));
+    // el ajuste: otra fórmula sobre el informe del módulo (Python del equipo, si lo hay)
+    if iaqsb_core::solver::external::python().is_some() {
+        unsafe { std::env::set_var("IAQSB_CONFIAR_CODIGO", "1") };
+        let mut t = serde_json::from_str::<serde_json::Value>(api::call("draft_read", json!({"id": id2, "path": "temas/mrp2/tema.json"})).unwrap()["texto"].as_str().unwrap()).unwrap();
+        t["ajuste"] = json!({"lenguaje": "python", "archivo": "ajuste.py"});
+        api::call("draft_write", json!({"id": id2, "path": "temas/mrp2/tema.json", "content": t.to_string()})).unwrap();
+        api::call("draft_write", json!({"id": id2, "path": "temas/mrp2/ajuste.py", "content": "from nativo import base, Informe\ninf = Informe.desde(base)\nfaltan = -min(min(f) for f in base['data']['capacity']['residual_time'])\ninf.titular = f'Horas extra necesarias: {faltan:.2f}'\ninf.metricas([('Horas extra', round(faltan, 2), 'h')], seccion='ajuste')\ninf.publicar()\n"})).unwrap();
+        api::call("draft_install", json!({"id": id2})).unwrap();
+        let r = api::call("solve", json!({"module": tm, "model": api::call("examples", json!({"module": tm})).unwrap()[0]["model"]})).unwrap();
+        assert_eq!(r["headline"], "Horas extra necesarias: 111.25", "{}", r["headline"]);
+        // conserva lo del módulo (secciones y datos) y agrega lo suyo
+        let ids: Vec<&str> = r["sections"].as_array().unwrap().iter().filter_map(|s| s["id"].as_str()).collect();
+        assert!(ids.contains(&"capacidad") && ids.contains(&"ajuste") && ids.contains(&"pasos"), "{ids:?}");
+        unsafe { std::env::remove_var("IAQSB_CONFIAR_CODIGO") };
+    }
+    api::call("draft_remove", json!({"id": id2, "with_preview": true})).unwrap();
+    cursos::quitar("ejemplo-nativo").unwrap();
     api::call("draft_remove", json!({"id": id, "with_preview": true})).unwrap();
     assert!(cursos::instalados().is_empty());
     assert_eq!(api::call("draft_list", json!({})).unwrap()["borradores"].as_array().unwrap().len(), 0);

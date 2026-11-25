@@ -10,6 +10,8 @@
 # Los datos de la pantalla están en `modelo` y las opciones en `opciones` (listas de R).
 source("entrada.R", encoding = "UTF-8")
 modelo <- if (is.null(.entrada$model)) list() else .entrada$model
+# En un tema basado en un módulo de Nativo con «ajuste»: el informe que dio el módulo (una lista).
+base <- .entrada$base
 opciones <- if (is.null(.entrada$options)) list() else .entrada$options
 idioma <- if (is.null(.entrada$lang)) "es" else .entrada$lang
 

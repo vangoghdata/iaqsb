@@ -337,12 +337,16 @@ export async function promptParaCopiar(f: Fuente, detalle: 'summary' | 'steps'):
 
 type Entrada = Record<string, unknown>;
 
+/**
+ * La lista de herramientas no puede cambiar dentro de una conversación: Claude ata sus bloques de
+ * razonamiento a ella («The `tools` list differs from the one this block was created with»). Por
+ * eso el id del módulo no lleva la lista de módulos instalados (cambia al instalar un curso).
+ */
 function propModulo() {
-  const ids = shell.modules.filter((m) => m.available).map((m) => m.id);
   return {
     type: 'string',
-    description: 'Module id (lp, net, pert, gp, qp, nlp, dp, ap, da, mkp, its, fc, qa, qss, job, mrp, fll, qcc, asa, vrp, modo, inv, fin, alm, kpi…). Use list_modules if unsure.',
-    ...(ids.length ? { enum: ids } : {})
+    description:
+      'Module id (lp, net, pert, gp, qp, nlp, dp, ap, da, mkp, its, fc, qa, qss, job, mrp, mrp2, pmp, st, fll, qcc, asa, vrp, modo, inv, fin, alm, kpi…) or a course topic c.<course>.<topic>. Use list_modules if unsure.'
   };
 }
 
@@ -456,13 +460,24 @@ function definiciones(): Herramienta[] {
       name: 'run_r',
       description:
         'Runs R code in the R built into IAQSB (webR: the official R compiled to WebAssembly, with CRAN packages such as forecast, readxl, ggplot2, fpp2; it gives the same numbers as desktop R). Use it whenever an exercise is written for R (ts, window, ses, holt, hw, naive, snaive, tbats, auto.arima, ets, Acf, accuracy, checkresiduals, read_excel…) so the results match R exactly. Files the user attached are in the working directory with their original names (e.g. read_excel("Clientes.xlsx")). print() or cat() every value you need, with enough digits (print(x, digits = 10)); plots are shown to the user. Missing packages are installed automatically. Each call starts with a clean session: include all the code needed.',
-      input_schema: { type: 'object', properties: { code: { type: 'string', description: 'R code' } }, required: ['code'] }
+      input_schema: {
+        type: 'object',
+        properties: { code: { type: 'string', description: 'R code' }, packages: { type: 'array', items: { type: 'string' }, description: 'CRAN packages to install first (library() calls are detected automatically)' } },
+        required: ['code']
+      }
     },
     {
       name: 'run_python',
       description:
         'Runs Python code in the Python built into IAQSB (Pyodide: CPython compiled to WebAssembly) with numpy, pandas, scipy, statsmodels, scikit-learn, networkx, sympy and matplotlib. Use it for exercises written for Python or for calculations the IAQSB modules do not cover. Files the user attached are in the working directory with their original names. print() every value you need; matplotlib figures are shown to the user. Each call starts with a clean namespace: include all the code needed.',
-      input_schema: { type: 'object', properties: { code: { type: 'string', description: 'Python code' } }, required: ['code'] }
+      input_schema: {
+        type: 'object',
+        properties: {
+          code: { type: 'string', description: 'Python code' },
+          packages: { type: 'array', items: { type: 'string' }, description: 'Extra PyPI packages to install first with micropip (pure-Python or built for Pyodide), e.g. ["pulp"]' }
+        },
+        required: ['code']
+      }
     }
   ];
 }
@@ -477,7 +492,9 @@ const HERRAMIENTAS_CREADOR = [
   'validate_course',
   'test_course',
   'preview_course',
-  'search_bibliography'
+  'search_bibliography',
+  'list_topic_library',
+  'import_topic'
 ];
 
 /** Herramientas del asistente de creación de cursos (trabajan sobre el borrador abierto). */
@@ -530,6 +547,26 @@ function definicionesCreador(): Herramienta[] {
       name: 'preview_course',
       description: 'Installs the draft and opens one of its topics in the app, so the user sees the data screen, the report and the guide exactly as students will. Use it when a topic is ready, or when the user asks to see it.',
       input_schema: { type: 'object', properties: { topic: { type: 'string', description: 'Topic id to open (empty = the first)' } } }
+    },
+    {
+      name: 'list_topic_library',
+      description:
+        'What this course can reuse instead of writing from scratch: the modules built into Nativo (each with its engine, data screen, step-by-step and teaching guide) and the topics of the installed courses. Call it when planning the course, before creating new topics.',
+      input_schema: { type: 'object', properties: {} }
+    },
+    {
+      name: 'import_topic',
+      description:
+        'Adds a topic from the library to the draft. from = "modulo:<id>" (e.g. "modulo:mrp2", "modulo:st") creates a topic of type "modulo" based on that built-in module: same screen, engine, examples and guide; the course adds its own lessons, examples (models of that module in ejemplos/), a guia.json with only the fields it wants to replace, and optionally an "ajuste" (Python or R code that receives the module report as `base` and changes or extends it, e.g. a different formula). from = "c.<course>.<topic>" copies a topic of an installed course into this draft (with its origin and credit) so it can be modified. Returns the new topic id and folder.',
+      input_schema: {
+        type: 'object',
+        properties: {
+          from: { type: 'string', description: '"modulo:<id>" or "c.<course>.<topic>" (from list_topic_library)' },
+          topic_id: { type: 'string', description: 'Id for the new topic (optional)' },
+          title: { type: 'string', description: 'Title in this course (optional)' }
+        },
+        required: ['from']
+      }
     },
     {
       name: 'search_bibliography',
@@ -601,6 +638,10 @@ function etiquetaBase(nombre: string, entrada: string, estado: EstadoHerramienta
       return listo ? t('Vista previa abierta') : t('Instalando la vista previa…');
     case 'search_bibliography':
       return listo ? t('Bibliografía consultada') : t('Buscando en la bibliografía…');
+    case 'list_topic_library':
+      return listo ? t('Biblioteca de temas consultada') : t('Consultando la biblioteca de temas…');
+    case 'import_topic':
+      return listo ? t('Tema agregado desde la biblioteca') : t('Agregando un tema de la biblioteca…');
     default:
       return nombre;
   }
@@ -1165,6 +1206,9 @@ class Chat {
     const res = await this.conectar(c, cuerpo, signal);
     if (!res.ok) {
       const e = await this.leerError(res);
+      // bloques de razonamiento atados a otra lista de herramientas o a otro historial (conversaciones
+      // de versiones anteriores, o restauradas): se quitan del historial y se vuelve a pedir
+      if (res.status === 400 && ajuste < 3 && /signature|thinking/i.test(e.mensaje) && this.quitarRazonamiento()) continue;
       if (esfuerzo && res.status === 400 && ajuste < 2 && /effort|output_config/i.test(e.mensaje)) {
         if (esfuerzo === 'xhigh' || esfuerzo === 'max') cp.esfuerzo = 'high';
         else cp.sinEsfuerzo = true;
@@ -1254,6 +1298,28 @@ class Chat {
     if (!terminado) throw new ErrorChat(t('Se cortó la conexión con la API antes de terminar la respuesta.'), true);
     return { bloques: this.limpiar(msg, bloques), stop };
     }
+  }
+
+  /** Quita los bloques de razonamiento del historial; ¿había alguno? */
+  private quitarRazonamiento(): boolean {
+    let habia = false;
+    for (const m of this.historial) {
+      if (m.role !== 'assistant') continue;
+      const antes = m.content.length;
+      m.content = m.content.filter((b) => b.type !== 'thinking' && b.type !== 'redacted_thinking');
+      if (m.content.length !== antes) habia = true;
+    }
+    // un mensaje que solo tenía razonamiento queda vacío: la API no lo acepta
+    const h: MensajeApi[] = [];
+    for (const m of this.historial) {
+      if (!m.content.length) continue;
+      const u = h.at(-1);
+      // dos mensajes seguidos del mismo rol se juntan en uno
+      if (u && u.role === m.role) u.content.push(...m.content);
+      else h.push(m);
+    }
+    this.historial = h;
+    return habia;
   }
 
   /** La API no acepta bloques de texto vacíos. */
@@ -1526,7 +1592,8 @@ class Chat {
       case 'run_python': {
         const codigo = typeof a.code === 'string' ? a.code : '';
         if (!codigo.trim()) throw new Error('code is required');
-        const r = nombre === 'run_r' ? await ejecutarR(codigo, this.archivos) : await ejecutarPython(codigo, this.archivos);
+        const paquetes = Array.isArray(a.packages) ? a.packages.map(String).filter(Boolean) : [];
+        const r = nombre === 'run_r' ? await ejecutarR(codigo, this.archivos, true, paquetes) : await ejecutarPython(codigo, this.archivos, paquetes);
         this.imagenesHerramienta = r.imagenes;
         const texto_ = [
           `engine: ${r.motor}`,
@@ -1639,6 +1706,29 @@ class Chat {
         const tema = texto(a.topic);
         await creador.vistaPrevia(tema);
         return `Installed and opened in the app${tema ? ` (topic ${tema})` : ''}. The user now sees it as a module; they go back to the course editor with «Volver al curso».`;
+      }
+      case 'list_topic_library': {
+        const r = await call<{ modulos: any[]; temas: any[] }>('topic_library');
+        return [
+          '## Modules built into Nativo (from = "modulo:<id>")',
+          ...r.modulos.map((m) => `- modulo:${m.id}: ${m.titulo} — ${m.resumen}${m.guia ? ' (has a guide)' : ''}`),
+          '',
+          '## Topics of installed courses (from = "c.<course>.<topic>", copied into the draft)',
+          ...(r.temas.length
+            ? r.temas.map((x) => `- ${x.desde}: ${x.titulo} (${x.tipo}${x.base ? `, based on ${x.base}` : ''}) — course «${x.curso_titulo}» v${x.version}`)
+            : ['(none installed)'])
+        ].join('\n');
+      }
+      case 'import_topic': {
+        const desde = texto(a.from) ?? '';
+        const r = await call<{ id: string; carpeta: string; nota: string }>('draft_import_topic', {
+          id,
+          from: desde,
+          ...(texto(a.topic_id) ? { topic_id: texto(a.topic_id) } : {}),
+          ...(texto(a.title) ? { title: texto(a.title) } : {})
+        });
+        await creador.refrescar();
+        return `Added topic «${r.id}» in ${r.carpeta}. ${r.nota}\n${await validacion()}`;
       }
       case 'search_bibliography': {
         const palabras = (texto(a.query) ?? '').toLowerCase().split(/\s+/).filter(Boolean);
@@ -1781,11 +1871,14 @@ class Chat {
       `# Language\nAnswer in ${NOMBRE_IDIOMA[l]}, unless the user clearly writes in another language. Write the course content in the language the author asks for (by default, the language of curso.json → idioma).`,
       '',
       '# How you work',
-      '1. Understand the goal before writing: the topic (e.g. MRP II), the audience and level, what the course must teach, the materials the user attached (slides, book chapters, PDFs, notes, example programs, Excel files) and which kinds of topic they want. If the request is clear enough, propose a short plan (topics, and for each: kind, what it teaches, what it computes) and ask for confirmation once; do not ask many questions.',
-      '2. Call get_course_format before writing the first files, and get_course to see the current draft. Study a built-in guide with get_module_guide (e.g. mrp) to match the depth and structure of Nativo’s guides.',
-      '3. Write the files with write_course_file: curso.json (fill descripcion, autores, licencia, area; list every topic id in temas), then each topic: tema.json, lessons (.md), guia.json (what it is, real-life uses, history with sources, data needed, how to use it, how it is computed, how to read results, industry software and libraries today, alternatives, common mistakes, ideas for professors, glossary), and, for calculators and models, pantalla.json, the calculation file and at least one example in ejemplos/. Each write returns the validation: fix every error.',
-      '4. For topics that compute: call test_course and check each number against a hand computation, the attached material, or an independent run (run_python / run_r, or solve with a built-in module). Only then say the topic works. Then offer preview_course so the user sees it.',
-      '5. When the course is ready, tell the user how to export it («Exportar .ncourse» in the creator) and share it.',
+      '1. Understand the goal before writing: the subject (e.g. «Producción y logística»), the audience and level, what the course must teach, the materials the user attached (slides, book chapters, PDFs, notes, example programs, Excel files) and which kinds of topic they want.',
+      '2. A course is a sequence of topics. Split the subject into topics (e.g. MRP, time series, inventories) and, for each one, decide where it comes from — reuse first: call list_topic_library. (a) If a module built into Nativo already computes it, import it with import_topic from "modulo:<id>": the topic gets that module’s screen, engine, examples, step-by-step and guide, and you only add the course’s lessons, examples and a guia.json with the fields that change. (b) If an installed course has the topic, import_topic copies it so you can adapt it. (c) Only create a new topic (lesson, Python or R calculator, or algebraic model) for what does not exist. Propose this plan as a short table (topic, source, kind, what it teaches or computes) and ask for confirmation once; do not ask many questions.',
+      '3. When the course uses a different formula or convention than a built-in module, keep the module and add an "ajuste" to its topic (tema.json → "ajuste": {"lenguaje": "python", "archivo": "ajuste.py"}): the code receives the module report as `base` and builds the final report with Informe.desde(base) (add tables, metrics or steps, or change the headline). If the method is really different, write a calculator and check its numbers against the built-in module where they should agree.',
+      '4. Code may use extra libraries: list them in tema.json → calculo.paquetes (or ajuste.paquetes), e.g. ["pulp"] for Python (installed with micropip inside the app: pure-Python or Pyodide-built packages) or ["forecast"] for R (installed with webR). Rust code cannot run inside a course; native speed comes from the built-in modules.',
+      '5. Call get_course_format before writing the first files (it includes the exact guia.json format: use only its fields), and get_course to see the current draft. Study a built-in guide with get_module_guide (e.g. mrp) to match the depth and structure of Nativo’s guides.',
+      '6. Write the files with write_course_file: curso.json (fill descripcion, autores, licencia, area; list every topic id in temas), then each topic: tema.json, lessons (.md), guia.json (what it is, real-life uses, history with sources, data needed, how to use it, how it is computed, how to read results, industry software and libraries today, alternatives, common mistakes, ideas for professors, glossary), and, for calculators and models, pantalla.json, the calculation file and at least one example in ejemplos/. Each write returns the validation: fix every error.',
+      '7. For topics that compute: call test_course and check each number against a hand computation, the attached material, or an independent run (run_python / run_r, or solve with a built-in module). Only then say the topic works. Then offer preview_course so the user sees it.',
+      '8. When the course is ready, tell the user how to export it («Exportar .ncourse» in the creator) and share it.',
       '',
       '# Content rules',
       '- Teach like an excellent professor: intuition first, then the formal idea and formulas (with Unicode, never LaTeX), a worked example with real numbers, real-life uses in companies, and common mistakes.',

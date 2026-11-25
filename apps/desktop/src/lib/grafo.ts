@@ -14,6 +14,10 @@ export type RecordsW = Extract<Widget, { type: 'records' }>;
 /** Módulos cuyo modelo es una red (en otros, una matriz cuadrada es una tabla de flujos, no un grafo). */
 const MODULOS_RED = new Set(['net', 'dp', 'mkp', 'vrp']);
 
+/** Módulo de Nativo en que se basa cada tema de curso (c.<curso>.<tema> → net, mrp2…); lo llena shell.init. */
+export const basesDeTemas = new Map<string, string>();
+const baseModulo = (m: string) => basesDeTemas.get(m) ?? m;
+
 export interface Grafo {
   /** Transporte y asignación: orígenes a la izquierda y destinos a la derecha. */
   bipartita: boolean;
@@ -42,10 +46,10 @@ export interface Grafo {
 }
 
 export function detectarGrafo(modulo: string, pt: ProblemType | null | undefined): Grafo | null {
-  if (!pt || !MODULOS_RED.has(modulo)) return null;
+  if (!pt || !MODULOS_RED.has(baseModulo(modulo))) return null;
   const matrices = pt.layout.filter((w): w is MatrixW => w.type === 'matrix');
   const sq = matrices.find((w) => w.rows.path === w.cols.path);
-  const bip = !sq && modulo === 'net' ? matrices.find((w) => w.rows.path !== w.cols.path) : undefined;
+  const bip = !sq && baseModulo(modulo) === 'net' ? matrices.find((w) => w.rows.path !== w.cols.path) : undefined;
   const matriz = sq ?? bip;
   if (!matriz) return null;
   const registros = pt.layout.filter((w): w is RecordsW => w.type === 'records' && (w.path === matriz.rows.path || w.path === matriz.cols.path));
@@ -84,7 +88,7 @@ export function detectarGrafo(modulo: string, pt: ProblemType | null | undefined
 
 /** Red no dirigida: árbol de expansión (siempre) o modelos marcados como simétricos. */
 export function noDirigida(modulo: string, model: any): boolean {
-  return model?.symmetric === true || (modulo === 'net' && model?.problem_type === 'min_spanning_tree');
+  return model?.symmetric === true || (baseModulo(modulo) === 'net' && model?.problem_type === 'min_spanning_tree');
 }
 
 /** ¿Hay arco en esta celda? Con celdas obligatorias (probabilidades), el 0 significa que no. */

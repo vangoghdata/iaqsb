@@ -51,7 +51,7 @@ pub fn registrar_codigo(app: AppHandle) {
         let (tx, rx) = channel();
         PENDIENTES.lock().map_err(|e| e.to_string())?.get_or_insert_with(HashMap::new).insert(id, tx);
         let archivos: Vec<Value> = p.archivos.iter().map(|(n, d)| json!({"nombre": n, "base64": iaqsb_api::render::base64(d)})).collect();
-        if let Err(e) = app.emit("codigo-ejecutar", json!({ "id": id, "lenguaje": p.lenguaje, "codigo": p.codigo, "archivos": archivos })) {
+        if let Err(e) = app.emit("codigo-ejecutar", json!({ "id": id, "lenguaje": p.lenguaje, "codigo": p.codigo, "archivos": archivos, "paquetes": p.paquetes })) {
             quitar(id);
             return Err(format!("no se pudo pedir el cálculo a la ventana: {e}"));
         }

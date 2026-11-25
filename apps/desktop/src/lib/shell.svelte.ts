@@ -10,6 +10,7 @@ import { Historial } from './historial.svelte';
 import { recientes } from './recientes.svelte';
 import { sesion } from './sesion.svelte';
 import type { DataSource, Field, ModuleSpec, Report } from './gtypes';
+import { basesDeTemas } from './grafo';
 import type { ModuleInfo } from './types';
 
 export function defaults(fields: Field[]): Record<string, unknown> {
@@ -235,6 +236,8 @@ class Shell {
     try {
       const r = await call<{ modules: ModuleInfo[] }>('list_modules');
       this.modules = r.modules;
+      basesDeTemas.clear();
+      for (const m of r.modules) if (m.base) basesDeTemas.set(m.id, m.base);
     } catch (e) {
       app.error = t('No se pudo conectar con el núcleo de cálculo: {0}', e);
     }

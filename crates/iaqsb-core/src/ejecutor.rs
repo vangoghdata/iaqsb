@@ -18,6 +18,9 @@ pub struct Programa {
     pub archivos: Vec<(String, Vec<u8>)>,
     /// El código que se ejecuta.
     pub codigo: String,
+    /// Paquetes que necesita (de PyPI o de CRAN). En la app se instalan solos dentro de la
+    /// ventana (micropip en Pyodide, webR); en el equipo, si faltan, el error dice cómo instalarlos.
+    pub paquetes: Vec<String>,
 }
 
 pub type Ejecutor = Box<dyn Fn(&Programa) -> Result<String, String> + Send + Sync>;
@@ -92,7 +95,16 @@ fn correr(dir: &PathBuf, p: &Programa) -> Result<String, String> {
     let txt = String::from_utf8_lossy(&out.stdout).to_string();
     if !out.status.success() {
         let err = String::from_utf8_lossy(&out.stderr);
-        return Err(format!("{}{}", txt, err.lines().rev().take(12).collect::<Vec<_>>().into_iter().rev().collect::<Vec<_>>().join("\n")));
+        let mut m = format!("{}{}", txt, err.lines().rev().take(12).collect::<Vec<_>>().into_iter().rev().collect::<Vec<_>>().join("\n"));
+        if !p.paquetes.is_empty() {
+            let lista = p.paquetes.join(" ");
+            m.push_str(&if p.lenguaje == "r" {
+                format!("\nEste tema usa los paquetes de R {lista}; si faltan, instálalos en R con install.packages(c({}))", p.paquetes.iter().map(|x| format!("\"{x}\"")).collect::<Vec<_>>().join(", "))
+            } else {
+                format!("\nEste tema usa los paquetes de Python {lista}; si faltan, instálalos con: python -m pip install {lista}")
+            });
+        }
+        return Err(m);
     }
     Ok(txt)
 }

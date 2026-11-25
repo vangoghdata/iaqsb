@@ -129,7 +129,7 @@
                 title={m.solves}
                 onclick={() => elegir(m.id)}
               >
-                <span class="ic"><Icon name={m.curso ? (m.leccion ? 'libro' : 'tabla') : m.id} size={16} /></span>
+                <span class="ic"><Icon name={m.curso ? (m.base ?? (m.leccion ? 'libro' : 'tabla')) : m.id} size={16} /></span>
                 <span class="nm">{m.name}</span>
                 {#if !m.curso}<span class="wq">{m.winqsb}</span>{/if}
               </button>

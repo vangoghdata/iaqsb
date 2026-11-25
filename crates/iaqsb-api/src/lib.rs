@@ -956,10 +956,18 @@ fn call_es(op: &str, args: Value, lang: Lang) -> Result<Value> {
     let need_s = |k: &str| s(k).filter(|x| !x.is_empty()).ok_or_else(|| ApiError::BadInput(format!("falta {k}")));
     // los temas de los cursos instalados se atienden aparte
     if cursos::es_tema(&module()) {
+        // un tema basado en un módulo de Nativo: lo demás (comparar, qué pasa si, exportar…) lo hace el módulo
+        if let Some(base) = cursos::tema(&module()).and_then(|t| t.base()) {
+            if !matches!(op, "describe_module" | "spec" | "template" | "solve" | "examples" | "guide") {
+                let mut a = args.clone();
+                a["module"] = json!(base);
+                return call_es(op, a, lang);
+            }
+        }
         match op {
             "describe_module" => return cursos::describir(&module()),
             "spec" => return cursos::spec(&module()),
-            "template" => return cursos::plantilla(&module(), &s("problem_type").unwrap_or_default()),
+            "template" => return cursos::plantilla(&module(), &s("problem_type").unwrap_or_default(), args.get("dims").unwrap_or(&Value::Null)),
             "solve" => return cursos::resolver(&module(), need("model")?, args.get("options").cloned(), lang),
             "examples" => return cursos::ejemplos(&module()),
             "guide" => {
@@ -1005,7 +1013,13 @@ fn call_es(op: &str, args: Value, lang: Lang) -> Result<Value> {
             let d = std::path::PathBuf::from(s("dir").ok_or_else(|| ApiError::BadInput("falta dir (dónde crear el curso)".into()))?);
             cursos::nuevo(&d, &s("id").unwrap_or_else(|| "mi-curso".into()), &s("title").unwrap_or_else(|| "Mi curso".into()))
         }
-        "course_format" => Ok(json!({"markdown": cursos::FORMATO})),
+        "course_format" => Ok(json!({"markdown": format!(
+            "{}\n\n---\n\n# Formato de guia.json (el mismo de Guíame)\n\nEn un curso, las referencias pueden ser ids de la bibliografía de Nativo o de fuentes.json del curso; las reglas sobre bibliografia.json son para las guías de los módulos incluidos.\n\n{}",
+            cursos::FORMATO,
+            cursos::ESQUEMA_GUIA
+        )})),
+        "topic_library" => Ok(cursos::borradores::biblioteca()),
+        "draft_import_topic" => cursos::borradores::importar_tema(&need_s("id")?, &need_s("from")?, s("topic_id").as_deref().filter(|x| !x.is_empty()), s("title").as_deref().filter(|x| !x.is_empty())),
         "office_text" => {
             let b = s("base64").ok_or_else(|| ApiError::BadInput("falta base64".into()))?;
             let max = args.get("max_chars").and_then(|v| v.as_u64()).unwrap_or(200_000) as usize;

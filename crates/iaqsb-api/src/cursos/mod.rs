@@ -90,7 +90,13 @@ impl Tema {
         format!("c.{}.{}", self.curso, self.id)
     }
     pub fn calcula(&self) -> bool {
-        self.def["calculo"].is_object()
+        self.def["calculo"].is_object() || self.base().is_some()
+    }
+    /// Módulo de Nativo en que se basa el tema (tipo «modulo»): usa su pantalla, su motor y su
+    /// guía, con las lecciones, los ejemplos y el ajuste del curso encima.
+    pub fn base(&self) -> Option<String> {
+        let b = texto(&self.def, "base");
+        (texto(&self.def, "tipo") == "modulo" && !b.is_empty()).then_some(b)
     }
 }
 
@@ -144,9 +150,12 @@ pub fn modulos() -> Vec<Value> {
             let ct = texto(&c.def, "titulo");
             let cid = texto(&c.def, "id");
             c.temas.into_iter().map(move |t| {
+                let base = t.base();
+                let ext = base.as_deref().and_then(|b| crate::spec(b).ok()).and_then(|s| s["file_ext"].as_str().map(String::from)).unwrap_or_else(|| "NCDATA".into());
                 json!({
                     "id": t.modulo(), "winqsb": "Curso", "name": texto(&t.def, "titulo"), "solves": texto(&t.def, "resumen"),
-                    "file_ext": "NCDATA", "available": true, "curso": {"id": cid, "titulo": ct}, "leccion": !t.calcula(), "tipo": texto(&t.def, "tipo")
+                    "file_ext": ext, "available": true, "curso": {"id": cid, "titulo": ct}, "leccion": !t.calcula(), "tipo": texto(&t.def, "tipo"),
+                    "base": base
                 })
             })
         })
@@ -161,7 +170,7 @@ pub fn lista() -> Value {
             .map(|c| {
                 let mut d = c.def.clone();
                 d["carpeta"] = json!(c.dir.to_string_lossy());
-                d["temas"] = Value::Array(c.temas.iter().map(|t| json!({"id": t.id, "modulo": t.modulo(), "titulo": texto(&t.def, "titulo"), "resumen": texto(&t.def, "resumen"), "tipo": texto(&t.def, "tipo"), "calcula": t.calcula()})).collect());
+                d["temas"] = Value::Array(c.temas.iter().map(|t| json!({"id": t.id, "modulo": t.modulo(), "titulo": texto(&t.def, "titulo"), "resumen": texto(&t.def, "resumen"), "tipo": texto(&t.def, "tipo"), "calcula": t.calcula(), "base": t.base(), "origen": t.def.get("origen").cloned().unwrap_or(Value::Null)})).collect());
                 d
             })
             .collect(),
@@ -244,8 +253,12 @@ pub fn validar(dir: &Path) -> (Vec<String>, Vec<String>) {
                 err.push(format!("{pre}/tema.json: falta «{k}»"));
             }
         }
-        if !["leccion", "calculadora", "modelo"].contains(&texto(&td, "tipo").as_str()) {
-            err.push(format!("{pre}/tema.json: «tipo» debe ser leccion, calculadora o modelo"));
+        let tipo = texto(&td, "tipo");
+        if !["leccion", "calculadora", "modelo", "modulo"].contains(&tipo.as_str()) {
+            err.push(format!("{pre}/tema.json: «tipo» debe ser leccion, calculadora, modelo o modulo"));
+        }
+        if texto(&td, "id") != tid {
+            err.push(format!("{pre}/tema.json: «id» debe ser «{tid}», el nombre de su carpeta"));
         }
         for l in td["lecciones"].as_array().into_iter().flatten() {
             let f = l["archivo"].as_str().unwrap_or("");
@@ -256,6 +269,7 @@ pub fn validar(dir: &Path) -> (Vec<String>, Vec<String>) {
         if tdir.join("guia.json").is_file() {
             match leer_json(&tdir.join("guia.json")) {
                 Ok(g) => {
+                    revisar_guia(&g, &pre, &mut err);
                     let mut refs: Vec<String> = g["referencias"].as_array().into_iter().flatten().filter_map(|x| x.as_str().map(String::from)).collect();
                     for h in g["historia"].as_array().into_iter().flatten() {
                         refs.extend(h["refs"].as_array().into_iter().flatten().filter_map(|x| x.as_str().map(String::from)));
@@ -268,8 +282,40 @@ pub fn validar(dir: &Path) -> (Vec<String>, Vec<String>) {
                 }
                 Err(e) => err.push(e),
             }
-        } else if td["lecciones"].as_array().is_none_or(|a| a.is_empty()) {
+        } else if td["lecciones"].as_array().is_none_or(|a| a.is_empty()) && tipo != "modulo" {
             avi.push(format!("{pre}: no tiene guía ni lecciones; solo se verá su resumen"));
+        }
+        let ejemplos_json = |err: &mut Vec<String>| {
+            for e in td["ejemplos"].as_array().into_iter().flatten() {
+                let f = e["archivo"].as_str().unwrap_or("");
+                if let Err(x) = leer_json(&tdir.join(f)) {
+                    err.push(format!("{pre}: ejemplo «{f}»: {x}"));
+                }
+            }
+        };
+        if tipo == "modulo" {
+            // un módulo de Nativo con lo del curso encima
+            let base = texto(&td, "base");
+            if base == "lp" {
+                err.push(format!("{pre}/tema.json: «lp» tiene su propio editor y no puede ser la base de un tema; usa un tema de tipo «modelo» (lenguaje algebraico)"));
+            } else if crate::spec(&base).is_err() {
+                let ids: Vec<String> = crate::list_modules()["modules"].as_array().into_iter().flatten().filter(|m| m["curso"].is_null()).filter_map(|m| m["id"].as_str().map(String::from)).filter(|m| m != "lp").collect();
+                err.push(format!("{pre}/tema.json: «base» debe ser un módulo de Nativo ({}); se recibió «{base}»", ids.join(", ")));
+            }
+            if let Some(a) = td["ajuste"].as_object() {
+                let leng = a.get("lenguaje").and_then(|v| v.as_str()).unwrap_or("");
+                if !["python", "r"].contains(&leng) {
+                    err.push(format!("{pre}/tema.json: ajuste.lenguaje debe ser python o r"));
+                }
+                let arch = a.get("archivo").and_then(|v| v.as_str()).unwrap_or("");
+                if !tdir.join(arch).is_file() {
+                    err.push(format!("{pre}: falta el archivo del ajuste «{arch}»"));
+                }
+            }
+            if td["calculo"].is_object() {
+                err.push(format!("{pre}/tema.json: un tema de tipo modulo calcula con su base (y su «ajuste» opcional); quita «calculo»"));
+            }
+            ejemplos_json(&mut err);
         }
         if let Some(c) = td["calculo"].as_object() {
             let leng = c.get("lenguaje").and_then(|v| v.as_str()).unwrap_or("");
@@ -299,17 +345,11 @@ pub fn validar(dir: &Path) -> (Vec<String>, Vec<String>) {
                 }
                 Err(e) => err.push(e),
             }
-            let ej = td["ejemplos"].as_array().cloned().unwrap_or_default();
-            if ej.is_empty() {
+            if td["ejemplos"].as_array().is_none_or(|a| a.is_empty()) {
                 avi.push(format!("{pre}: no tiene ejemplos (la pantalla empezará vacía)"));
             }
-            for e in ej {
-                let f = e["archivo"].as_str().unwrap_or("");
-                if let Err(x) = leer_json(&tdir.join(f)) {
-                    err.push(format!("{pre}: ejemplo «{f}»: {x}"));
-                }
-            }
-        } else if texto(&td, "tipo") != "leccion" {
+            ejemplos_json(&mut err);
+        } else if tipo != "leccion" && tipo != "modulo" {
             err.push(format!("{pre}/tema.json: un tema de tipo {} necesita «calculo»", texto(&td, "tipo")));
         }
     }
@@ -326,6 +366,69 @@ pub fn validar(dir: &Path) -> (Vec<String>, Vec<String>) {
         err.push(format!("el curso pesa {} MB; el máximo es {} MB", total / 1_048_576, MAX_BYTES / 1_048_576));
     }
     (err, avi)
+}
+
+/// Campos de la guía (formato de Guíame, crates/iaqsb-core/guias/ESQUEMA.md) y lo que contiene cada uno.
+const CAMPOS_GUIA: &[(&str, &str)] = &[
+    ("modulo", "texto"),
+    ("titulo", "texto"),
+    ("resumen", "texto"),
+    ("que_es", "textos"),
+    ("analogia", "texto"),
+    ("para_que_sirve", "sector,ejemplo"),
+    ("historia", "anio,hecho"),
+    ("necesitas", "dato,para_que"),
+    ("supuestos", "textos"),
+    ("pasos", "titulo,texto"),
+    ("como_resuelve", "textos"),
+    ("interpretar", "textos"),
+    ("industria", "nombre,tipo,uso"),
+    ("alternativas", "textos"),
+    ("errores_comunes", "textos"),
+    ("profesor", "objetivos,actividades,preguntas"),
+    ("glosario", "termino,definicion"),
+    ("referencias", "textos"),
+];
+
+/// Revisa que la guía tenga el formato de Guíame: campos conocidos y del tipo correcto.
+fn revisar_guia(g: &Value, pre: &str, err: &mut Vec<String>) {
+    let Some(o) = g.as_object() else {
+        err.push(format!("{pre}/guia.json: debe ser un objeto"));
+        return;
+    };
+    let nombres: Vec<&str> = CAMPOS_GUIA.iter().map(|(k, _)| *k).collect();
+    for (k, v) in o {
+        let Some((_, forma)) = CAMPOS_GUIA.iter().find(|(c, _)| c == k) else {
+            err.push(format!("{pre}/guia.json: campo desconocido «{k}» (los campos son: {})", nombres.join(", ")));
+            continue;
+        };
+        let malo_ = |que: &str| format!("{pre}/guia.json: «{k}» debe ser {que}");
+        match *forma {
+            "texto" => {
+                if !v.is_string() {
+                    err.push(malo_("un texto"));
+                }
+            }
+            "textos" => {
+                if !v.as_array().is_some_and(|a| a.iter().all(|x| x.is_string())) {
+                    err.push(malo_("una lista de textos"));
+                }
+            }
+            "objetivos,actividades,preguntas" => {
+                if !v.as_object().is_some_and(|p| p.iter().all(|(c, x)| ["objetivos", "actividades", "preguntas"].contains(&c.as_str()) && x.as_array().is_some_and(|a| a.iter().all(|y| y.is_string())))) {
+                    err.push(malo_("un objeto {objetivos, actividades, preguntas}, cada uno una lista de textos"));
+                }
+            }
+            campos => {
+                let req: Vec<&str> = campos.split(',').collect();
+                let ok = v.as_array().is_some_and(|a| a.iter().all(|x| x.is_object() && req.iter().all(|c| x[*c].is_string())));
+                if !ok {
+                    let ej = req.iter().map(|c| format!("\"{c}\": \"…\"")).collect::<Vec<_>>().join(", ");
+                    err.push(malo_(&format!("una lista de objetos {{{ej}}}{}", if *k == "historia" { " (y «refs»: lista de ids)" } else { "" })));
+                }
+            }
+        }
+    }
 }
 
 pub(crate) fn archivos(dir: &Path) -> Vec<PathBuf> {
@@ -496,6 +599,15 @@ fn pantalla(t: &Tema) -> Result<Value> {
 
 pub fn spec(modulo: &str) -> Result<Value> {
     let t = buscar(modulo)?;
+    if let Some(base) = t.base() {
+        let mut s = crate::spec(&base)?;
+        s["id"] = json!(t.modulo());
+        s["name"] = json!(texto(&t.def, "titulo"));
+        s["description"] = json!(texto(&t.def, "resumen"));
+        s["curso"] = json!({"id": t.curso, "titulo": t.curso_titulo});
+        s["base"] = json!(base);
+        return Ok(s);
+    }
     if !t.calcula() {
         return Ok(json!({"id": t.modulo(), "winqsb": "Curso", "name": texto(&t.def, "titulo"), "description": texto(&t.def, "resumen"), "file_ext": "NCDATA", "problem_types": [], "options": [], "leccion": true}));
     }
@@ -515,11 +627,23 @@ pub fn ejemplos(modulo: &str) -> Result<Value> {
         let m = leer_json(&t.dir.join(f)).map_err(ApiError::BadInput)?;
         v.push(json!({"module": t.modulo(), "name": e["nombre"].as_str().unwrap_or(f), "model": m, "source": null}));
     }
+    // los del módulo base van después de los del curso
+    if let Some(base) = t.base() {
+        if t.def["ejemplos_base"].as_bool() != Some(false) {
+            for (_, n, m) in crate::examples().into_iter().filter(|e| e.0 == base) {
+                let src = crate::example_source(&base, &n);
+                v.push(json!({"module": t.modulo(), "name": n, "model": m, "source": src}));
+            }
+        }
+    }
     Ok(Value::Array(v))
 }
 
-pub fn plantilla(modulo: &str, problem_type: &str) -> Result<Value> {
+pub fn plantilla(modulo: &str, problem_type: &str, dims: &Value) -> Result<Value> {
     let t = buscar(modulo)?;
+    if let Some(base) = t.base() {
+        return crate::template(&base, problem_type, dims);
+    }
     let p = pantalla(&t)?;
     if let Some(m) = p["plantillas"].get(problem_type) {
         return Ok(m.clone());
@@ -547,6 +671,15 @@ pub fn plantilla(modulo: &str, problem_type: &str) -> Result<Value> {
 
 pub fn describir(modulo: &str) -> Result<Value> {
     let t = buscar(modulo)?;
+    if let Some(base) = t.base() {
+        let mut d = crate::describe_module(&base)?;
+        d["module"] = json!({"id": t.modulo(), "name": texto(&t.def, "titulo"), "solves": texto(&t.def, "resumen"), "curso": {"id": t.curso, "titulo": t.curso_titulo}, "base": base});
+        d["examples"] = ejemplos(modulo)?;
+        if let Some(n) = d["notes"].as_array_mut() {
+            n.push(json!(format!("Tema de un curso basado en el módulo «{base}» de Nativo: el modelo tiene el mismo esquema y se resuelve con su motor{}.", if t.def["ajuste"].is_object() { ", y después el curso ajusta el informe con su propio código" } else { "" })));
+        }
+        return Ok(d);
+    }
     let ej = ejemplos(modulo).ok().and_then(|e| e.as_array().and_then(|a| a.first().cloned()));
     Ok(json!({
         "module": {"id": t.modulo(), "name": texto(&t.def, "titulo"), "solves": texto(&t.def, "resumen"), "curso": {"id": t.curso, "titulo": t.curso_titulo}},
@@ -611,6 +744,21 @@ pub fn resolver(modulo: &str, modelo: Value, opciones: Option<Value>, lang: Lang
     if !t.calcula() {
         return malo("este tema es una lección: no tiene cálculo");
     }
+    if let Some(base) = t.base() {
+        let mut r = crate::solve(&base, modelo.clone(), opciones.clone())?;
+        if let Some(a) = t.def["ajuste"].as_object() {
+            // el curso cambia o completa el informe del módulo con su código (otra fórmula, otra tabla…)
+            let leng = a.get("lenguaje").and_then(|v| v.as_str()).unwrap_or("python");
+            let arch = a.get("archivo").and_then(|v| v.as_str()).unwrap_or("");
+            let codigo = std::fs::read_to_string(t.dir.join(arch)).map_err(|e| ApiError::BadInput(format!("{arch}: {e}")))?;
+            let paquetes = paquetes_de(a.get("paquetes"));
+            r = correr(&t, leng, &codigo, json!({"model": modelo, "options": opciones.unwrap_or(json!({})), "lang": idioma(lang), "base": r}), paquetes)?;
+        }
+        if let Some(o) = r.as_object_mut() {
+            o.insert("module".into(), json!(t.modulo()));
+        }
+        return Ok(r);
+    }
     let c = &t.def["calculo"];
     let leng = c["lenguaje"].as_str().unwrap_or("");
     let arch = c["archivo"].as_str().unwrap_or("");
@@ -641,27 +789,7 @@ pub fn resolver(modulo: &str, modelo: Value, opciones: Option<Value>, lang: Lang
             }
             r
         }
-        "python" | "r" => {
-            let entrada = json!({"model": modelo, "options": opciones.unwrap_or(json!({})), "lang": match lang { Lang::En => "en", Lang::Pt => "pt", _ => "es" }});
-            // en R los datos llegan también como código R (así no hace falta ningún paquete para leerlos)
-            let mut archivos: Vec<(String, Vec<u8>)> = vec![("entrada.json".into(), entrada.to_string().into_bytes()), ("entrada.R".into(), format!(".entrada <- {}\n", a_r(&entrada)).into_bytes())];
-            for f in archivos_tema(&t.dir) {
-                let rel = f.strip_prefix(&t.dir).unwrap().to_string_lossy().replace('\\', "/");
-                if rel.starts_with("ejemplos/") || rel == "tema.json" || rel == "guia.json" || rel.ends_with(".md") {
-                    continue;
-                }
-                archivos.push((rel, std::fs::read(&f).unwrap_or_default()));
-            }
-            let programa = if leng == "python" {
-                archivos.push(("nativo.py".into(), AYUDA_PY.as_bytes().to_vec()));
-                format!("import os, sys\nif os.path.isdir('/home/pyodide'):\n    os.chdir('/home/pyodide')\nsys.path.insert(0, os.getcwd())\nsys.modules.pop('nativo', None)\n{codigo}")
-            } else {
-                archivos.push(("nativo.R".into(), AYUDA_R.as_bytes().to_vec()));
-                format!("source(\"nativo.R\", encoding = \"UTF-8\")\n{codigo}")
-            };
-            let salida = ejecutor::ejecutar(&Programa { lenguaje: leng.into(), archivos, codigo: programa }).map_err(ApiError::BadInput)?;
-            leer_informe(&salida)?
-        }
+        "python" | "r" => correr(&t, leng, &codigo, json!({"model": modelo, "options": opciones.unwrap_or(json!({})), "lang": idioma(lang)}), paquetes_de(c.get("paquetes")))?,
         l => return malo(format!("lenguaje de cálculo desconocido: «{l}»")),
     };
     if let Some(o) = r.as_object_mut() {
@@ -671,6 +799,46 @@ pub fn resolver(modulo: &str, modelo: Value, opciones: Option<Value>, lang: Lang
         }
     }
     Ok(r)
+}
+
+fn idioma(lang: Lang) -> &'static str {
+    match lang {
+        Lang::En => "en",
+        Lang::Pt => "pt",
+        _ => "es",
+    }
+}
+
+/// Paquetes que el código necesita («paquetes»: ["pulp", "networkx"] o "pulp, networkx").
+fn paquetes_de(v: Option<&Value>) -> Vec<String> {
+    match v {
+        Some(Value::Array(a)) => a.iter().filter_map(|x| x.as_str()).map(|x| x.trim().to_string()).filter(|x| !x.is_empty()).collect(),
+        Some(Value::String(t)) => t.split(',').map(|x| x.trim().to_string()).filter(|x| !x.is_empty()).collect(),
+        _ => vec![],
+    }
+}
+
+/// Corre el código de Python o de R de un tema con la entrada (modelo, opciones, idioma y, en
+/// los ajustes, el informe del módulo base) y lee el informe que publica.
+fn correr(t: &Tema, leng: &str, codigo: &str, entrada: Value, paquetes: Vec<String>) -> Result<Value> {
+    // en R los datos llegan también como código R (así no hace falta ningún paquete para leerlos)
+    let mut archivos: Vec<(String, Vec<u8>)> = vec![("entrada.json".into(), entrada.to_string().into_bytes()), ("entrada.R".into(), format!(".entrada <- {}\n", a_r(&entrada)).into_bytes())];
+    for f in archivos_tema(&t.dir) {
+        let rel = f.strip_prefix(&t.dir).unwrap().to_string_lossy().replace('\\', "/");
+        if rel.starts_with("ejemplos/") || rel == "tema.json" || rel == "guia.json" || rel.ends_with(".md") {
+            continue;
+        }
+        archivos.push((rel, std::fs::read(&f).unwrap_or_default()));
+    }
+    let programa = if leng == "python" {
+        archivos.push(("nativo.py".into(), AYUDA_PY.as_bytes().to_vec()));
+        format!("import os, sys\nif os.path.isdir('/home/pyodide'):\n    os.chdir('/home/pyodide')\nsys.path.insert(0, os.getcwd())\nsys.modules.pop('nativo', None)\n{codigo}")
+    } else {
+        archivos.push(("nativo.R".into(), AYUDA_R.as_bytes().to_vec()));
+        format!("source(\"nativo.R\", encoding = \"UTF-8\")\n{codigo}")
+    };
+    let salida = ejecutor::ejecutar(&Programa { lenguaje: leng.into(), archivos, codigo: programa, paquetes }).map_err(ApiError::BadInput)?;
+    leer_informe(&salida)
 }
 
 /// Un valor JSON como código R (listas con nombre para los objetos).
@@ -764,7 +932,23 @@ pub fn probar(dir: &Path) -> Result<Value> {
 /// La guía del tema (formato de Guíame) con sus lecciones y las referencias resueltas.
 pub fn guia(modulo: &str, lang: Lang) -> Result<Value> {
     let t = buscar(modulo)?;
-    let mut g = if t.dir.join("guia.json").is_file() { leer_json(&t.dir.join("guia.json")).map_err(ApiError::BadInput)? } else { json!({}) };
+    let propia = if t.dir.join("guia.json").is_file() { leer_json(&t.dir.join("guia.json")).map_err(ApiError::BadInput)? } else { json!({}) };
+    // un tema basado en un módulo parte de la guía del módulo; lo que escribió el curso la reemplaza campo por campo
+    let mut g = match t.base().and_then(|b| iaqsb_core::guias::cruda(&b)) {
+        Some(mut b) => {
+            for (k, v) in propia.as_object().into_iter().flatten() {
+                b[k] = v.clone();
+            }
+            if propia.get("titulo").is_none() {
+                b["titulo"] = json!(texto(&t.def, "titulo"));
+            }
+            if propia.get("resumen").is_none() && !texto(&t.def, "resumen").is_empty() {
+                b["resumen"] = json!(texto(&t.def, "resumen"));
+            }
+            b
+        }
+        None => propia,
+    };
     g["modulo"] = json!(t.modulo());
     if texto(&g, "titulo").is_empty() {
         g["titulo"] = json!(texto(&t.def, "titulo"));
@@ -788,6 +972,8 @@ pub fn guia(modulo: &str, lang: Lang) -> Result<Value> {
 
 /// El formato de los cursos (docs/CURSOS.md), para el asistente de creación.
 pub const FORMATO: &str = include_str!("../../../../docs/CURSOS.md");
+/// El formato de las guías (Guíame).
+pub const ESQUEMA_GUIA: &str = include_str!("../../../iaqsb-core/guias/ESQUEMA.md");
 
 /// La calculadora de ejemplo en Python (plantilla de los temas nuevos).
 pub const FORMATO_PY: &str = "from nativo import modelo, Informe\n\nfactor = float(modelo.get(\"factor\") or 1)\nfilas = [(v.get(\"nombre\", \"\"), float(v.get(\"valor\") or 0) * factor) for v in modelo.get(\"valores\", [])]\ntotal = sum(x for _, x in filas)\n\ninf = Informe(f\"Total = {total:g}\")\ninf.metricas([(\"Total\", total), (\"Valores\", len(filas))])\ninf.tabla([\"Nombre\", \"Valor × factor\"], [list(f) for f in filas], titulo=\"Valores\")\ninf.grafica({\"Valor\": [(i, x) for i, (_, x) in enumerate(filas)]}, titulo=\"Valores\", x=\"Valor\", y=\"Cantidad\", tipo=\"bar\", categorias=[n for n, _ in filas])\ninf.paso(\"Suma\", \" + \".join(f\"{x:g}\" for _, x in filas) + f\" = {total:g}\")\ninf.publicar()\n";

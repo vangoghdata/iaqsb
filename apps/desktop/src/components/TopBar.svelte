@@ -69,7 +69,7 @@
   {/if}
 
   <div class="modulo">
-    <span class="mico"><Icon name={shell.module} size={15} /></span>
+    <span class="mico"><Icon name={info?.base ?? shell.module} size={15} /></span>
     <span class="mnom">{info?.name ?? t('Programación lineal y entera')}</span>
     {#if info}
       {#if info.curso}

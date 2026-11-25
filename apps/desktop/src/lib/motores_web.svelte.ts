@@ -114,9 +114,9 @@ async function aPng(img: ImageBitmap): Promise<string> {
 }
 
 /** Ejecuta un programa de R con webR. Los archivos quedan en la carpeta de trabajo. */
-export async function ejecutarR(codigo: string, archivos: Archivo[] = [], graficas = true): Promise<Ejecucion> {
+export async function ejecutarR(codigo: string, archivos: Archivo[] = [], graficas = true, paquetes: string[] = []): Promise<Ejecucion> {
   const w = await cargarR();
-  const faltan = paquetesR(codigo).filter((p) => !instalados.has(p));
+  const faltan = [...new Set([...paquetesR(codigo), ...paquetes])].filter((p) => !instalados.has(p));
   if (faltan.length) {
     motoresWeb.detalle = t('Instalando paquetes de R: {0}…', faltan.join(', '));
     try {
@@ -164,11 +164,11 @@ async function escuchar() {
   const { listen } = await import('@tauri-apps/api/event');
   const { invoke } = await import('@tauri-apps/api/core');
   // el núcleo pide ejecutar el código de un tema de curso (Python o R), aislado aquí
-  await listen<{ id: number; lenguaje: string; codigo: string; archivos: { nombre: string; base64: string }[] }>('codigo-ejecutar', async (ev) => {
-    const { id, lenguaje, codigo, archivos } = ev.payload;
+  await listen<{ id: number; lenguaje: string; codigo: string; archivos: { nombre: string; base64: string }[]; paquetes?: string[] }>('codigo-ejecutar', async (ev) => {
+    const { id, lenguaje, codigo, archivos, paquetes = [] } = ev.payload;
     try {
       const fs = archivos.map((a) => ({ nombre: a.nombre, datos: Uint8Array.from(atob(a.base64), (c) => c.charCodeAt(0)) }));
-      const r = lenguaje === 'r' ? await ejecutarR(codigo, fs, false) : await ejecutarPython(codigo, fs);
+      const r = lenguaje === 'r' ? await ejecutarR(codigo, fs, false, paquetes) : await ejecutarPython(codigo, fs, paquetes);
       await invoke('r_resultado', { id, ok: true, salida: r.salida + (r.error ? `\n${r.error}` : '') });
     } catch (e) {
       await invoke('r_resultado', { id, ok: false, salida: e instanceof Error ? e.message : String(e) });
@@ -225,7 +225,7 @@ _imgs
 `;
 
 /** Ejecuta un programa de Python con Pyodide. Los archivos quedan en la carpeta de trabajo. */
-export async function ejecutarPython(codigo: string, archivos: Archivo[] = []): Promise<Ejecucion> {
+export async function ejecutarPython(codigo: string, archivos: Archivo[] = [], paquetes: string[] = []): Promise<Ejecucion> {
   const py = await cargarPython();
   const salida: string[] = [];
   // los avisos de carga de paquetes («Loading numpy…») no son parte de la salida
@@ -237,6 +237,11 @@ export async function ejecutarPython(codigo: string, archivos: Archivo[] = []): 
   try {
     motoresWeb.detalle = t('Preparando los paquetes de Python…');
     await py.loadPackagesFromImports(codigo);
+    // los que pide el tema (de PyPI, con micropip: solo paquetes de Python puro o ya compilados para Pyodide)
+    if (paquetes.length) {
+      motoresWeb.detalle = t('Instalando paquetes de Python: {0}…', paquetes.join(', '));
+      await py.pyimport('micropip').install(paquetes);
+    }
     // lectores de Excel que pandas carga por dentro
     if (/read_excel|openpyxl/.test(codigo)) await py.pyimport('micropip').install('openpyxl');
     motoresWeb.detalle = '';

@@ -162,4 +162,6 @@ export interface ModuleInfo {
   curso?: { id: string; titulo: string };
   /** El tema es solo lección (no calcula). */
   leccion?: boolean;
+  /** Tema de curso basado en un módulo de Nativo: el id del módulo. */
+  base?: string | null;
 }

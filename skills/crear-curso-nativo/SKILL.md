@@ -26,6 +26,15 @@ iaqsb curso instalar <id>.ncourse                              para verlo en la 
 
 Con el servidor MCP de Nativo, la herramienta `courses` hace lo mismo (action = new, validate, test, pack, install).
 
+## Reutiliza antes de escribir
+
+Un curso es una lista de temas. Antes de crear uno, mira la biblioteca: `iaqsb --json llamar topic_library` lista los módulos de Nativo y los temas de los cursos instalados.
+
+- Si un módulo de Nativo ya calcula el tema, haz un tema `"tipo": "modulo"` con `"base": "<id>"`: usa su pantalla, su motor y su guía; tú pones las lecciones, los ejemplos (modelos de ese módulo) y una `guia.json` solo con los campos que cambian. Si el curso usa otra fórmula, agrégale un `ajuste` en Python o R que reciba el informe del módulo (`from nativo import base, Informe`; `Informe.desde(base)`).
+- Si otro curso ya tiene el tema, cópialo (`draft_import_topic` con `from: "c.<curso>.<tema>"` en un borrador, o copia su carpeta y pon `origen` en `tema.json`) y adáptalo, con el crédito a sus autores.
+- Las librerías que use el código van en `calculo.paquetes` (o `ajuste.paquetes`).
+- El formato exacto de `guia.json` está en `crates/iaqsb-core/guias/ESQUEMA.md`: usa solo esos campos (la validación rechaza los demás).
+
 ## Reglas
 
 - **Exactitud:** cada ejemplo debe reproducir el resultado de su fuente (libro, diapositiva, Excel). Si no hay resultado publicado, compáralo con otra implementación independiente (otra fórmula, R, Python, el módulo equivalente de Nativo).
@@ -34,5 +43,5 @@ Con el servidor MCP de Nativo, la herramienta `courses` hace lo mismo (action = 
 - **Pantalla:** usa los mismos nombres de campos en `pantalla.json`, en los ejemplos y en el código. Cada campo con una etiqueta clara y, si hace falta, una ayuda (`help`) con unidades.
 - **Informe:** un titular con el resultado principal en una frase; métricas con unidades; tablas y gráficas que se entiendan solas; un paso a paso con las fórmulas aplicadas a los datos; una interpretación de qué decidir con el resultado.
 - **Lecciones:** qué es, para qué sirve en la vida real, el procedimiento, las fórmulas (en Unicode: x̄, σ², √, Σ, ≤), un ejemplo, errores comunes y cómo se hace hoy en la industria. Tono profesional y educativo, frases cortas, sin emojis.
-- **Python en la app** corre con Pyodide (numpy, pandas, scipy, statsmodels, scikit-learn, networkx, sympy, matplotlib); no uses paquetes que no estén ahí ni acceso a red o a archivos fuera de la carpeta del tema.
+- **Python en la app** corre con Pyodide (numpy, pandas, scipy, statsmodels, scikit-learn, networkx, sympy, matplotlib); otros paquetes se declaran en `paquetes` y deben ser de Python puro o estar compilados para Pyodide. Sin acceso a red ni a archivos fuera de la carpeta del tema.
 - Termina solo cuando `validar` no da errores y `probar` da bien en todos los ejemplos. Di qué quedó por verificar.

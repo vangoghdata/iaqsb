@@ -24,6 +24,8 @@ export interface TemaBorrador {
   resumen: string;
   tipo: string;
   lenguaje: string | null;
+  base?: string | null;
+  origen?: { modulo?: string; curso?: string; curso_titulo?: string; tema?: string } | null;
   ejemplos: number;
   lecciones: number;
 }
@@ -48,6 +50,12 @@ export interface Prueba {
   headline?: string;
   error?: string;
   metricas?: { label: string; value: unknown }[];
+}
+
+/** Lo que un curso puede reutilizar (operación topic_library). */
+export interface Biblioteca {
+  modulos: { desde: string; id: string; titulo: string; resumen: string; guia: boolean }[];
+  temas: { desde: string; curso: string; curso_titulo: string; version: string; tema: string; titulo: string; resumen: string; tipo: string; base: string | null }[];
 }
 
 /** Herramientas que el profesor permite usar en los temas (se las dice al asistente). */
@@ -90,6 +98,7 @@ class Creador {
   herramientas = $state<Herramientas>(leerHerramientas());
   /** Sube cada vez que el asistente cambia algo del borrador (para refrescar la vista). */
   version = $state(0);
+  biblioteca = $state<Biblioteca>({ modulos: [], temas: [] });
 
   get sinGuardar(): boolean {
     return !!this.archivo && !this.archivo.binario && this.archivo.texto !== this.archivo.original;
@@ -235,6 +244,28 @@ class Creador {
     if (!r) return;
     await this.refrescar();
     await this.abrirArchivo(`${r.carpeta}/leccion.md`, true);
+  }
+
+  /** Módulos de Nativo y temas de los cursos instalados que se pueden reutilizar. */
+  async cargarBiblioteca() {
+    try {
+      this.biblioteca = await call<Biblioteca>('topic_library');
+    } catch {
+      /* sin núcleo */
+    }
+  }
+
+  /** Agrega un tema de la biblioteca: basado en un módulo («modulo:st») o copia de un tema de otro curso. */
+  async importarTema(desde: string, titulo = '') {
+    if (!this.actual) return;
+    if (this.sinGuardar) await this.guardarArchivo();
+    const r = await this.conAviso(t('Agregando…'), () =>
+      call<{ id: string; carpeta: string; nota: string }>('draft_import_topic', { id: this.actual!.id, from: desde, ...(titulo.trim() ? { title: titulo.trim() } : {}) })
+    );
+    if (!r) return;
+    await this.refrescar();
+    await this.abrirArchivo(`${r.carpeta}/tema.json`, true);
+    ui.avisar(r.nota, 'info');
   }
 
   /** Agrega archivos (imágenes, datos, PDF) al tema elegido o a la raíz del curso. */

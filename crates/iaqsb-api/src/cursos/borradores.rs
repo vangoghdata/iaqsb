@@ -223,7 +223,7 @@ pub fn ver(id: &str, rel: Option<&str>) -> Result<Value> {
         let td = leer_json(&d.join("temas").join(tid).join("tema.json")).unwrap_or(json!({}));
         temas.push(json!({
             "id": tid, "titulo": texto(&td, "titulo"), "resumen": texto(&td, "resumen"), "tipo": texto(&td, "tipo"),
-            "lenguaje": td["calculo"]["lenguaje"], "ejemplos": td["ejemplos"].as_array().map(|a| a.len()).unwrap_or(0),
+            "lenguaje": td["calculo"]["lenguaje"], "base": td["base"], "origen": td["origen"], "ejemplos": td["ejemplos"].as_array().map(|a| a.len()).unwrap_or(0),
             "lecciones": td["lecciones"].as_array().map(|a| a.len()).unwrap_or(0)
         }));
     }
@@ -564,4 +564,116 @@ pub fn nuevo_tema(id: &str, titulo: &str, tipo: &str) -> Result<Value> {
     def["temas"] = Value::Array(temas);
     std::fs::write(d.join("curso.json"), j(def)).map_err(io)?;
     Ok(json!({"id": tid, "carpeta": format!("temas/{tid}")}))
+}
+
+// ------------------------------------------------------------------ biblioteca de temas
+
+/// Lo que un curso puede reutilizar: los módulos de Nativo (con su motor, su pantalla y su guía)
+/// y los temas de los cursos instalados (se copian al curso para modificarlos).
+pub fn biblioteca() -> Value {
+    let modulos: Vec<Value> = crate::list_modules()["modules"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|m| m["curso"].is_null() && m["id"] != "lp" && m["available"] == true)
+        .map(|m| {
+            let id = m["id"].as_str().unwrap_or("");
+            json!({"desde": format!("modulo:{id}"), "id": id, "titulo": m["name"], "resumen": m["solves"], "guia": iaqsb_core::guias::cruda(id).is_some()})
+        })
+        .collect();
+    let temas: Vec<Value> = super::instalados()
+        .into_iter()
+        .flat_map(|c| {
+            let ct = texto(&c.def, "titulo");
+            let version = texto(&c.def, "version");
+            c.temas.into_iter().map(move |t| {
+                json!({"desde": t.modulo(), "curso": t.curso, "curso_titulo": ct, "version": version, "tema": t.id, "titulo": texto(&t.def, "titulo"),
+                       "resumen": texto(&t.def, "resumen"), "tipo": texto(&t.def, "tipo"), "base": t.base(), "lenguaje": t.def["calculo"]["lenguaje"]})
+            })
+        })
+        .collect();
+    json!({"modulos": modulos, "temas": temas})
+}
+
+/// Agrega al borrador un tema de la biblioteca:
+/// - `modulo:<id>`: un tema basado en ese módulo de Nativo (motor, pantalla y guía del módulo; el
+///   curso le pone sus lecciones, ejemplos, guía propia y, si hace falta, un ajuste en Python o R).
+/// - `c.<curso>.<tema>`: una copia del tema de un curso instalado, con su origen, para modificarla.
+pub fn importar_tema(id: &str, desde: &str, nuevo_id: Option<&str>, titulo: Option<&str>) -> Result<Value> {
+    let d = dir(id)?;
+    let mut def = leer_json(&d.join("curso.json")).map_err(ApiError::BadInput)?;
+    let j = |v: &Value| serde_json::to_string_pretty(v).unwrap() + "\n";
+    let libre = |base: &str| {
+        let base = id_de(base);
+        let mut tid = base.clone();
+        let mut n = 2;
+        while d.join("temas").join(&tid).exists() {
+            tid = format!("{base}-{n}");
+            n += 1;
+        }
+        tid
+    };
+    let (tid, aviso) = if let Some(m) = desde.strip_prefix("modulo:").or_else(|| (!desde.starts_with("c.")).then_some(desde)) {
+        if m == "lp" {
+            return malo("«lp» tiene su propio editor: para un modelo de optimización usa un tema de tipo «modelo» (lenguaje algebraico)");
+        }
+        crate::spec(m).map_err(|_| ApiError::BadInput(format!("no hay un módulo «{m}» en Nativo (mira la biblioteca con topic_library)")))?;
+        let info = crate::list_modules()["modules"].as_array().and_then(|a| a.iter().find(|x| x["id"] == m).cloned()).unwrap_or(json!({}));
+        let tid = libre(nuevo_id.unwrap_or(m));
+        let t = d.join("temas").join(&tid);
+        std::fs::create_dir_all(&t).map_err(io)?;
+        let tema = json!({
+            "id": tid, "titulo": titulo.map(String::from).unwrap_or_else(|| texto(&info, "name")), "resumen": texto(&info, "solves"),
+            "tipo": "modulo", "base": m, "lecciones": [], "ejemplos": [], "origen": {"modulo": m}
+        });
+        std::fs::write(t.join("tema.json"), j(&tema)).map_err(io)?;
+        (tid, format!("Tema basado en el módulo «{m}»: usa su pantalla, su motor y su guía. Agrégale lecciones, ejemplos propios (modelos del módulo, en ejemplos/), una guia.json con los campos que quieras reemplazar y, si el curso usa otra fórmula, un «ajuste» en Python o R que cambie el informe."))
+    } else {
+        let t = super::tema(desde).ok_or_else(|| ApiError::BadInput(format!("no hay un tema instalado «{desde}» (mira la biblioteca con topic_library)")))?;
+        let curso = leer(&carpeta().join(&t.curso)).map_err(ApiError::BadInput)?;
+        let tid = libre(nuevo_id.unwrap_or(&t.id));
+        let destino = d.join("temas").join(&tid);
+        copiar(&t.dir, &destino)?;
+        let mut tema = leer_json(&destino.join("tema.json")).map_err(ApiError::BadInput)?;
+        tema["id"] = json!(tid);
+        if let Some(x) = titulo {
+            tema["titulo"] = json!(x);
+        }
+        tema["origen"] = json!({"curso": t.curso, "curso_titulo": t.curso_titulo, "tema": t.id, "version": texto(&curso.def, "version"), "autores": curso.def["autores"], "licencia": curso.def["licencia"]});
+        std::fs::write(destino.join("tema.json"), j(&tema)).map_err(io)?;
+        // las referencias propias que cita su guía pasan a fuentes.json del borrador
+        let citas: Vec<String> = leer_json(&destino.join("guia.json"))
+            .map(|g| {
+                let mut v: Vec<String> = g["referencias"].as_array().into_iter().flatten().filter_map(|x| x.as_str().map(String::from)).collect();
+                for h in g["historia"].as_array().into_iter().flatten() {
+                    v.extend(h["refs"].as_array().into_iter().flatten().filter_map(|x| x.as_str().map(String::from)));
+                }
+                v
+            })
+            .unwrap_or_default();
+        let origen: Vec<Value> = leer_json(&carpeta().join(&t.curso).join("fuentes.json")).ok().and_then(|v| v.as_array().cloned()).unwrap_or_default();
+        let mut propias: Vec<Value> = leer_json(&d.join("fuentes.json")).ok().and_then(|v| v.as_array().cloned()).unwrap_or_default();
+        for r in origen.into_iter().filter(|r| citas.contains(&texto(r, "id"))) {
+            if !propias.iter().any(|x| texto(x, "id") == texto(&r, "id")) {
+                propias.push(r);
+            }
+        }
+        std::fs::write(d.join("fuentes.json"), j(&Value::Array(propias))).map_err(io)?;
+        let lic = texto(&curso.def, "licencia");
+        (
+            tid,
+            format!(
+                "Copia del tema «{}» del curso «{}» (versión {}{}). Queda en temas/ del borrador para modificarla; su origen va en tema.json → origen: conserva el crédito a sus autores.",
+                t.id,
+                t.curso_titulo,
+                texto(&curso.def, "version"),
+                if lic.is_empty() { String::new() } else { format!(", licencia {lic}") }
+            ),
+        )
+    };
+    let mut temas = def["temas"].as_array().cloned().unwrap_or_default();
+    temas.push(json!(tid));
+    def["temas"] = Value::Array(temas);
+    std::fs::write(d.join("curso.json"), j(&def)).map_err(io)?;
+    Ok(json!({"id": tid, "carpeta": format!("temas/{tid}"), "nota": aviso}))
 }

@@ -21,7 +21,18 @@
   let titulo = $state('');
   let desde = $state<'vacio' | 'plantilla'>('vacio');
   let temaTitulo = $state('');
-  let temaTipo = $state<'leccion' | 'python' | 'r' | 'algebra'>('leccion');
+  /** «nuevo:leccion|python|r|algebra», «modulo:<id>» o «c.<curso>.<tema>» (biblioteca). */
+  let temaTipo = $state('nuevo:leccion');
+  const desdeBiblioteca = $derived(!temaTipo.startsWith('nuevo:'));
+  /** Los temas de la biblioteca agrupados por curso (sin el que se está editando). */
+  const porCurso = $derived.by(() => {
+    const m = new Map<string, typeof creador.biblioteca.temas>();
+    for (const x of creador.biblioteca.temas) {
+      if (x.curso === b?.instalado_como) continue;
+      m.set(x.curso_titulo, [...(m.get(x.curso_titulo) ?? []), x]);
+    }
+    return [...m];
+  });
   let agregandoTema = $state(false);
   let vista = $state(false);
   let selector: HTMLInputElement | undefined = $state();
@@ -48,7 +59,8 @@
   const TIPOS: Record<string, string> = {
     leccion: 'Lección',
     calculadora: 'Calculadora',
-    modelo: 'Modelo'
+    modelo: 'Modelo',
+    modulo: 'Módulo de Nativo'
   };
   const LENGUAJES: Record<string, string> = { python: 'Python', r: 'R', algebra: 'Algebraico' };
 
@@ -92,8 +104,9 @@
   }
 
   function crearTema() {
-    if (!temaTitulo.trim()) return;
-    void creador.nuevoTema(temaTitulo, temaTipo);
+    if (desdeBiblioteca) void creador.importarTema(temaTipo, temaTitulo);
+    else if (temaTitulo.trim()) void creador.nuevoTema(temaTitulo, temaTipo.slice(6) as 'leccion' | 'python' | 'r' | 'algebra');
+    else return;
     temaTitulo = '';
     agregandoTema = false;
   }
@@ -214,7 +227,7 @@
           <details class="tema" open={a?.ruta.startsWith(`temas/${tm.id}/`)}>
             <summary>
               <span class="nm">{tm.titulo || tm.id}</span>
-              <span class="tipo">{t(TIPOS[tm.tipo] ?? tm.tipo)}{tm.lenguaje ? ' · ' + t(LENGUAJES[tm.lenguaje] ?? tm.lenguaje) : ''}</span>
+              <span class="tipo">{t(TIPOS[tm.tipo] ?? tm.tipo)}{tm.lenguaje ? ' · ' + t(LENGUAJES[tm.lenguaje] ?? tm.lenguaje) : ''}{tm.base ? ' · ' + tm.base : ''}{tm.origen?.curso_titulo ? ' · ' + t('de «{0}»', tm.origen.curso_titulo) : ''}</span>
             </summary>
             <ul class="archivos">
               {#each arbol.porTema.get(tm.id) ?? [] as f (f.ruta)}
@@ -240,20 +253,44 @@
             }}
           >
             <!-- svelte-ignore a11y_autofocus -->
-            <input class="campo" bind:value={temaTitulo} placeholder={t('Título del tema')} autofocus />
             <select class="campo" bind:value={temaTipo}>
-              <option value="leccion">{t('Lección')}</option>
-              <option value="python">{t('Calculadora en Python')}</option>
-              <option value="r">{t('Calculadora en R')}</option>
-              <option value="algebra">{t('Modelo de optimización (algebraico)')}</option>
+              <optgroup label={t('Tema nuevo')}>
+                <option value="nuevo:leccion">{t('Lección')}</option>
+                <option value="nuevo:python">{t('Calculadora en Python')}</option>
+                <option value="nuevo:r">{t('Calculadora en R')}</option>
+                <option value="nuevo:algebra">{t('Modelo de optimización (algebraico)')}</option>
+              </optgroup>
+              <optgroup label={t('Módulos de Nativo (su motor y su guía)')}>
+                {#each creador.biblioteca.modulos as m (m.desde)}<option value={m.desde}>{m.titulo}</option>{/each}
+              </optgroup>
+              {#each porCurso as [curso, temas] (curso)}
+                <optgroup label={t('Copiar de «{0}»', curso)}>
+                  {#each temas as x (x.desde)}<option value={x.desde}>{x.titulo}</option>{/each}
+                </optgroup>
+              {/each}
             </select>
+            <!-- svelte-ignore a11y_autofocus -->
+            <input class="campo" bind:value={temaTitulo} placeholder={desdeBiblioteca ? t('Título (opcional)') : t('Título del tema')} autofocus />
+            {#if desdeBiblioteca}
+              <p class="muted chico">
+                {temaTipo.startsWith('modulo:')
+                  ? t('Usa la pantalla, el motor y la guía del módulo. Le agregas lecciones, ejemplos y, si tu curso usa otra fórmula, un ajuste en Python o R.')
+                  : t('Se copia al curso para que lo modifiques; queda el crédito a sus autores.')}
+              </p>
+            {/if}
             <div class="fila">
-              <button class="btn primary" type="submit" disabled={!temaTitulo.trim()}>{t('Agregar')}</button>
+              <button class="btn primary" type="submit" disabled={!desdeBiblioteca && !temaTitulo.trim()}>{t('Agregar')}</button>
               <button class="btn ghost" type="button" onclick={() => (agregandoTema = false)}>{t('Cancelar')}</button>
             </div>
           </form>
         {:else}
-          <button class="btn agregar" onclick={() => (agregandoTema = true)}><Icon name="mas" size={14} />{t('Agregar un tema')}</button>
+          <button
+            class="btn agregar"
+            onclick={() => {
+              agregandoTema = true;
+              void creador.cargarBiblioteca();
+            }}
+          ><Icon name="mas" size={14} />{t('Agregar un tema')}</button>
         {/if}
 
         <h3>{t('Qué puede usar el asistente')}</h3>

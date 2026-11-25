@@ -714,7 +714,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "clap",
  "iaqsb-api",
@@ -724,7 +724,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-api"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "iaqsb-core",
  "iaqsb-formats",
@@ -739,7 +739,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-core"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "crc32fast",
  "flate2",
@@ -753,7 +753,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-formats"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "iaqsb-core",
  "iaqsb-lp",
@@ -762,7 +762,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-lp"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "iaqsb-core",
  "schemars",
@@ -773,7 +773,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-mcp"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "iaqsb-api",
  "iaqsb-render",
@@ -782,7 +782,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-modules"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anofox-forecast",
  "chrono",
@@ -802,7 +802,7 @@ dependencies = [
 
 [[package]]
 name = "iaqsb-render"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "color_quant",
  "iaqsb-api",

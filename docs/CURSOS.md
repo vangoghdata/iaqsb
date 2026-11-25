@@ -9,6 +9,9 @@ Hay tres clases de temas:
 | `leccion` | Lecciones en Markdown y una guía (qué es, historia, para qué sirve…) | Qué es un ERP y cómo se usa |
 | `calculadora` | Una pantalla de datos y un cálculo en **Python** o en **R** | Punto de equilibrio, promedios móviles |
 | `modelo` | Una pantalla de datos y un modelo de optimización en el **lenguaje algebraico** de Nativo, resuelto con HiGHS | Mezcla de productos |
+| `modulo` | Un **módulo de Nativo** (su pantalla, su motor, su paso a paso y su guía) con las lecciones, los ejemplos y la guía del curso encima, y si hace falta un **ajuste** en Python o R | MRP II con los ejemplos del profesor |
+
+Un curso se arma por temas y **reutiliza antes de escribir**: si Nativo ya trae el cálculo (MRP, series de tiempo, inventarios, PERT…), el tema se basa en ese módulo; si otro curso instalado ya tiene el tema, se copia y se adapta; solo lo que no existe se escribe desde cero.
 
 El curso de muestra está en [`cursos/ejemplo-nativo`](../cursos/ejemplo-nativo): sirve de plantilla.
 
@@ -64,6 +67,55 @@ El archivo `.ncourse` es esa carpeta comprimida en zip. Se aceptan archivos `jso
 ```
 
 `calculo.lenguaje` es `python`, `r` o `algebra`. Un tema `leccion` no lleva `calculo`.
+
+### Temas basados en un módulo de Nativo (`tipo: "modulo"`)
+
+```json
+{
+  "id": "mrp-ii",
+  "titulo": "MRP II por matrices",
+  "resumen": "La explosión de materiales y la carga de los departamentos, como en clase.",
+  "tipo": "modulo",
+  "base": "mrp2",
+  "lecciones": [{ "titulo": "MRP II con matrices", "archivo": "leccion.md" }],
+  "ejemplos": [{ "nombre": "Ejercicio del parcial", "archivo": "ejemplos/parcial.json" }],
+  "ajuste": { "lenguaje": "python", "archivo": "ajuste.py", "paquetes": [] }
+}
+```
+
+- `base` es el id de un módulo de Nativo (la lista está en la biblioteca: operación `topic_library`). No puede ser `lp`, que tiene su propio editor: para optimización usa un tema `modelo`.
+- El tema usa la pantalla, el motor, el paso a paso, los informes, la comparación de métodos, el «¿qué pasa si…?» y la exportación del módulo. Los ejemplos del curso (modelos del módulo, en `ejemplos/`) van primero y después los del módulo (`"ejemplos_base": false` los quita).
+- La guía es la del módulo; `guia.json` del tema reemplaza solo los campos que trae (por ejemplo `resumen`, `historia` o `errores_comunes`).
+- **Ajuste (otra fórmula u otra convención).** Si el curso calcula algo distinto, el ajuste recibe el informe del módulo y lo cambia o lo completa:
+
+```python
+from nativo import base, Informe
+
+inf = Informe.desde(base)          # todo lo del módulo: secciones, paso a paso y datos
+faltan = -min(min(f) for f in base["data"]["capacity"]["residual_time"])
+inf.titular = f"Horas extra necesarias: {faltan:.2f}"
+inf.metricas([("Horas extra", round(faltan, 2), "h")], seccion="ajuste")
+inf.paso("Horas extra", "La mayor falta de capacidad del horizonte")
+inf.publicar()
+```
+
+En R, el informe del módulo llega como la lista `base`.
+
+### Temas copiados de otro curso
+
+La biblioteca también tiene los temas de los cursos instalados (`c.<curso>.<tema>`). Al agregar uno a un borrador se **copia** (el `.ncourse` sigue siendo independiente) y queda su origen en `tema.json` → `origen` (curso, versión, autores y licencia), para conservar el crédito; sus referencias propias pasan a `fuentes.json`.
+
+### Paquetes de Python y de R
+
+Si el código necesita librerías, se declaran en `calculo.paquetes` (o `ajuste.paquetes`):
+
+```json
+"calculo": { "lenguaje": "python", "archivo": "calcular.py", "pantalla": "pantalla.json", "paquetes": ["pulp"] }
+```
+
+- En la app se instalan solas dentro de la ventana: Python con micropip (paquetes de Python puro o compilados para Pyodide) y R con webR (paquetes de CRAN; los `library()` del código se detectan solos).
+- En la línea de comandos y el servidor MCP se usan las del equipo; si faltan, el error dice cómo instalarlas (`python -m pip install …`, `install.packages(…)`).
+- Código en Rust no corre dentro de un curso: lo que necesita la velocidad de Rust va en los módulos de Nativo, que los temas reutilizan como base.
 
 ### `pantalla.json`: la pantalla de datos
 
@@ -145,6 +197,8 @@ La guía tiene el formato de las guías de los módulos ([`crates/iaqsb-core/gui
 Nunca inventes referencias: si no puedes confirmar una, ponle `"verificada": false`. No copies páginas de libros: explica con tus palabras, cita la fuente y usa citas textuales cortas.
 
 ## Comandos
+
+La API (y por ella la app, la CLI con `iaqsb --json llamar <op>` y el servidor MCP) trabaja sobre borradores: `draft_new`, `draft_read`, `draft_write`, `draft_add_topic`, `topic_library` (la biblioteca), `draft_import_topic` (`from`: `modulo:<id>` o `c.<curso>.<tema>`), `draft_validate`, `draft_test`, `draft_install`, `draft_pack`.
 
 ```text
 iaqsb curso nuevo mi-curso --id produccion-basica --titulo "Producción básica"
